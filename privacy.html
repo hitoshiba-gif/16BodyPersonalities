@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>プライバシーポリシー - 16BodyPersonalities</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* === 可愛いカード＆ボタン補助 === */
+    .hero-card .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-card .controls a {
+      background: linear-gradient(135deg, #ffb6c1 0%, #ff77b7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 22px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(255, 119, 183, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+    }
+    .hero-card .controls a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(255, 119, 183, 0.4);
+    }
+
+    /* スマホでdrawerテキスト折返し防止 */
+    .drawer-item {
+      white-space: nowrap;
+      font-size: 15px;
+    }
+    @media (max-width: 420px) {
+      .drawer-item { font-size: 14px; }
+    }
+
+    /* スマホでbrand折返しを防止 */
+    .drawer-brand {
+      font-size: 1.1em;
+      white-space: nowrap;
+    }
+
+    /* ヘッダータイトル中央 */
+    .wrap header h1 {
+      text-align: center;
+      font-size: 1.6em;
+      color: var(--accent, #ff77b7);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+  <a class="brand" href="index.html">16Body<span>Personalities</span></a>
+
+  <!-- PC表示：右上に並ぶ -->
+  <nav class="nav-links">
+    <a href="index.html" class="chip-btn">トップ</a>
+    <a href="gallery.html" class="chip-btn">タイプギャラリー</a>
+    <a href="contact.html" class="chip-btn">お問い合わせ</a>
+  </nav>
+
+  <!-- モバイル表示：ハンバーガー -->
+  <button class="hamburger" id="navOpen" aria-label="メニュー" aria-controls="drawer" aria-expanded="false">
+    <!-- 3本線アイコン（SVG） -->
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+
+<!-- ドロワー本体 -->
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="drawer-brand">16BodyPersonalities</span>
+    <button class="drawer-close" id="navClose" aria-label="閉じる">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="drawer-links">
+    <a href="index.html" class="drawer-item">トップ</a>
+    <a href="app.html" class="drawer-item">診断をはじめる</a>
+    <a href="gallery.html" class="drawer-item">タイプギャラリー</a>
+    <a href="privacy.html" class="drawer-item">プライバシー</a>
+    <a href="terms.html" class="drawer-item">利用規約</a>
+    <a href="contact.html" class="drawer-item">お問い合わせ</a>
+  </nav>
+</aside>
+
+<!-- 半透明オーバーレイ -->
+<div class="scrim" id="scrim" hidden></div>
+<div class="topbar-spacer"></div> <!-- ナビの高さぶん余白（重なり防止） -->
+  <div class="wrap">
+   
+
+
+    <header>
+      <h1>プライバシーポリシー</h1>
+      <span class="badge">最終更新: 2025-10-28</span>
+    </header>
+
+    <section class="card hero-card">
+      <p class="muted">16BodyPersonalities（以下「当サービス」）は、ユーザーのプライバシー保護を最優先に考えています。</p>
+      <div class="controls">
+        <a href="index.html">トップへ戻る</a>
+        <a href="contact.html">お問い合わせ</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>1. 収集する情報</h3>
+      <ul>
+        <li>匿名の診断回答データ</li>
+        <li>アクセス解析のためのブラウザ・端末情報</li>
+        <li>お問い合わせ内容（入力があった場合）</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h3>2. 利用目的</h3>
+      <p>取得した情報は、診断精度の向上・サービス改善・統計的分析のみに使用します。</p>
+    </section>
+
+    <section class="card">
+      <h3>3. Cookieの使用</h3>
+      <p>本サービスでは利便性向上のためCookieを使用する場合があります。ブラウザ設定で拒否できますが、一部機能が制限されることがあります。</p>
+    </section>
+
+    <section class="card contact-callout">
+  <h3>4. お問い合わせ</h3>
+  <p>ご質問やリクエストは、以下からお気軽にどうぞ。</p>
+  <a href="contact.html" class="cute-contact-btn">
+    <span>💌 お問い合わせフォームへ</span>
+  </a>
+</section>
+
+    <footer class="footer">
+      <span class="small">© 2025 16BodyPersonalities Project</span>
+      <span>
+        <a class="muted" href="terms.html">利用規約</a> ・
+        <a class="muted" href="privacy.html">プライバシー</a>
+      </span>
+    </footer>
+  </div>
+
+  <script>
+window.addEventListener('DOMContentLoaded', function(){
+  const openBtn  = document.getElementById('navOpen');
+  const closeBtn = document.getElementById('navClose');
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+
+  if(!openBtn || !closeBtn || !drawer || !scrim){
+    console.warn('[drawer] 必要な要素が見つかりません');
+    return;
+  }
+
+  function open(){
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    openBtn.setAttribute('aria-expanded','true');
+    scrim.hidden = false;
+    document.documentElement.style.overflow = 'hidden'; // 背景固定
+  }
+  function close(){
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden','true');
+    openBtn.setAttribute('aria-expanded','false');
+    scrim.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', open,  { passive: true });
+  closeBtn.addEventListener('click', close, { passive: true });
+  scrim.addEventListener('click', close,    { passive: true });
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+});
+</script>
+</body>
+</html>

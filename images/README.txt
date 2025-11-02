@@ -1,0 +1,1 @@
+ここに images/BNLS.jpg などのタイプ画像を置くと index.html 内で表示されます。

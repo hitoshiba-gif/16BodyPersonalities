@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="color-scheme" content="light dark">
+<title> 16BodyPersonalities</title>
+<link rel="stylesheet" href="./styles.css?v=1">
+</head>
+<body data-theme="WAVE">
+  <header class="site-header">
+  <a class="brand" href="index.html">16Body<span>Personalities</span></a>
+
+  <!-- PC表示：右上に並ぶ -->
+  <nav class="nav-links">
+    <a href="index.html" class="chip-btn">トップ</a>
+    <a href="gallery.html" class="chip-btn">タイプギャラリー</a>
+    <a href="contact.html" class="chip-btn">お問い合わせ</a>
+  </nav>
+
+  <!-- モバイル表示：ハンバーガー -->
+  <button class="hamburger" id="navOpen" aria-label="メニュー" aria-controls="drawer" aria-expanded="false">
+    <!-- 3本線アイコン（SVG） -->
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+
+<!-- ドロワー本体 -->
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="drawer-brand">16BodyPersonalities</span>
+    <button class="drawer-close" id="navClose" aria-label="閉じる">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+   <nav class="drawer-links">
+    <a href="index.html" class="drawer-item">トップ</a>
+    <a href="app.html" class="drawer-item">診断をはじめる</a>
+    <a href="gallery.html" class="drawer-item">タイプギャラリー</a>
+    <a href="privacy.html" class="drawer-item">プライバシー</a>
+    <a href="terms.html" class="drawer-item">利用規約</a>
+    <a href="contact.html" class="drawer-item">お問い合わせ</a>
+  </nav>
+</aside>
+
+<!-- 半透明オーバーレイ -->
+<div class="scrim" id="scrim" hidden></div>
+<div class="wrap">
+  
+  <header>
+    <span class="badge">1st Edition</span>
+    <h1>16BodyPersonalities</h1>
+  </header>
+  <div id="app" class="card"></div>
+  <!-- ==== Result Gate UI (CPV対応) ==== -->
+
+  <!-- ====== Realtime Cute Dashboard ====== -->
+<section id="cute-stats" class="dash card" style="margin-top:16px;">
+  <div class="dash-head">
+    <h2>タイプ割合（リアルタイム）</h2>
+    <p class="muted">各骨格の分布割合がリアルタイムで見れちゃう！あなたと同じ骨格の人がどれくらいの割合で存在しているのか見てみよう！</p>
+  </div>
+
+  <!-- 3ベースのドーナツ（WAVE / NATURAL / STRAIGHT） -->
+  <div class="donut-row">
+    <div class="donut-card" data-base="WAVE">
+      <div class="donut" data-key="WAVE">
+        <svg viewBox="0 0 120 120" class="ring">
+          <circle cx="60" cy="60" r="48" class="track"></circle>
+          <circle cx="60" cy="60" r="48" class="prog" data-prog></circle>
+        </svg>
+        <div class="donut-center">
+          <div class="donut-title">WAVE</div>
+          <div class="donut-num" data-num="WAVE">0%</div>
+        </div>
+      </div>
+      <div class="chips mini" data-chip="WAVE"></div>
+    </div>
+
+    <div class="donut-card" data-base="NATURAL">
+      <div class="donut" data-key="NATURAL">
+        <svg viewBox="0 0 120 120" class="ring">
+          <circle cx="60" cy="60" r="48" class="track"></circle>
+          <circle cx="60" cy="60" r="48" class="prog" data-prog></circle>
+        </svg>
+        <div class="donut-center">
+          <div class="donut-title">NATURAL</div>
+          <div class="donut-num" data-num="NATURAL">0%</div>
+        </div>
+      </div>
+      <div class="chips mini" data-chip="NATURAL"></div>
+    </div>
+
+    <div class="donut-card" data-base="STRAIGHT">
+      <div class="donut" data-key="STRAIGHT">
+        <svg viewBox="0 0 120 120" class="ring">
+          <circle cx="60" cy="60" r="48" class="track"></circle>
+          <circle cx="60" cy="60" r="48" class="prog" data-prog></circle>
+        </svg>
+        <div class="donut-center">
+          <div class="donut-title">STRAIGHT</div>
+          <div class="donut-num" data-num="STRAIGHT">0%</div>
+        </div>
+      </div>
+      <div class="chips mini" data-chip="STRAIGHT"></div>
+    </div>
+  </div>
+
+  <!-- 16タイプの“動物バッジ＋バー”グリッド -->
+  <div class="type-grid" id="typeGrid"></div>
+
+  <div class="small muted" style="margin-top:8px;">
+    ※ 直近サンプルからの比率／表示は自動リフレッシュされます
+  </div>
+</section>
+
+</div>
+
+<script>
+  document.body.dataset.theme = 'WAVE';
+  // ============ Google Sheets連携設定 ============
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxb93EpsZ6S0Xizk9PdBEJC8stOJtYLgJA4X92m_9Q2tulQRgSunmk-xdxIHevIC15d/exec"
+function sendToSheets(payload){
+  console.log('[GAS] sending...', payload);
+  return fetch(GAS_URL, {
+    method: "POST",
+    // ★ プリフライトを発生させない許可タイプ
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify(payload),
+  })
+  .then(r => r.text().then(t => {
+    console.log('[GAS] response:', r.status, t);
+    return { status: r.status, body: t };
+  }))
+  .catch(e => console.error('[GAS] error:', e));
+}
+
+// ユーザーの同意状態を保存/取得（ローカルに保持）
+const CONSENT_KEY = 'km_consent'; // 'yes' | 'no'
+function getConsent(){ return localStorage.getItem(CONSENT_KEY) ?? 'yes'; } // 既定=同意
+function setConsent(v){ localStorage.setItem(CONSENT_KEY, v ? 'yes' : 'no'); }
+
+function makeInitialState(){
+  const make = n => Array(n).fill(3); // スライダー初期値=3
+  return {
+    step: 0,
+    _sentOnce: false,                 // 自動送信フラグもリセット
+    answers: {
+      frame:   make(12),
+      surface: make(12),
+      balance: make(12),
+      line:    make(12)
+    }
+  };
+}
+
+/* ───────── 4軸定義 ───────── */
+/* ───────── 4軸定義（置き換え） ───────── */
+const AXES = [
+  { key:'frame',   codePos:'B', codeNeg:'M', label:'構造軸（Frame）',
+    posLabel:'骨格主導（B）', negLabel:'肉付き主導（M）', threshold:3.5 },
+
+  { key:'surface', codePos:'W', codeNeg:'N', label:'面積軸（Surface）',
+    posLabel:'身体フレーム広（W）', negLabel:'身体フレーム狭（N）', threshold:3.5 },
+
+  { key:'balance', codePos:'U', codeNeg:'L', label:'重心軸（Balance）',
+    posLabel:'上重心（U）', negLabel:'下重心（L）', threshold:3.5 },
+
+  { key:'line',    codePos:'S', codeNeg:'C', label:'ライン軸（Line）',
+    posLabel:'直線（S）', negLabel:'曲線（C）', threshold:3.5 },
+];
+/* ───────── 質問（各12問・5段階） ───────── */
+const QUESTIONS = {
+  frame:[
+    {t:'鎖骨や肋骨のラインがはっきりしている',pos:true},
+    {t:'手首や足首の骨が目立ず、その他の部位も肉感が目立つ',pos:false},
+    {t:'肩や太ももに骨ぼねしさを感じる',pos:true},
+    {t:'体全体が直線的で、凹凸が少ない',pos:true},
+    {t:'動いたとき、筋肉の動きがわかりずらい',pos:true},
+    {t:'身体付きが「シャープ」と言われる',pos:true},
+    {t:'顔に脂肪がつきにくい',pos:true},
+    {t:'写真で見ると骨の位置がわかりずらい',pos:false},
+    {t:'厚手の服でも骨の形が出やすい',pos:true},
+    {t:'運動をしても筋肉がつきやすい',pos:false},
+    {t:'座るとお尻の骨がごつごつ感じられる',pos:true},
+    {t:'自分の体型は「骨の形」によって決まっている',pos:true}
+  ],
+  surface:[
+    {t:'周囲から実際の身長よりも大きく見えると言われる',pos:true},
+    {t:'肩幅の大きさが顔の横幅三つ分の大きさよりも大きい',pos:true},
+    {t:'厚手より薄手・軽い素材がしっくりくる',pos:true},
+    {t:'静止すると存在感が強い',pos:true},
+    {t:'腕の長さが膝とお尻の中間くらいまである',pos:true},
+    {t:'手が小さいとよく言われる',pos:false},
+    {t:'体のメリハリが少ない',pos:true},
+    {t:'写真で他人と並ぶと身体が大きく見える',pos:true},
+    {t:'首元がゆったりした服がよく似合う',pos:true},
+    {t:'厚みがなく横に広がるような体型をしている',pos:true},
+    {t:'ビッグシルエットの服が似合わない',pos:false},
+    {t:'鎖骨が太く長い',pos:true}
+  ],
+  balance:[
+    {t:'鏡を見ると上半身が目立つように感じる',pos:true},
+    {t:'腰・ヒップが目立つ',pos:true},
+    {t:'脚が長く見える',pos:true},
+    {t:'ウエストラインが低く見える',pos:false},
+    {t:'座ると身長が低く見える',pos:true},
+    {t:'立つと胸や肩の位置が高く見える',pos:true},
+    {t:'ボディラインの出る服が似合う',pos:true},
+    {t:'トップスにボリュームを出すと着膨れする',pos:false},
+    {t:'ワイドパンツよりもスキニーパンツが似合う',pos:true},
+    {t:'上半身にアクセサリーや柄を持ってくるとしっくりくる',pos:true},
+    {t:'首の長さが短め',pos:true},
+    {t:'着丈の短いトップスが似合う',pos:true}
+  ],
+  line:[
+    {t:'手足や体の輪郭がまっすぐに見える',pos:true},
+    {t:'肩や腰に丸みがない',pos:true},
+    {t:'「シャープ」と言われる',pos:true},
+    {t:'首元が空いている服は貧相に見える',pos:true},
+    {t:'直線的な服が似合う',pos:true},
+    {t:'スーツやシャツがあまり似合わない',pos:false},
+    {t:'胸やお尻の丸みが強い',pos:false},
+    {t:'オーバーサイズの服を切ると着ぶくれする',pos:false},
+    {t:'横顔や横姿が直線的に見える',pos:true},
+    {t:'顔の骨が目立たない',pos:false},
+    {t:'コンパクトな髪型は顔が大きく見える',pos:false},
+    {t:'全体の印象が「すっきり」している',pos:true}
+  ]
+};
+
+/* ───────── Final TYPE 定義（16タイプ：動物・ブランド・ノート） ───────── */
+/* 画像は任意（images/CODE.jpg）。brandHints/styleNotes は結果画面に表示 */
+const TYPE_META = {
+  /* ============== WAVE（柔・軽・下重心） ============== */
+  BNLS:{ // Romantic Wave
+    name:'骨格コアラ(Romantic Wave)', base:'WAVE', emoji:'🐨', animal:'コアラ',
+    image:'images/BNLS.jpg',
+    concept:'甘くやわらか、包容感のあるロマン。',
+    body:'B=やや骨感 / W=広め / L=下重心 / S=直線強め。上半身は華奢、腰〜ヒップに丸み。骨の主張は弱く、やわらかな陰影と直線的な線が印象の中心。',
+    brandHints:['SNIDEL','CELFORD','TOCCA','Lily Brown','FRAY I.D','IÉNA','Noela'],
+    styleNotes:[
+      '薄手〜中厚で落ち感のある素材（シフォン/サテン/ジョーゼット）',
+      '襟はラウンド/ハート/スカーフタイで柔らかく',
+      'Aラインやマーメイドで下重心を活かしつつ軽さを足す',
+      '配色は中〜淡色のワントーン、黄みを抑えたピンク/ラベンダー',
+      '硬い直線テーラードは“借りてきた感”が出やすい'
+    ],
+    outfitIdeas:[
+      'レースブラウス＋マーメイドスカート＋2～4cmパンプス',
+      'ショートカーデ＋プリーツスカート＋小ぶりバッグ'
+    ],
+    celebrities:{ jp:['梅田みゆ','音沙','岩本照','阿部亮平','大橋和也','表すみれ','倉八音羽'], kr: ['ロゼ（BLACKPINK）','ジミン（RIIZE）','ボムギュ（TXT）'], global:['Lily Collins','Emma Watson'] }
+  },
+
+  MNLC:{ // Urban Elegance (Wave)
+    name:'骨格ウルフ(Urban Elegance)', base:'WAVE', emoji:'🐺', animal:'オオカミ',
+    image:'images/MNLC.jpg',
+    concept:'静かで芯のある優しさ、穏やかに知的な洗練。',
+    body:'M=肉感寄り / N=コンパクト / L=下重心 / C=曲線寄り。柔らかさがポイント。脚に厚みが出やすいので上にポイントを。',
+    brandHints:['IÉNA','Mila Owen','Plage','N.O.R.C','URBAN RESEARCH','TOMORROWLAND'],
+    styleNotes:[
+      '“Iライン”を意識した縦長設計',
+      '中厚でハリが出すぎないツイル/ポンチ',
+      'ショート丈トップス＋ハイウエストで視線を上へ',
+      'ニュアンスのグレージュ/トープ/ダスティピンク',
+      '肩幅を誇張するパッド強めは避ける'
+    ],
+    outfitIdeas:[
+      'クロップドシャツ＋タックワイド＋ローファー',
+      'リブニット＋ミディタイト＋ショートブーツ'
+    ],
+    celebrities:{ jp:['佐野愛花','大谷英美里','永瀬廉','高橋恭平','錦戸亮','多田莉音','秋山みづき'],kr: ['ウォニョン（IVE）','ウォンビン（RIIZE）','シニュ（TWS）'], global:['Keira Knightley','Natalie Portman'] }
+  },
+
+  MWLC:{ // Light Wave
+    name:'骨格バタフライ(Light Wave)', base:'WAVE', emoji:'🦋', animal:'バタフライ',
+    image:'images/MWLC.jpg',
+    concept:'風に舞う透明感、まっすぐで軽やかな均衡。',
+    body:'M=肉感 / W=広め / L=下重心 / C=曲線。腰〜腿に厚み。軽い素材と縦ラインで“軽やかな直線”を作ると◎。',
+    brandHints:['N.O.R.C','IÉNA','UNIQLO','BEAUTY&YOUTH','TOMORROWLAND','LE PHIL'],
+    styleNotes:[
+      'ハイウエストで脚長補正',
+      '上はコンパクト、下はスッと落ちるIライン',
+      '直線的なシャツ/ノーカラーJKを薄手で',
+      'アクセは細線で軽さを統一',
+      '厚底過多よりフラット～ローヒールで軽量化'
+    ],
+    outfitIdeas:[
+      'ノーカラーシャツ＋ハイウエストパンツ＋ローファー',
+      'クロップドニット＋ストレートデニム＋ミニバッグ'
+    ],
+    celebrities:{ jp:['齋藤櫢愛羅','Vaundy','深澤辰哉','橋本良亮','木村拓哉','相場星音','生方澪枝'], kr:['カリナ（aespa）','ソヒ（RIIZE）','テヒョン（TXT）'], global:['Selena Gomez','Lily Collins'] }
+  },
+
+  MWLS:{ // Natural Girly
+    name:'骨格ハムスター(Natural Girly)', base:'WAVE', emoji:'🐹', animal:'ハムスター',
+    image:'images/MWLS.jpg',
+    concept:'丸みと温かみ、ふんわりとした可憐さ。',
+    body:'M=肉感 / W=広め / L=下重心 / S=直線。全体にふわっと厚み。可憐ディテールは小さめ＆上側に集約。',
+    brandHints:['SNIDEL','earth music&ecology','Kastane','LOWRYS FARM','tocco closet'],
+    styleNotes:[
+      'Aライン/フレア/ティアードで“下に落ちる”を活かす',
+      '上は短め・袖に少しボリュームで視線UP',
+      '柔らかニット/カットソー中心',
+      '小ぶりバッグ＆繊細アクセで重さを消す',
+      '濃色ワントーンは重たく見えやすい'
+    ],
+    outfitIdeas:[
+      '丸襟ブラウス＋フレアスカート＋バレエシューズ',
+      'ショートカーデ＋ギャザースカート＋ミニショルダー'
+    ],
+    celebrities:{ jp: ['真鍋凪咲','小泉遥香','藤原聡','藤ヶ谷太輔','中村海人','長浜広奈','夏川メガン'], kr: ['ツウィ（TWICE）','サクラ（LE SSERAFIM）','ジュン（SEVENTEEN）'], global:['Ariana Grande','Selena Gomez'] }
+  },
+
+  MNLS:{ // Classic Feminine
+    name:'骨格ドーブ（Classic Feminine）', base:'WAVE', emoji:'🕊', animal:'白鳩',
+    image:'images/MNLS.jpg',
+    concept:'柔らかく上品、穏やかに香るエレガンス。',
+    body:'M=肉感 / N=コンパクト / L=下重心 / S=直線。上半身は華奢で胸〜ウエストはなだらか、下半身に安定。',
+    brandHints:['TOCCA','EPOCA','FOXEY','ANAYI','Apuweiser-riche'],
+    styleNotes:[
+      'ハート/ラウンド/浅Vの女性的な襟型',
+      'ミディ〜ロングのフレア/マーメイド',
+      'サテンやジョーゼットの艶で上品に',
+      '真珠/小粒ジュエリーで清潔感',
+      '直線強いジャケットは短丈で軽く'
+    ],
+    outfitIdeas:[
+      'ボウタイブラウス＋ミディフレア＋パールピアス',
+      'ショートジャケット＋マーメイドスカート'
+    ],
+    celebrities:{ jp: ['真中まな','南なつ','井上苑子','渡辺翔太','岸優太','小山慶一郎','天宮芽唯','平松想乃'], kr: ['ナヨン（TWICE）','チェリョン（ITZY）','フィリックス（Stray Kids）'], global:['Ariana Grande','Lily Collins'] }
+  },
+
+  BNLC:{ // Earth Wave
+    name:'骨格テディ(Earth Wave)', base:'WAVE', emoji:'🐻', animal:'クマ',
+    image:'images/BNLC.jpg',
+    concept:'あたたかく包み込む安定感、癒しの重心。',
+    body:'B=骨感 / N=コンパクト / L=下重心 / C=曲線寄り。上半身は華奢だけど、ふっくらとした下半身で曲線を感じるやわらか素材が馴染む。',
+    brandHints:['URBAN RESEARCH ROSSO','Plage','DOORS','JOURNAL STANDARD relume','IÉNA'],
+    styleNotes:[
+      'ロングカーデ/ライトアウターで“包み”を作る',
+      '落ち感あるミッドウェイト素材',
+      'アースカラーの中明度（ベージュ/カーキ/モカ）',
+      '厚底すぎない靴で地面に安定',
+      '上半身に1点だけ明度差で視線UP'
+    ],
+    outfitIdeas:[
+      'ロングカーデ＋Iラインワンピ＋フラット',
+      'スウェット＋サテンスカート＋ローファー'
+    ],
+    celebrities:{ jp: ['櫻井優衣','立花琴末','辻野かなみ','向井康二','佐藤勝利','山田涼介','時田音々','川野明愛'], kr: ['サナ（TWICE）','ガウル（IVE）','ホシ（SEVENTEEN）'], global:['Keira Knightley','Kristen Stewart'] }
+  },
+
+  /* ============== NATURAL（BL系中心） ============== */
+  BWUC:{ // Urban Natural
+    name:'骨格ユニコーン(Urban Natural)', base:'NATURAL', emoji:'🦄', animal:'ユニコーン',
+    image:'images/BWUC.jpg',
+    concept:'広いフレーム×曲線×余白、幻想と構造の調和。',
+    body:'B=骨感 / W=広め / U=上重心 / C=曲線。手足が長くフレームの存在感が強い。余白を残すミニマルが映える。',
+    brandHints:['JOURNAL STANDARD','UNITED ARROWS','BEAUTY&YOUTH','AURALEE','YLEVE','TODAYFUL'],
+    styleNotes:[
+      '曲線×ゆとりのボックス/カーヴィー',
+      'ライトなセットアップで構造を見せる',
+      'ネックはクルー/ボート/スタンド',
+      '色は無彩色＋少量のソフトカラー',
+      '過度な装飾より素材の良さで勝負'
+    ],
+    outfitIdeas:[
+      'ボクシーJK＋ストレートパンツ＋白スニーカー',
+      'スタンドカラーシャツ＋ミニスカート（曲線）'
+    ],
+    celebrities:{ jp: ['tuki','松島聡','数太','中丸雄一','横尾渉','ユンギ（BTS）'], kr: ['カズハ（LE SSERAFIM）','ソンチャン（RIIZE）','ウナク（BOYNEXTDOOR）'], global:['Cara Delevingne','Gigi Hadid'] }
+  },
+
+  BWUS:{ // Fairy Natural
+    name:'骨格イーグル(Fairy Natural)', base:'NATURAL', emoji:'🦅', animal:'タカ',
+    image:'images/BWUS.jpg',
+    concept:'軽やかで透徹した知性、俯瞰の美学。',
+    body:'B=骨感 / W=広め / U=上重心 / S=直線寄り。骨感が強く直線的。上に軽さを集めると空気感が出る。',
+    brandHints:['ENFÖLD','Deuxieme Classe','TOMORROWLAND','athoos','COS'],
+    styleNotes:[
+      '上半身ビッグサイズ×下に直線レイヤー',
+      '淡色×無機質アクセ（シルバー/スチール）',
+      'クリーンなスニーカー/ローファー',
+      '透け/シアーで軽さを足す',
+      '可愛げ要素は“量より質感”で'
+    ],
+    outfitIdeas:[
+      'オーバーサイズニット＋スラックス＋メタルアクセ',
+      'シアーシャツ＋ストレートスカート＋ローファー'
+    ],
+    celebrities:{ jp: ['結海（Little Glee Monster）','Aimer','浅見めい','ラウール','伊野尾慧','道枝駿佑','紗和'], kr: ['ウィンター（aespa）','ユナ（ITZY）'], global:['Zendaya','Keira Knightley'] }
+  },
+
+  BWLC:{ // Classic Natural
+    name:'骨格フォックス(Classic Natural)', base:'NATURAL', emoji:'🦊', animal:'キツネ',
+    image:'images/BWLC.jpg',
+    concept:'端正で機敏、自然体の品格。',
+    body:'B=骨感 / W=広め / L=下重心 / C=曲線。肩〜背中のフレームがすっきり。整った曲線で“静の品格”。',
+    brandHints:['IÉNA','Plage','TOMORROWLAND','BEAMS','URBAN RESEARCH'],
+    styleNotes:[
+      'シャツ/テーラードは薄手で端正に',
+      'リネン/コットンで清涼感',
+      'センタープレスでエレガントさを強調',
+      'ベージュ〜ネイビー軸のベーシック配色',
+      '装飾は最小限、形で語る'
+    ],
+    outfitIdeas:[
+      'リネンシャツ＋センタープレス＋ローファー',
+      'ノーカラーJK＋Iラインスカート'
+    ],
+    celebrities:{ jp: ['月足天音','古澤里沙','あいみょん','藤井サチ','しなこ','目黒蓮','二階堂高嗣','菊池風磨','神宮寺勇太','井ノ原快彦','増田貴久','まあたそ','永瀬さら','村谷はるな','栗原一菜'], kr: ['ジョンヨン（TWICE）','ナッティ（KISS OF LIFE）','イソ（IVE）','アイエン（Stray Kids）','ホビ（BTS）','イハン（BOYNEXTDOOR）'], global:['Cara Delevingne','Keira Knightley'] }
+  },
+
+  BWLS:{ // Pure Natural
+    name:'骨格バンビ(Pure Natural)', base:'NATURAL', emoji:'🦌', animal:'シカ',
+    image:'images/BWLS.jpg',
+    concept:'柔らかく静かな調和、森の中の安らぎ。',
+    body:'B=骨感 / W=広め / L=下重心 / S=直線。直線骨格に柔らかい面、テクスチャーミックスで深みを出すと◎。',
+    brandHints:['nest Robe','Vermeerist BEAMS','Plage','Journal Standard L’essage'],
+    styleNotes:[
+      '下に落ちるAライン/バイアス',
+      'コットン/リネン/ガーゼで質感レイヤー',
+      'ソフトカラーのグラデーション',
+      '木/革/布の自然素材アクセ',
+      'ラグジュアリーは艶よりマット'
+    ],
+    outfitIdeas:[
+      'ゆるブラウス＋バイアススカート＋フラット',
+      'コットンワンピ＋レザー小物（小さめ）'
+    ],
+    celebrities:{ jp: ['仲川夏','板倉可奈','藤井風','米津玄師','なごみ','せいら','高橋海斗','松村北斗','高地優吾','玉森裕太','相葉雅紀','清水あす香'], kr: ['チェヨン（TWICE）','リサ（BLACKPINK）','ミンニ（I-DLE）','テテ（BTS）','ジョンハン（SEVENTEEN）','テヨン（NCT）'], global:['Keira Knightley','Kristen Stewart'] }
+  },
+
+  /* ============== STRAIGHT（厚・立体・上重心・直線） ============== */
+  BNUS:{ // Elegant Straight
+    name:'骨格パンサー(Sporty Cool)', base:'STRAIGHT', emoji:'🐆', animal:'パンサー',
+    image:'images/BNUS.jpg',
+    concept:'凛として構築的、都会的モード。',
+    body:'B=骨感強 / N=コンパクト / U=上重心 / S=曲線少。厚みより骨の構造が先に立ち、直線×上重心で“意志の強さ”。',
+    brandHints:['Theory','Max Mara','FOXEY','PLST','LE PHIL','TIBI'],
+    styleNotes:[
+      'ショート丈×ハイウエストで重心をさらに上へ',
+      'ハリ素材のIライン（タフタ/トリアセ/ウール）',
+      'テーラード/ノーカラーの直線軸',
+      '高コントラスト配色でキリッと',
+      '装飾は少なめ、エッジを効かせる'
+    ],
+    outfitIdeas:[
+      'ショートジャケット＋ペンシルスカート＋ヒール',
+      'タートルニット＋ハイウエストスラックス'
+    ],
+    celebrities:{ jp: ['増田彩乃','小川奈々子','平野紫耀','ジェシー','西畑大吾','瀬川陽菜乃','せりな','代田萌花'], kr: ['ユンジン（LE SSERAFIM）','リノ（Stray Kids）','ゴヌク（ZEROBASEONE）','ジョングク（BTS）'], global:['Jennifer Lopez','Scarlett Johansson'] }
+  },
+
+  MWUC:{ // Sporty Cool
+    name:'骨格シャーク(Elegant Straight)', base:'STRAIGHT', emoji:'🦈', animal:'サメ',
+    image:'images/MWUC.jpg',
+    concept:'エレガントかつグラマラスなボディ',
+    body:'M=肉感 / W=広め / U=上重心 / C=曲線。体幹に厚み、上に視線が集まる。機能素材の曲線がハマる。',
+    brandHints:['NIKE Sportswear','adidas Originals','P.E NATION','COS','UNIQLO U'],
+    styleNotes:[
+      '曲線美強調のスキニー×短丈トップス',
+      'モノトーンや寒色でクリーンに',
+      'ツヤを抑えたスポーティミックス',
+      'ボリュームは上：下＝6:4で',
+      '足元は厚底すぎず軽快に'
+    ],
+    outfitIdeas:[
+      'クロップドスウェット＋テーパード＋白スニーカー',
+      '機能JK＋Iラインスカート＋キャップ'
+    ],
+    celebrities:{ jp: ['桜庭遥花','菅田愛貴','京本大我','赤西仁','村上信五','瀬乃真帆子'], kr: ['チェヒョン（Kepler）','アントン（RIIZE）','ナムジュン（BTS）'], global:['Taylor Swift','Gal Gadot'] }
+  },
+
+  MNUC:{ // Glamorous Cool
+    name:'骨格タイガー(Glamorous Cool)', base:'STRAIGHT', emoji:'🐅', animal:'トラ',
+    image:'images/MNUC.jpg',
+    concept:'立体感と色気、強い存在感。',
+    body:'M=肉感強 / N=コンパクト / U=上重心 / C=曲線。胸肩ヒップに立体。ウエストを高くマークして彫刻的に。',
+    brandHints:['Max Mara','ZARA Premium','THE ROW','LE CIEL BLEU','N°21'],
+    styleNotes:[
+      '厚み×直線をいかすクロップドトップス',
+      'ダークトーンに一点光沢（サテン/レザー）',
+      '縦アクセント（ロングネックレス/ベルト）',
+      'ヒールでさらに重心UP',
+      '甘さは抑えめ、曲線は“控えめに一点”'
+    ],
+    outfitIdeas:[
+      'テーラードJK＋ハイウエストタイト＋ピンヒール',
+      'ボディスーツ＋ストレートデニム＋ヒールブーツ'
+    ],
+    celebrities:{ jp: ['松本かれん','桐原美月','坂井仁香','佐久間大介','大西流星','景井ひな','あみち'], kr: ['モモ（TWICE）','ユジン（IVE）','ジゼル（aespa）','バンチャン（Stray Kids）'],global:['Angelina Jolie','Jennifer Lopez'] }
+  },
+
+  MNUS:{ // Romantic Mode
+    name:'骨格ピーコック(Romantic Mode)', base:'STRAIGHT', emoji:'🦚', animal:'クジャク',
+    image:'images/MNUS.jpg',
+    concept:'力と優雅の共存、華やかな余韻。',
+    body:'M=肉感 / N=コンパクト / U=上重心 / S=直線多め。直線骨格に柔らかな曲線要素。厚手サテンやタフタで“強×甘”の調和。',
+    brandHints:['Self-Portrait','N°21','SNIDEL（ドレスライン）','FOXEY','Apuweiser-riche'],
+    styleNotes:[
+      'ウエストマーク強めのフィット&フレア/ペプラム',
+      '厚手サテン/タフタ/ジャカードのリュクス感',
+      'ジュエリーは存在感あるボリューム',
+      '色は寒色～ジュエルトーンでクラシックに',
+      '上のボリュームはややコンパクトに調整'
+    ],
+    outfitIdeas:[
+      'ペプラムトップス＋テーパード＋メタルアクセ',
+      'サテンワンピ＋ショートボレロ'
+    ],
+    celebrities:{ jp: ['川本笑','西野カナ','大森元貴','井口理','有岡大貴','田中陽菜','大澤菜','那須ほほみ'], kr: ['イェジ（ITZY）','ハンビン（ZEROBASEONE）'], global:['Anne Hathaway','Natalie Portman'] }
+  },
+
+  MWUS:{ // Soft Active (Straight)
+    name:'骨格ドルフィン(Soft Active)', base:'STRAIGHT', emoji:'🐬', animal:'イルカ',
+    image:'images/MWUS.jpg',
+    concept:'すっきりとした流線、しなやかな躍動感。',
+    body:'M=肉感 / W=広め / U=上重心 / S=直線寄り。直線ベースに滑らかな流線。軽量素材で“抜け感”。',
+    brandHints:['PLEATS PLEASE','ISSEY MIYAKE','UNIQLO U','Theory','Lululemon'],
+    styleNotes:[
+      '流線を描くプリーツ/ドレープ（過剰ギャザーは避ける）',
+      '上コンパクト×下スッキリで脚長',
+      '襟はクルー/ボートでクリーンに',
+      '配色は寒色中心にクリア',
+      'スポーティ要素はミニマルに'
+    ],
+    outfitIdeas:[
+      'プリーツトップ＋ストレートパンツ＋ミニバッグ',
+      'コンパクトカットソー＋Iラインスカート＋スニーカー'
+    ],
+    celebrities:{ jp: ['早瀬ノエル','福山梨乃','宮野静','宮舘涼太','高木雄也','谷村優真','永瀬碧'], kr: ['ジヒョ（TWICE）','ニンニン（aespa）','ドギョム（SEVENTEEN）'],global:['Taylor Swift','Gal Gadot'] }
+  },
+
+  BNUC:{ // Structural Mode
+    name:'骨格オウル(Structural Mode)', base:'STRAIGHT', emoji:'🦉', animal:'フクロウ',
+    image:'images/BNUC.jpg',
+    concept:'精密で構築的、夜に光る知性。',
+    body:'B=骨感強 / N=コンパクト / U=上重心 / C=曲線。建築的ラインが似合う究極の曲線軸。モノトーン×構造でキメる。',
+    brandHints:['COS','Theory','AURALEE','HYKE','S’YTE','UNIQLO +J'],
+    styleNotes:[
+      'ショート丈ジャケットで上重心を強調',
+      '硬質素材でコントラストをくっきり（ウールギャバ/コットンツイル）',
+      'モノトーンや低彩度配色',
+      '金属系アクセで知性を補強',
+      '装飾は排して“角度”を際立てる'
+    ],
+    outfitIdeas:[
+      'ボクシーJK＋ストレートスラックス＋レザーシューズ',
+      'アーキテクチュラルなワンピ＋ショートブーツ'
+    ],
+    celebrities:{ jp: ['西寿々歌','村川緋杏','吉川ひより','中島健人','櫻井翔','大野智','武田晴安','榊原荷里','希空'], kr: ['ミナ（TWICE）','ジス（BLACKPINK）'], global:['Charlize Theron','Cate Blanchett'] }
+  }
+};
+
+/* ==== 3カテゴリ版ブランドリスト（タイプごと） ==== */
+/* 既存の TYPE_META は変更しない。必要に応じて render で使い分ける。 */
+const BRAND_BY_TYPE = {
+  /* ============== WAVE（柔・軽・下重心） ============== */
+  BNLS: { // Romantic Wave（骨格コアラ）
+    high:  ['Valentino','Miu Miu','Chloé','Giambattista Valli','Simone Rocha','Ermanno Scervino','Lanvin'],
+    middle:['SNIDEL','CELFORD','LILY BROWN','FRAY I.D','Mila Owen','TOCCA','IÉNA','Apuweiser-riche','Noela','NATURAL BEAUTY BASIC','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','MANGO','Stradivarius','DHOLIC','earth music&ecology']
+  },
+  MNLC: { // Urban Elegance（骨格ウルフ）
+    high:  ['Chloé','Valentino','Max Mara','Celine','Loewe','Alaïa'],
+    middle:['IÉNA','Plage','N.O.R.C','URBAN RESEARCH','TOMORROWLAND','Mila Owen','ENFÖLD','Deuxieme Classe','Spick & Span','UNITED ARROWS','Theory'],
+    fast:  ['ZARA','MANGO','COS','& Other Stories','UNIQLO','GU','H&M']
+  },
+  MWLC: { // Light Wave（骨格バタフライ）
+    high:  ['Chloé','Celine','Valentino','Jil Sander','Stella McCartney'],
+    middle:['N.O.R.C','IÉNA','BEAUTY&YOUTH','LE PHIL','TOMORROWLAND','Mila Owen','FRAY I.D','SNIDEL','LILY BROWN','PLST'],
+    fast:  ['ZARA','COS','UNIQLO','GU','H&M','MANGO','Stradivarius']
+  },
+  MWLS: { // Natural Girly（骨格ハムスター）
+    high:  ['Miu Miu','Valentino','REDValentino','Chloé','See By Chloé'],
+    middle:['SNIDEL','LILY BROWN','Noela','tocco closet','LOWRYS FARM','earth music&ecology','FRAY I.D','gelato pique','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','GRL','DHOLIC','WEGO']
+  },
+  MNLS: { // Classic Feminine（骨格ドーブ）
+    high:  ['Dior','Valentino','Chanel','Chloé','Elie Saab'],
+    middle:['TOCCA','EPOCA','FOXEY','ANAYI','Apuweiser-riche','IÉNA','CELFORD','SNIDEL','PROPORTION','JILL STUART'],
+    fast:  ['ZARA','MANGO','& Other Stories','UNIQLO','GU','H&M']
+  },
+  BNLC: { // Earth Wave（骨格テディ）
+    high:  ['Loewe','The Row','Celine','Max Mara','Bottega Veneta'],
+    middle:['URBAN RESEARCH ROSSO','Plage','JOURNAL STANDARD relume','IÉNA','BEAMS','TOMORROWLAND','Mila Owen','ENFÖLD'],
+    fast:  ['COS','ZARA','UNIQLO','GU','H&M','MANGO']
+  },
+
+  /* ============== NATURAL（骨感・直線・中庸） ============== */
+  BWUC: { // Urban Natural（骨格ユニコーン）
+    high:  ['The Row','Jil Sander','Loewe','Bottega Veneta','Celine'],
+    middle:['JOURNAL STANDARD','UNITED ARROWS','BEAUTY&YOUTH','AURALEE','YLEVE','TOMORROWLAND','ENFÖLD','Deuxieme Classe','Plage'],
+    fast:  ['COS','ZARA','ARKET','UNIQLO','H&M','MANGO']
+  },
+  BWUS: { // Fairy Natural（骨格イーグル）
+    high:  ['Loewe','Celine','Jil Sander','Isabel Marant','Acne Studios'],
+    middle:['ENFÖLD','Deuxieme Classe','TOMORROWLAND','athoos','COS（ミドル扱い）','IÉNA','Plage','STUNNING LURE'],
+    fast:  ['COS','ZARA','& Other Stories','UNIQLO','H&M','MANGO']
+  },
+  BWLC: { // Classic Natural（骨格フォックス）
+    high:  ['Hermès','The Row','Loro Piana','Jil Sander','Celine'],
+    middle:['IÉNA','Plage','TOMORROWLAND','BEAMS','URBAN RESEARCH','UNITED ARROWS','AURALEE','SCYE','MACKINTOSH'],
+    fast:  ['COS','ZARA','UNIQLO','H&M','MANGO','ARKET']
+  },
+  BWLS: { // Pure Natural（骨格バンビ）
+    high:  ['Loewe','Gabriela Hearst','Chloé','JW Anderson'],
+    middle:['nest Robe','Vermeerist BEAMS','Plage','Journal Standard L’essage','ADAM ET ROPÉ','TODAYFUL','IÉNA','ANATOMICA'],
+    fast:  ['COS','UNIQLO','H&M','ZARA','MANGO']
+  },
+
+  /* ============== STRAIGHT（厚・立体・上重心・直線） ============== */
+  BNUS: { // Elegant Straight（骨格パンサー）
+    high:  ['Saint Laurent','Tom Ford','Givenchy','Alexander McQueen','Max Mara'],
+    middle:['Theory','LE PHIL','FOXEY','PLST','Akris punto','HYKE','THE ROW（セレクト取扱想定）','Drawer'],
+    fast:  ['COS','ZARA（Premium）','UNIQLO','PLST','MANGO','& Other Stories']
+  },
+  MWUC: { // Sporty Cool（骨格シャーク）
+    high:  ['Prada Linea Rossa','Moncler','Balenciaga','Stone Island'],
+    middle:['NIKE Sportswear','adidas Originals','P.E NATION','Lululemon','DESCENTE ALLTERRAIN','Nanamica','ARC’TERYX VEILANCE'],
+    fast:  ['Uniqlo U','UNIQLO','GU','ZARA','H&M']
+  },
+  MNUC: { // Glamorous Cool（骨格タイガー）
+    high:  ['Dolce & Gabbana','Versace','Balmain','Alexander McQueen','Max Mara'],
+    middle:['THE ROW','LE CIEL BLEU','N°21','ZARA Premium','STUNNING LURE','ALLSAINTS','AMERI'],
+    fast:  ['ZARA','MANGO','Bershka','UNIQLO','GU','H&M']
+  },
+  MNUS: { // Romantic Mode（骨格ピーコック）
+    high:  ['Valentino','Elie Saab','Oscar de la Renta','Alexander McQueen','Prada'],
+    middle:['Self-Portrait','SNIDEL（ドレス）','FOXEY','Apuweiser-riche','ANAYI','CELFORD','LE PHIL'],
+    fast:  ['ZARA（Evening）','& Other Stories','H&M','MANGO','UNIQLO']
+  },
+  MWUS: { // Soft Active（骨格ドルフィン）
+    high:  ['Issey Miyake','Pleats Please','Hermès（スポーティライン）','Prada'],
+    middle:['PLEATS PLEASE','ISSEY MIYAKE','Theory','Lululemon','COS','ATON','UNIQLO U'],
+    fast:  ['UNIQLO','GU','ZARA','H&M','COS（価格的には中間だが量販も可）']
+  },
+  BNUC: { // Structural Mode（骨格オウル）
+    high:  ['Saint Laurent','Jil Sander','Givenchy','Celine','Tom Ford'],
+    middle:['COS','Theory','AURALEE','HYKE','S’YTE','+J（UNIQLOコラボ）','AKRIS punto'],
+    fast:  ['COS','ZARA（Premium）','UNIQLO','H&M','MANGO']
+  }
+};
+
+const TYPE_NICK = {
+  /* WAVE */
+  BNLS:{ label:'骨格コアラ',    en:'Koala',     why:'下重心で包み込むやわらかさと丸みの曲線。穏やかで親和的な印象を持つタイプ。' },
+  MNLC:{ label:'骨格ウルフ',    en:'Wolf',      why:'静かで芯が強い曲線×柔らかさ。都会的で知的、無駄のないバランス感。' },
+  MWLC:{ label:'骨格バタフライ',en:'Butterfly',  why:'軽くて風に舞うような曲線。薄手×Iラインが映えるエアリーさ。' },
+  MWLS:{ label:'骨格ハムスター', en:'Hamster',    why:'全体にふわっと厚みと丸み。下に安定が出やすい愛嬌のある可憐さ。' },
+  MNLS:{ label:'骨格ドーブ',    en:'Dove',      why:'（白鳩）上半身は華奢で下に安定。柔らかい直線で上品に香るクラシックフェミニン。' },
+  BNLC:{ label:'骨格テディ',    en:'Teddy',     why:'直線の芯を感じつつ包容感。アースカラーや落ち感素材で癒やしの安定。' },
+
+  /* NATURAL */
+  BWUC:{ label:'骨格ユニコーン', en:'Unicorn',   why:'長い手足と曲線フレーム。余白を生かすミニマルが映える幻想×構造。' },
+  BWUS:{ label:'骨格イーグル',   en:'Eagle',     why:'上重心の軽さと透徹した知性。直線ベースにほんの少しの曲線で空気感。' },
+  BWLC:{ label:'骨格フォックス', en:'Fox',       why:'端正で機敏、自然体の品格。薄手テーラードやセンタープレスが冴える。' },
+  BWLS:{ label:'骨格バンビ',     en:'Bambi',     why:'直線骨格に柔らかい面。自然素材のレイヤーで森のような静けさ。' },
+
+  /* STRAIGHT */
+  BNUS:{ label:'骨格パンサー',   en:'Panther',   why:'上重心×直線で研ぎ澄まされた構築美。都会的で凛としたムード。' },
+  MWUC:{ label:'骨格シャーク',   en:'Shark',     why:'グラマラスな曲線と機能美。短丈×テーパードのスポーティクリーン。' },
+  MNUC:{ label:'骨格タイガー',   en:'Tiger',     why:'立体的な厚みと存在感。高いウエストマークで彫刻的に魅せる。' },
+  MNUS:{ label:'骨格ピーコック', en:'Peacock',   why:'強さに装飾性が同居。厚手サテンやジュエリーで“強×甘”の華やかさ。' },
+  BNUC:{ label:'骨格オウル',     en:'Owl',       why:'建築的な曲線と知性。モノトーン×構造で夜に光る精密さ。' },
+  MWUS:{ label:'骨格ドルフィン', en:'Dolphin',   why:'滑らかな流線の軽やかさ。プリーツやドレープでしなやかに。' },
+};
+
+/* ==== 16タイプの Body Balance Tips ==== */
+/* すでに同名定数があれば削除してから貼ってね */
+const BODY_TIPS = {
+  /* ========== WAVE（柔・軽・下重心） ========== */
+  BNLS: { // Romantic Wave（コアラ）
+    goal: "下重心を軽く・上半身に視線を上げる",
+    diet_do: ["タンパク質を毎食20g以上", "塩分とむくみ対策（カリウム・水分）", "夜は炭水化物をやや控えめ"],
+    diet_avoid: ["砂糖多めの飲料", "油×粉物の重ね食い"],
+    train_strength: ["ヒップスラスト 12×3", "サイドレッグリフト 15×3", "クラムシェル 15×3"],
+    train_cardio: ["坂道ウォーク 20–30分", "エリプティカル 15分"],
+    mobility: ["腸腰筋ストレッチ", "ふくらはぎのポンプ運動"],
+    care: ["着圧ソックス/リンパ流し", "骨盤前傾の改善"],
+    quick: ["上に短丈/首元にポイントで“軽さ”即演出"]
+  },
+  MNLC: { // Urban Elegance（ウルフ）
+    goal: "縦ライン強調・脚のボリュームをスッキリ",
+    diet_do: ["低脂肪高タンパク（鶏胸/白身魚）", "食物繊維で満腹感"],
+    diet_avoid: ["夜の塩分過多", "間食の小麦スナック"],
+    train_strength: ["スクワット 12×3", "ヒップヒンジ 12×3", "レッグエクステ 12×2"],
+    train_cardio: ["インターバル早歩き 25分", "バイク 15分"],
+    mobility: ["ハム/臀のストレッチ", "足首の可動"],
+    care: ["むくみケア（足湯/マッサージ）"],
+    quick: ["上コンパクト×ハイウエストで重心UP"]
+  },
+  MWLC: { // Light Wave（バタフライ）
+    goal: "軽量直線を作り、下の重さを減らす",
+    diet_do: ["たんぱく＋野菜先食べ", "水分2L/日"],
+    diet_avoid: ["揚げ物続き", "深夜の菓子"],
+    train_strength: ["デッドバグ 12×3", "ブルガリアンスクワット 10×3", "カーフレイズ 20×2"],
+    train_cardio: ["ロングウォーク 30–40分"],
+    mobility: ["股関節/ハムの動的ストレッチ"],
+    care: ["姿勢—胸を開き猫背防止"],
+    quick: ["Iラインの薄手シャツで“縦”を一発強調"]
+  },
+  MWLS: { // Natural Girly（ハムスター）
+    goal: "全体の“ふわ”を締め、上にポイント",
+    diet_do: ["たんぱく＋スープで体温UP", "間食はナッツ/ヨーグルト"],
+    diet_avoid: ["砂糖ミルクたっぷりの飲料", "粉物×脂質のセット"],
+    train_strength: ["プランク 40秒×3", "ヒップアブダクション 15×3", "バードドッグ 12×3"],
+    train_cardio: ["リズムウォーク 20分"],
+    mobility: ["胸椎回旋/肩甲骨ほぐし"],
+    care: ["上短丈・小物上寄せで視線UP"],
+    quick: ["ショートカーデ＋ハイウエで即軽やか"]
+  },
+  MNLS: { // Classic Feminine（ドーブ）
+    goal: "上は華奢維持・下のラインを流線的に",
+    diet_do: ["鉄・亜鉛・ビタミンB群", "良質な脂質（青魚/オリーブ）"],
+    diet_avoid: ["塩分過多", "遅い時間の炭水化物大量"],
+    train_strength: ["グルートブリッジ 15×3", "レッグカール 12×3", "内転筋ワーク 15×2"],
+    train_cardio: ["スイム/クロール 20–30分"],
+    mobility: ["ヒップフレクサー/腸腰筋"],
+    care: ["パール等小粒アクセで上焦点"],
+    quick: ["マーメイド×短丈JKで“品×軽”"]
+  },
+  BNLC: { // Earth Wave（テディ）
+    goal: "包容感は残しつつ、輪郭をシャープに",
+    diet_do: ["温かいスープ先食べ", "たんぱく20g＋褐色脂肪活性（温冷交代浴）"],
+    diet_avoid: ["甘いドリンク", "油っこい夜食"],
+    train_strength: ["ロングヒップスラスト 12×3", "ロウイング 12×3"],
+    train_cardio: ["傾斜ウォーク 25分"],
+    mobility: ["背中/胸のストレッチ"],
+    care: ["上に明度差を1点"],
+    quick: ["ロングカーデで“包みつつ縦”を追加"]
+  },
+
+  /* ========== NATURAL（骨感・直線・中庸） ========== */
+  BWUC: { // Urban Natural（ユニコーン）— スリム下重心
+    goal: "下を引き締め、上の構造を見せる",
+    diet_do: ["十分な総カロリー（痩せすぎ防止）", "たんぱく/炭水化物を運動前後に"],
+    diet_avoid: ["極端な糖質制限", "食事抜き"],
+    train_strength: ["ヒップヒンジ 12×3", "カーフレイズ 20×2", "体幹ローラー 10×3"],
+    train_cardio: ["バイク 20分（軽〜中強度）"],
+    mobility: ["足首/ハムの動的可動"],
+    care: ["姿勢（骨盤中立・胸を開く）"],
+    quick: ["ボクシーJK×ストレートで“構造×余白”"]
+  },
+  BWUS: { // Fairy Natural（イーグル）
+    goal: "上に軽さ・下は直線を通す",
+    diet_do: ["たんぱく＋炭水化物を等配分", "カフェインは午前中に"],
+    diet_avoid: ["塩分と加工肉の積み重ね"],
+    train_strength: ["オーバーヘッドプレス軽 12×3", "ロウ 12×3", "スプリットスクワット 10×3"],
+    train_cardio: ["ジョグor早歩き 25分"],
+    mobility: ["胸椎伸展・肩甲骨モビリティ"],
+    care: ["金属アクセで無機質に軽量化"],
+    quick: ["ビッグトップス×直線ボトムで空気感"]
+  },
+  BWLC: { // Classic Natural（フォックス）
+    goal: "端正な直線を保ち、可動域も確保",
+    diet_do: ["朝に良質タンパク", "水分1.5–2L"],
+    diet_avoid: ["夜の高脂質"],
+    train_strength: ["ベンチサポートロー 12×3", "スクワット 12×3", "ヒップヒンジ 12×3"],
+    train_cardio: ["テンポウォーク 30分"],
+    mobility: ["ハム/股関節の静的ストレッチ"],
+    care: ["センタープレス/シャツで端正さUP"],
+    quick: ["薄手テーラード＋ストレートで即“品”"]
+  },
+  BWLS: { // Pure Natural（バンビ）— ハード寄り
+    goal: "直線骨格の硬さを解き、下の重さを流す",
+    diet_do: ["温かい汁物/発酵食品", "カリウム（海藻/フルーツ）"],
+    diet_avoid: ["冷たい甘味の取りすぎ"],
+    train_strength: ["グッドモーニング 12×3（軽）", "ランジ 10×3"],
+    train_cardio: ["スロージョグ 20分 or 自重サーキット10分"],
+    mobility: ["股関節/腸脛靭帯/ふくらはぎのほぐし"],
+    care: ["自然素材×Aラインで柔らかさ追加"],
+    quick: ["質感ミックス（コットン×リネン）で“静の深み”"]
+  },
+
+  /* ========== STRAIGHT（厚・立体・上重心・直線） ========== */
+  BNUS: { // Sporty Cool（パンサー）— ソリッド①
+    goal: "上重心を活かして“縦”を強化",
+    diet_do: ["高タンパク（体重×1.5g目安）", "食物繊維で血糖緩やか"],
+    diet_avoid: ["揚げ物×粉物", "夜の過食"],
+    train_strength: ["ショートレンジスクワット 10×3", "ショルダープレス 10×3", "ロウ 10×3"],
+    train_cardio: ["HIIT 10分 or 坂道ウォーク20分"],
+    mobility: ["胸/肩の前側を開く"],
+    care: ["高コントラスト配色でシャープに"],
+    quick: ["短丈×ハイウエで一瞬で“脚長”"]
+  },
+  MWUC: { // Elegant Straight（シャーク）— イージー②
+    goal: "厚みを引き締めつつ、クリーンに見せる",
+    diet_do: ["PFCバランスを整える（P:30%/F:25%/C:45% 目安）", "水分2L"],
+    diet_avoid: ["甘いラテ・菓子パン"],
+    train_strength: ["ヒップヒンジ 12×3", "チェストプレス 10×3", "レッグプレス 12×3"],
+    train_cardio: ["トレッドミル傾斜 20分"],
+    mobility: ["股関節/胸椎の可動UP"],
+    care: ["スポーティMIXで清潔感"],
+    quick: ["モノトーン×機能素材ですっきり"]
+  },
+  MNUC: { // Glamorous Cool（タイガー）— アクティブ①
+    goal: "曲線の立体を“彫刻的な縦”へ",
+    diet_do: ["高タンパク＋低GI", "夕食はやや糖質控えめ"],
+    diet_avoid: ["アルコール頻回", "油多め外食"],
+    train_strength: ["ヒップスラスト 10×4", "ラットプル 12×3", "サイドプランク 40秒×2"],
+    train_cardio: ["インターバル歩行 20分"],
+    mobility: ["腸腰筋/胸のストレッチ"],
+    care: ["ダーク×一点光沢で引き締め"],
+    quick: ["ウエスト強調のフィット&フレア"]
+  },
+  MNUS: { // Romantic Mode（ピーコック）— アクティブ②
+    goal: "“強×甘”のバランスを体幹で支える",
+    diet_do: ["タンパク＋野菜2皿", "間食はプロテイン or チーズ"],
+    diet_avoid: ["砂糖の多い飲料", "夜のスナック"],
+    train_strength: ["デッドリフト軽 12×3", "プッシュアップ 8×3", "ヒップアブダクション 15×2"],
+    train_cardio: ["ローパクト有酸素 25分"],
+    mobility: ["胸郭/肩甲骨の可動"],
+    care: ["存在感あるジュエリーは“1点”に集約"],
+    quick: ["ペプラム/タフタで“上集中×縦”"]
+  },
+  MWUS: { // Soft Active（ドルフィン）— イージー①
+    goal: "流線を保ちながら体幹で締める",
+    diet_do: ["たんぱく1日体重×1.2g", "糖質は活動量に合わせて可変"],
+    diet_avoid: ["油×粉の過食", "深夜のスイーツ"],
+    train_strength: ["プリーツ意識の体幹系：ロールアップ 10×3", "ランジ 10×3"],
+    train_cardio: ["バイク/エアロ 25分"],
+    mobility: ["腸腰筋/ハムの動的ストレッチ"],
+    care: ["すっきり襟・寒色でクリアに"],
+    quick: ["上コンパクト×Iラインで即“脚長”"]
+  },
+  BNUC: { // Structural Mode（オウル）— ソリッド②
+    goal: "建築的ラインを際立てるための“締め”",
+    diet_do: ["高タンパク・低脂質寄り", "食物繊維で血糖コントロール"],
+    diet_avoid: ["菓子パン/揚げ物の連続"],
+    train_strength: ["ショート丈が映える体幹：ハンギングニーレイズ 10×3", "ルーマニアンDL 10×3"],
+    train_cardio: ["坂道ウォーク 20分 or クロスバイク 20分"],
+    mobility: ["ハム/臀・胸のストレッチ"],
+    care: ["モノトーン×カッティングで知性強調"],
+    quick: ["ショートJKで上重心をさらに明確化"]
+  }
+};
+
+function nickOf(code){ return TYPE_NICK[code]?.label ?? code; }
+function nickEn(code){ return TYPE_NICK[code]?.en ?? ''; }
+function whyOf(code){  return TYPE_NICK[code]?.why ?? ''; }
+// ────────────────────────────────────────────────
+
+
+
+/* ───────── 汎用説明/提案ロジック（タイプ固有が無ければ自動補完） ───────── */
+function describeBodyByCode(code){
+  const [a,b,c,d]=code.split('');
+  const p1=(a==='B')?'骨格や関節の存在感がベース':'肉感・筋肉の厚みがベース';
+  const p2=(b==='W')?'全体は軽やかで繊細':'全体は重厚で安定感あり';
+  const p3=(c==='U')?'上重心で上半身に視線が集まりやすい':'下重心で下半身に安定が出やすい';
+  const p4=(d==='S')?'輪郭は直線寄りでシャープ':'輪郭は曲線寄りでソフト';
+  return `【骨格印象まとめ】${p1}。${p2}。${p3}。${p4}。`;
+}
+function autoBrands(code, base){
+  const [a,b,c,d]=code.split('');
+  const core={WAVE:['SNIDEL','Lily Brown','Mila Owen','IÉNA','N.O.R.C','URBAN RESEARCH ROSSO'],
+              NATURAL:['JOURNAL STANDARD','IÉNA','UNITED ARROWS','BEAUTY&YOUTH','BEAMS','TOMORROWLAND'],
+              STRAIGHT:['Theory','Max Mara','PLST','UNIQLO U','COS','ZARA Premium']};
+  const addLine=(d==='S')?['COS','Theory','AURALEE']:['SNIDEL','TOCCA','CELFORD'];
+  const addDen=(b==='W')?['Deuxieme Classe','ENFÖLD']:['Max Mara','STUNNING LURE'];
+  const addBal=(c==='U')?['Drawer','FOXEY']:['URBAN RESEARCH','Spick & Span'];
+  return [...new Set([...(core[base]||[]),...addLine,...addDen,...addBal])].slice(0,7);
+}
+function autoStyle(code){
+  const [a,b,c,d]=code.split('');
+  const fabric=(b==='N')?['薄手ウール','シフォン/ジョーゼット','スムースニット']:['ミッド〜厚手ウール','ハリのあるツイル','サテン/ジャカード'];
+  const neck=(d==='S')?['クルー/ボート','スタンドカラー','浅Vシャツ']:['ラウンド/スカーフタイ','ハートネック','Vネック＋ドレープ'];
+  const silhouette=(c==='U')?['短めトップス×ハイウエスト','Iラインワンピ','コンパクトJK']:['ロングトップス×落ち感ボトム','Aライン/フレア','ドロップショルダー'];
+  const lines=(d==='S')?['センタープレス','ストレートスカート','テーラード']:['バイアス/ドレープ','マーメイド/フレア','ギャザー控えめ'];
+  return {fabric,neck,silhouette,lines};
+}
+
+/* ───────── UIレンダリング ───────── */
+const $=(s,el=document)=>el.querySelector(s);
+const app=document.getElementById('app');
+let state = makeInitialState();
+
+
+function render(){
+  app.innerHTML='';
+  if(state.step===0) return renderIntro();
+  if(state.step>=1 && state.step<=4) return renderAxis(AXES[state.step-1]);
+  if(state.step===5) return renderResult();
+}
+function renderIntro(){
+  const el = document.createElement('div');
+
+  // 1) イントロカード（説明を可愛いUIで）
+  el.innerHTML = `
+    <section class="card hero-card intro-card">
+      <h2>4印象軸で判定する、16タイプ</h2>
+      <p class="kawaii-lede">
+      48の質問で、あなたの「骨格 × 印象」を <b>Frame / Surface / Balance / Line</b> の4軸でスコア化！組み合わせから4文字コードを生成して、タイプ別にコンセプト・似合うブランド・スタイリングを可愛く提案します♡
+      </p>
+
+      <div class="pill-list">
+        <span class="pill"><span class="key">F</span> Frame（骨感↔︎肉感）</span>
+        <span class="pill"><span class="key">S</span> Surface（広い↔︎狭い）</span>
+        <span class="pill"><span class="key">B</span> Balance（上↔︎下）</span>
+        <span class="pill"><span class="key">L</span> Line（直線↔︎曲線）</span>
+      </div>
+
+      <div class="controls" style="margin-top:14px;">
+        <button id="start">診断をはじめる</button>
+        <button id="about" class="secondary">使い方</button>
+      </div>
+
+      <div class="note-bubble">
+        全16タイプは <b>ギャラリー</b> から一括で確認できます。結果はスクショ保存がおすすめ！
+      </div>
+    </section>
+  `;
+
+  // 2) 軸カード（絵文字なし・ミニマル）
+  const axisCards = AXES.map(ax => `
+    <article class="axis-card" data-axis="${ax.key}">
+      <h4>${ax.label} <span class="axis-chip">${ax.key.toUpperCase()}</span></h4>
+      <div class="axis-scale">
+        <div class="axis-bar"></div>
+        <div class="axis-ends">
+          <span>${ax.negLabel}</span><span>${ax.posLabel}</span>
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+  const cuteAxes = `
+    <section class="axis-section">
+      <div class="axis-head">
+        <h3>判定に使う4つの軸</h3>
+        <span class="sub">Frame / Surface / Balance / Line</span>
+      </div>
+      <div class="axis-grid">${axisCards}</div>
+    </section>
+  `;
+
+  const anchor = el.querySelector('.intro-card');
+  if (anchor) anchor.insertAdjacentHTML('afterend', cuteAxes);
+  else el.insertAdjacentHTML('beforeend', cuteAxes);
+
+  // 3) 反映
+  app.innerHTML = '';
+  app.appendChild(el);
+
+  // 4) 挙動
+  el.querySelector('#start')?.addEventListener('click', () => {
+    // 診断画面へ（ここで初めて進捗バーを出すフローにしているはず）
+    state.step = 1;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  el.querySelector('#about')?.addEventListener('click', () => {
+    alert(
+`【使い方】
+・各軸4問×5段階で回答すると、4つの軸スコアから4文字コードを生成。
+・結果画面では「タイプ名／動物モチーフ／似合うブランド／スタイリング指針／相性シェア」を表示。
+・スクショ保存やリンク共有もOK！`
+    );
+  });
+}
+
+function renderAxis(axis){
+  const {key,label,posLabel,negLabel} = axis;
+  const qs = QUESTIONS[key];
+  const progress = (state.step/5)*100;
+
+  // 1. 画面をまるっと描画
+  app.innerHTML = '';
+  const el = document.createElement('div');
+  el.innerHTML = `
+    <div class="footer" style="margin-bottom:10px">
+      <div class="pill">${state.step}/4：${label}</div>
+      <div class="progress" style="width:58%">
+        <div class="bar" style="width:${progress}%"></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      ${qs.map((q,i)=>`
+        <div class="q">
+          <h4>${i+1}. ${q.t}</h4>
+
+          <div class="scale-btns" data-i="${i}">
+            ${[1,2,3,4,5].map(v=>`
+              <button type="button"
+                class="opt ${v===Number(state.answers[key][i])?'active':''}"
+                data-v="${v}" data-i="${i}" aria-pressed="${v===Number(state.answers[key][i])}">
+                ${v}
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="muted">
+            評価：<span id="v-${key}-${i}">${state.answers[key][i]}</span> / 5
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="footer">
+      <div class="pill">${negLabel} ← スケール → ${posLabel}</div>
+      <div class="controls">
+        <button class="secondary" id="back">戻る</button>
+        <button id="next">次へ</button>
+      </div>
+    </div>
+  `;
+  app.appendChild(el);
+
+  // 2. ボタンの挙動（クリックで値を反映＆見た目更新）
+  el.querySelectorAll('.opt').forEach(btn=>{
+    btn.onclick = () => {
+      const v = +btn.dataset.v;
+      const i = +btn.dataset.i;
+      state.answers[key][i] = v;
+
+      // 見た目（active）＆数値表示を即時更新
+      const group = el.querySelector(`.scale-btns[data-i="${i}"]`);
+      group.querySelectorAll('.opt').forEach(b=>{
+        const on = (+b.dataset.v === v);
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      el.querySelector(`#v-${key}-${i}`).textContent = String(v);
+    };
+  });
+
+  // 3. ナビ
+  el.querySelector('#next').onclick = () => {
+    state.step = Math.min(5, state.step + 1);
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  el.querySelector('#back').onclick = () => {
+    state.step = Math.max(0, state.step - 1);
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+}
+
+function computeAxis(axisKey){
+  const arr = state.answers[axisKey].map(Number);
+  const qs  = QUESTIONS[axisKey];
+  const n   = arr.length;
+
+  // pos=trueならそのまま、falseなら6-vで反転
+  const mapped = arr.map((v,i)=> qs[i].pos ? v : (6 - v));
+
+  // 合計と平均
+  const total = mapped.reduce((a,b)=>a+b,0);
+  const mean5 = total / n;
+  const neutral = 3 * n;
+
+  const ax  = AXES.find(a=>a.key===axisKey);
+  const pos = total > neutral; // 判定基準
+  return { mean: mean5, total, pos, code: pos ? ax.codePos : ax.codeNeg };
+}
+
+// 4軸のコード構築
+function buildCode(){
+  const f=computeAxis('frame'),
+        s=computeAxis('surface'),
+        b=computeAxis('balance'),
+        l=computeAxis('line');
+  return {code:`${f.code}${s.code}${b.code}${l.code}`,scores:{frame:f,surface:s,balance:b,line:l}};
+}
+
+/* ========= 服シェア相性ユーティリティ ========= */
+
+// 16タイプの並び（あなたの既存 ALL_CODES と同一順を推奨）
+
+
+/* ========= 結果カードに差し込むUI ========= */
+// 既存 renderResult() のテンプレに “相性カード” を差し込めるHTMLを返す
+/* =========================================================
+   👗 服シェア相性（トップス×ボトムス）— 説明つき強調版
+========================================================= */
+
+const ALL_CODES_ORDERED = [
+  'BNLS','MNLC','MWLC','MWLS','MNLS','BNLC',
+  'BWUC','BWUS','BWLC','BWLS','BNUS','MWUC',
+  'MNUC','MNUS','MWUS','BNUC'
+];
+
+const PREFIX_GROUPS = {};
+const SUFFIX_GROUPS = {};
+for (const c of ALL_CODES_ORDERED) {
+  const pre = c.slice(0,2);
+  const suf = c.slice(2,4);
+  (PREFIX_GROUPS[pre] ||= []).push(c);
+  (SUFFIX_GROUPS[suf] ||= []).push(c);
+}
+/* =========================
+   服シェア相性：重み付きスコア
+   - mode: 'tops' | 'bottoms'
+   - 4軸 + ベース親和性 + 2文字一致ブースト + 境界柔軟性
+========================= */
+/* =========================
+   服シェア相性：重み付きスコア（安全ガード版）
+   - 既存UIが呼ぶ getShareCompatibility(code) を置き換え
+   - 依存が未定義でも落ちないように柔らかくフォールバック
+========================= */
+
+// ---- 安全ガード：存在チェックとフェールセーフ ----
+const _SAFE = {
+  // 未定義なら、空の配列に
+  ALL: (typeof ALL_CODES_ORDERED !== 'undefined' && Array.isArray(ALL_CODES_ORDERED))
+        ? ALL_CODES_ORDERED.slice()
+        : [],
+  // 未定義なら、ベース不明扱いに
+  TYPE_META: (typeof TYPE_META !== 'undefined') ? TYPE_META : {},
+  // 未定義なら、中央値50%を返すダミー
+  axisPercent: (typeof axisPercent === 'function')
+    ? axisPercent
+    : (key) => ({ pct: 50 }),
+  // エラーログ
+  log: (...args) => { try { console.warn('[compat]', ...args); } catch(_){} },
+};
+
+// ---- 重み・KEEP・ベース親和 ----
+const WEIGHTS = {
+  tops:    { frame:0.40, surface:0.10, balance:0.30, line:0.20 },
+  bottoms: { frame:0.10, surface:0.30, balance:0.40, line:0.20 },
+};
+
+const MISMATCH_KEEP = {
+  tops:    { frame:0.50, surface:0.55, balance:0.35, line:0.60 },
+  bottoms: { frame:0.60, surface:0.45, balance:0.20, line:0.55 },
+};
+
+const BASE_AFFINITY = {
+  WAVE:      { WAVE:1.00, NATURAL:0.92, STRAIGHT:0.85 },
+  NATURAL:   { WAVE:0.92, NATURAL:1.00, STRAIGHT:0.90 },
+  STRAIGHT:  { WAVE:0.85, NATURAL:0.90, STRAIGHT:1.00 },
+};
+
+// ---- ユーティリティ ----
+function sameLetter(a,b){ return a===b ? 1 : 0; }
+
+function userFlex(axisKey){
+  // 中央50から近いほど柔軟（=高い）
+  const { pct } = _SAFE.axisPercent(axisKey);
+  const dist = Math.abs((typeof pct === 'number' ? pct : 50) - 50) / 50; // 0..1
+  return 1 - dist; // 0..1
+}
+
+function decompose(code){
+  const [a,b,c,d] = (code || 'NNNN').split('');
+  const base = _SAFE.TYPE_META?.[code]?.base || 'NATURAL';
+  return { frame:a, surface:b, balance:c, line:d, base };
+}
+
+function patternBoost(codeA, codeB, mode){
+  if(!codeA || !codeB) return 0;
+  let match = 0;
+  for (let i=0;i<4;i++) if(codeA[i]===codeB[i]) match++;
+
+  const first2 = (codeA.slice(0,2) === codeB.slice(0,2));
+  const last2  = (codeA.slice(2,4) === codeB.slice(2,4));
+
+  const twoBoost =
+    mode==='tops'    ? (first2 ? 0.08 : (last2 ? 0.04 : 0))
+  : mode==='bottoms' ? (last2  ? 0.08 : (first2 ? 0.04 : 0))
+                     : 0;
+
+  const threeBoost = (match>=3) ? 0.06 : 0;
+  return twoBoost + threeBoost; // 0..0.14
+}
+
+function compatCore(codeA, codeB, mode){
+  try {
+    const wa = WEIGHTS[mode] || WEIGHTS.tops;
+    const keep = MISMATCH_KEEP[mode] || MISMATCH_KEEP.tops;
+    const A = decompose(codeA), B = decompose(codeB);
+
+    // 軸スコア（同=1、違う=KEEP）
+    const sF = sameLetter(A.frame,   B.frame)   ? 1 : keep.frame;
+    const sS = sameLetter(A.surface, B.surface) ? 1 : keep.surface;
+    const sB = sameLetter(A.balance, B.balance) ? 1 : keep.balance;
+    const sL = sameLetter(A.line,    B.line)    ? 1 : keep.line;
+
+    // ユーザー境界柔軟性（0.7〜1.0）
+    const flexF = 0.7 + 0.3 * userFlex('frame');
+    const flexS = 0.7 + 0.3 * userFlex('surface');
+    const flexB = 0.7 + 0.3 * userFlex('balance');
+    const flexL = 0.7 + 0.3 * userFlex('line');
+
+    // 重み付き
+    const num =
+        wa.frame   * sF * flexF +
+        wa.surface * sS * flexS +
+        wa.balance * sB * flexB +
+        wa.line    * sL * flexL;
+
+    const den = wa.frame + wa.surface + wa.balance + wa.line || 1;
+    let core = num / den; // 0..1
+
+    // ベース親和性 & パターンブースト
+    const baseMul = (BASE_AFFINITY[A.base]?.[B.base]) ?? 0.92;
+    const boost   = patternBoost(codeA, codeB, mode);
+
+    core = core * baseMul + boost;
+
+    // クリップ
+    return Math.max(0, Math.min(1, core));
+  } catch (e) {
+    _SAFE.log('compatCore error', e);
+    return 0.55; // フェールセーフ
+  }
+}
+
+function toPercent(x){
+  const p = 55 + 43 * (isFinite(x) ? x : 0); // x=0→55, x=1→98
+  return Math.round(Math.max(0, Math.min(100, p)));
+}
+
+// ---- 既存UIが使う入口：この関数名を維持 ----
+function getShareCompatibility(code){
+  try {
+    const ALL = _SAFE.ALL.length ? _SAFE.ALL : (
+      // 最低限、比較対象がなくて落ちないように
+      _SAFE.log('ALL_CODES_ORDERED が未定義。フォールバックで空を返します。'), []
+    );
+
+    const candidates = ALL.filter(c => c && c !== code);
+
+    const tops = candidates.map(c => ({
+      code: c,
+      score: toPercent( compatCore(code, c, 'tops') )
+    })).sort((a,b)=> b.score - a.score);
+
+    const bottoms = candidates.map(c => ({
+      code: c,
+      score: toPercent( compatCore(code, c, 'bottoms') )
+    })).sort((a,b)=> b.score - a.score);
+
+    return {
+      topsBest: tops[0] || null,
+      topsNext: tops.slice(1, 6),
+      bottomsBest: bottoms[0] || null,
+      bottomsNext: bottoms.slice(1, 6),
+      topsAll: tops.map(t=>t.code),
+      bottomsAll: bottoms.map(b=>b.code),
+    };
+  } catch (e) {
+    _SAFE.log('getShareCompatibility error', e);
+    // UIが落ちない暫定返却
+    return {
+      topsBest: null,
+      topsNext: [],
+      bottomsBest: null,
+      bottomsNext: [],
+      topsAll: [],
+      bottomsAll: [],
+    };
+  }
+}
+
+// ----（任意）グローバルへ公開：モジュール境界で拾えるように ----
+try { window.getShareCompatibility = getShareCompatibility; } catch(_){}
+
+
+function pill(code){
+  return `<button class="chip linklike" data-code="${code}" onclick="goDetails('${code}')">${code}</button>`;
+}
+function meter(pct){
+  return `
+    <div class="match-meter" aria-label="match ${pct}%">
+      <i style="width:${pct}%"></i>
+    </div>`;
+}
+
+function shareRow({kind, lead, best, next}){
+  if (!best) return '';
+  const titleIco = kind === 'tops' ? '👕' : '👖';
+  const titleTxt = kind === 'tops' ? 'TOPS 相性' : 'BOTTOMS 相性';
+
+  const bestLabel = labelOf(best.code);
+
+  return `
+    <div class="match-row">
+      <div class="match-title">${titleIco} ${titleTxt}</div>
+      <p class="match-lead">${lead}</p>
+
+      <div class="best-box">
+        <div class="best-main">
+          <div class="best-label">${bestLabel}</div>
+          <div class="best-score">💞 ${best.score}%</div>
+        </div>
+        ${meter(best.score)}
+        <div class="best-cta">
+          <button class="btn primary small" onclick="goDetails('${best.code}')">このタイプの着こなしを見る →</button>
+        </div>
+      </div>
+
+      ${next?.length ? `
+        <div class="match-more muted small">
+          ほかにも相性が良いタイプ：
+          ${next.map(x=>pill(x.code)).join('')}
+        </div>
+      ` : ``}
+    </div>
+  `;
+}
+
+function renderShareCardHTML(code){
+  const compat = getShareCompatibility(code);
+
+  // 説明文をわかりやすく
+  const topsLead = `この骨格の有名人の <b>トップス/アウター</b> も参考になるよ！シルエットや肩まわり・襟の作りが近いタイプです。`;
+  const bottomsLead = `この骨格の有名人の <b>ボトムス</b> も参考になるよ！ウエスト位置や落ち感・ライン設計が近いタイプです。`;
+
+  return `
+    <div class="card share-card cute" style="margin-top:16px">
+      <h3>🫶 服シェア相性</h3>
+      <p class="muted small">上2文字一致＝トップス/アウター相性、下2文字一致＝ボトムス相性</p>
+
+      ${shareRow({
+        kind:'tops',
+        lead: topsLead,
+        best: compat.topsBest,
+        next: compat.topsNext
+      })}
+
+      ${shareRow({
+        kind:'bottoms',
+        lead: bottomsLead,
+        best: compat.bottomsBest,
+        next: compat.bottomsNext
+      })}
+    </div>
+  `;
+}
+/* ============================
+   ラベル/リンク ヘルパー
+============================ */
+function labelOf(code){
+  const meta = (window.TYPE_META && TYPE_META[code]) || (window.CODE_META && CODE_META[code]) || null;
+  if (!meta) return `${code}`;
+  const emoji = meta.emoji || (CODE_META?.[code]?.emoji) || '';
+  const baseLabel = (CODE_META?.[code]?.label) || meta.name || code;
+  return `${emoji ? emoji + ' ' : ''}${baseLabel}（${code}）`;
+}
+
+/* ★詳細ページに飛ぶ（ファイル名は必要に応じて変更） */
+const DETAIL_PAGE = 'detail.html'; // もし 'details.html' なら書き換えて！
+function goDetails(code){
+  // detailsページがない場合はギャラリーにフォールバック
+  const url = DETAIL_PAGE ? `${DETAIL_PAGE}?code=${encodeURIComponent(code)}` 
+                          : `gallery.html?code=${encodeURIComponent(code)}`;
+  location.href = url;
+}
+
+/* ==== Tips表示ヘルパー ==== */
+function renderBodyTipsHTML(code) {
+  const t = BODY_TIPS[code];
+  if (!t) return "";
+
+  const li = arr => (arr || []).map(x => `<li>• ${x}</li>`).join('');
+  const pastel = {
+    BN: "#ffd6e8", BW: "#ffe8d6", MN: "#e8ffd6", MW: "#d6f3ff", //系統別色味
+    B: "#f8e1ff", M: "#fff5d6"
+  }[code.slice(0,2)] || "#f0f0f0";
+
+  return `
+  <div class="card cute-tips" style="--tone:${pastel}">
+    <h3>💖 Body Balance Tips</h3>
+    <p class="goal">🎯 ${t.goal}</p>
+
+    <div class="tips-row">
+      <div class="tips-col">
+        <h4>🍎 食事</h4>
+        <p class="label">食べるべき！</p>
+        <ul>${li(t.diet_do)}</ul>
+        <p class="label">避けるべき！</p>
+        <ul>${li(t.diet_avoid)}</ul>
+      </div>
+
+      <div class="tips-col">
+        <h4>🏃‍♀️ 運動</h4>
+        <p class="label">筋トレ</p>
+        <ul>${li(t.train_strength)}</ul>
+        <p class="label">有酸素</p>
+        <ul>${li(t.train_cardio)}</ul>
+      </div>
+    </div>
+
+    <div class="tips-extra">
+      <h4>🧘‍♀️ ケア・姿勢</h4>
+      <ul>${li(t.mobility)}${li(t.care)}</ul>
+      <p class="quick"><b>✨Quick Win：</b>${t.quick}</p>
+    </div>
+  </div>`;
+}
+
+function renderResult(){
+  const {code,scores}=buildCode();
+  const meta=TYPE_META[code]||{name:'未定義タイプ',base:'-',emoji:'',animal:'',image:'',concept:'',brandHints:[],styleNotes:[]};
+     document.body.dataset.theme = meta.base;
+    // --- Google Sheetsに自動送信（最初の1回だけ） ---
+  if (!state._sentOnce) {
+    state._sentOnce = true;
+
+    const sid = localStorage.getItem('km_session')
+      || (localStorage.setItem('km_session', (crypto?.randomUUID?.() ?? String(Math.random()))),
+          localStorage.getItem('km_session'));
+
+    sendToSheets({
+      code,
+      scores,
+      userAgent: navigator.userAgent,
+      sessionId: sid,
+      t: Date.now()
+    });
+  }
+
+  const el=document.createElement('div');
+
+  const bodyDesc=describeBodyByCode(code);
+  const brands=meta.brandHints?.length?meta.brandHints:autoBrands(code,meta.base);
+  const auto=autoStyle(code); 
+  const brandPack = BRAND_BY_TYPE[code];
+const groupHTML = brandPack ? `
+  <div class="brand-groups">
+    <div class="brand-group">
+      <h4>ハイブランド</h4>
+      <div class="chips">${brandPack.high.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+    </div>
+    <div class="brand-group">
+      <h4>ミドルブランド</h4>
+      <div class="chips">${brandPack.middle.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+    </div>
+    <div class="brand-group">
+      <h4>ファスト</h4>
+      <div class="chips">${brandPack.fast.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+    </div>
+  </div>
+` : '';
+  const notes=(meta.styleNotes?.length?meta.styleNotes:[]);
+  const nick = nickOf(code);
+  const why  = whyOf(code);
+
+  // ％算出
+  const pf = axisPercent('frame');
+  const ps = axisPercent('surface');
+  const pb = axisPercent('balance');
+  const pl = axisPercent('line');
+
+  // 芸能人ブロック
+  let celebHTML = '';
+  if (meta.celebrities) {
+    const { jp = [], kr = [], global = [] } = meta.celebrities;
+    const group = [
+      { label: '🇯🇵 日本', list: jp },
+      { label: '🇰🇷 韓国', list: kr },
+      { label: '🌍 海外', list: global },
+    ];
+    celebHTML = `
+      <div class="card guide" style="margin-top:12px">
+        <h3>代表的な芸能人</h3>
+        ${group.map(g=> g.list.length
+          ? `<h4>${g.label}</h4><div class="chips">${g.list.map(x=>`<span class="chip">${x}</span>`).join('')}</div>`
+          : ''
+        ).join('')}
+        <p class="small">※ 各タイプにおける芸能人分類は公的なものではなく、スタイリング傾向に基づく参考例です。</p>
+      </div>
+    `;
+  }
+
+  // メーターブロック
+  const barsHTML = `
+    <div class="traits">
+      ${[
+        {key:'Frame', ax:AXES[0], data:pf},
+        {key:'Surface', ax:AXES[1], data:ps},
+        {key:'Balance', ax:AXES[2], data:pb},
+        {key:'Line', ax:AXES[3], data:pl},
+      ].map(({key,ax,data})=>`
+        <div class="trait">
+          <div class="row">
+            <div class="title">${key}：<span class="${data.posSide?'ok':'warn'}">${data.pct}% ${data.sideLabel.replace(/（.*?）/g,'')}</span></div>
+            <div class="percent">${data.pct}%</div>
+          </div>
+          <div class="meter">
+            <div class="fill" style="width:${data.pct}%;"></div>
+            <div class="thumb" style="left:${data.pct}%;"></div>
+          </div>
+          <div class="ends">
+            <span>${ax.negLabel}</span><span>${ax.posLabel}</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // 結果テンプレ
+ el.innerHTML=`
+    <div class="cols">
+      <div class="card result">
+        <h2>診断結果：<span class="ok">${code}</span> — <span class="em">${meta.emoji||''}</span> ${meta.name}</h2>
+        <div class="tags">
+          <span class="tag">基盤体型：${baseLabel(meta.base)}</span>
+          ${meta.animal?`<span class="tag">motif Animal: ${meta.animal}</span>`:''}
+          <span class="tag kind">${nick}</span> 
+        </div>
+        <div class="hero-image" data-base="${meta.base}">
+  <img
+    src="${meta.image || `images/${code}.jpg`}"
+    alt="${code} image"
+    loading="lazy"
+    decoding="async"
+    onerror="this.closest('.hero-image')?.classList.add('is-missing')"
+  />
+</div>
+        <p class="concept">${meta.concept||''}</p>
+
+        <p class="muted">4軸の平均スコア</p>
+        ${barsHTML}
+        
+
+
+
+        <div class="card guide" style="margin-top:12px">
+          <h3>どんな骨格？</h3>
+          <p>${bodyDesc}</p>
+
+          <h3>似合いやすいブランド</h3>
+         
+        　　<div class="chips brand-chips">
+  ${brands.map(b=>`<span class="chip" title="${b}">${b}</span>`).join('')}
+</div>
+${groupHTML}
+<div class="card guide" style="margin-top:12px">
+  <h3>モチーフに込めた意味</h3>
+  <p>${why}</p>
+</div>
+
+          <h3>スタイリング指針</h3>
+          <div class="cols" style="grid-template-columns:1fr 1fr">
+            <div>
+              <h4>素材・質感</h4>
+              <ul>${auto.fabric.map(x=>`<li>${x}</li>`).join('')}</ul>
+              <h4>ネックライン</h4>
+              <ul>${auto.neck.map(x=>`<li>${x}</li>`).join('')}</ul>
+            </div>
+            <div>
+              <h4>シルエット</h4>
+              <ul>${auto.silhouette.map(x=>`<li>${x}</li>`).join('')}</ul>
+              <h4>ライン設計</h4>
+              <ul>${auto.lines.map(x=>`<li>${x}</li>`).join('')}</ul>
+            </div>
+          </div>
+          ${notes.length?`<h4>タイプ固有メモ</h4><ul>${notes.map(n=>`<li>${n}</li>`).join('')}</ul>`:''}
+         
+        ${renderBodyTipsHTML(code)}
+        ${celebHTML}
+        ${renderShareCardHTML(code)} 
+          <p class="small">※ 提案は各軸（骨格/密度/重心/ライン）のスコアとタイプ固有情報から生成しています。</p>
+        </div>
+         <div class="card" style="margin-top:20px; text-align:center;">
+    <h3>他の骨格タイプも見てみる</h3>
+    <p>あなたのタイプ以外の15タイプを比較してみましょう。</p>
+    <a href="gallery.html" class="btn" style="
+      display:inline-block;
+      background:#333;
+      color:white;
+      padding:10px 20px;
+      border-radius:8px;
+      text-decoration:none;
+      transition:all 0.3s;">
+      タイプギャラリーを見る →
+    </a>
+  </div>
+  <div class="share-box">
+  <h3 style="margin-top:0;">結果をシェア</h3>
+  <div class="share-buttons">
+    <button class="share-btn" id="btn-x">Xでシェア</button>
+    <button class="share-btn" id="btn-line">LINEで送る</button>
+    <button class="share-btn" id="btn-copy">リンクをコピー</button>
+  </div>
+
+        <div class="controls">
+          <button id="retry" class="secondary">もう一度</button>
+          <button id="export">結果をJSONで保存</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>タイプ群の解説</h3>
+        <ul>
+          <li><b>WAVE</b>：柔・軽・下重心・曲線（🩰 Airy / Gentle / Dreamlike）</li>
+          <li><b>NATURAL</b>：骨感・直線・フレーム広（🌿 Calm / Organic / Minimal）</li>
+          <li><b>STRAIGHT</b>：厚・立体・上重心・直線（🖤 Modern / Powerful / Elegant）</li>
+        </ul>
+      </div>
+    </div>
+  `;
+
+// === 自動送信（同意ON かつ 未送信のとき一度だけ） ===
+if (!state._sentOnce) {
+  const agreed = getConsent() === 'yes';
+  if (agreed) {
+    state._sentOnce = true;
+
+    const sid = localStorage.getItem('km_session')
+      || (localStorage.setItem('km_session', (crypto?.randomUUID?.() ?? String(Math.random()))),
+          localStorage.getItem('km_session'));
+
+    const payload = { code, scores, userAgent:navigator.userAgent, sessionId:sid, t:Date.now() };
+    sendToSheets(payload);
+  }
+}
+
+  // ここで一度だけ append
+
+  app.appendChild(el);
+ 
+// ===== 共有ボタン紐づけ（renderResult() の最後で実行） =====
+(() => {
+  const { code } = buildCode();
+  const meta = TYPE_META[code] || { name:'', emoji:'' };
+
+  // タイトルとURL
+  const shareTitle = `${meta.emoji ?? ''} ${meta.name || code}（${code}）`;
+  const shareUrl   = location.href.split('#')[0];
+
+  const bx = document.getElementById('btn-x');
+  if (bx) bx.onclick = () => {
+    const t = encodeURIComponent(`骨格MBTI診断の結果は「${shareTitle}」でした！`);
+    const u = encodeURIComponent(shareUrl);
+    window.open(`https://twitter.com/intent/tweet?text=${t}&url=${u}`, '_blank');
+  };
+
+  const bl = document.getElementById('btn-line');
+  if (bl) bl.onclick = () => {
+    const t = encodeURIComponent(`骨格MBTI診断の結果は「${shareTitle}」でした！\n${shareUrl}`);
+    window.open(`https://line.me/R/msg/text/?${t}`, '_blank');
+  };
+
+  const bc = document.getElementById('btn-copy');
+  if (bc) bc.onclick = () => {
+    navigator.clipboard.writeText(shareUrl).then(()=>alert('リンクをコピーしました'));
+  };
+})();
+
+
+  // === 同意チェックの初期状態とイベント ===
+const cb = document.getElementById('consentBox');
+if (cb) {
+  // 既存の同意状態で初期化
+  cb.checked = (getConsent() === 'yes');
+
+  cb.onchange = () => {
+    setConsent(cb.checked);
+    // チェックONに切り替えた直後、まだ送っていなければ送る（1回だけ）
+    if (cb.checked && !state._sentOnce) {
+      state._sentOnce = true;
+
+      const sid = localStorage.getItem('km_session')
+        || (localStorage.setItem('km_session', (crypto?.randomUUID?.() ?? String(Math.random()))),
+            localStorage.getItem('km_session'));
+
+      const { code, scores } = buildCode(); // 念のため最新を取得
+      sendToSheets({ code, scores, userAgent:navigator.userAgent, sessionId:sid, t:Date.now() });
+    }
+  };
+}
+
+
+  // イベント
+  $('#retry', el).onclick = () => {
+  state = makeInitialState();          // ぜんぶリセット
+  state.step = 0;                      // すぐ最初の軸から再開したいなら1に
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+
+  $('#export',el).onclick=()=>{ 
+  // JSON保存
+  const payload={code,meta,scores,answers:state.answers};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`kokkaku-mbti-${code}.json`; a.click();
+  URL.revokeObjectURL(url);
+
+  // ボタンでも送るが、一度送っていれば送らない
+  if (!state._sentOnce) {
+    state._sentOnce = true;
+    sendToSheets({ code, scores, userAgent:navigator.userAgent, t:Date.now() });
+  }
+}
+
+}
+
+
+// テーブルの前に入れたい場合は↓の行の直前に ${barsHTML} を挿入
+
+function baseLabel(b){
+  return b==='WAVE'?'WAVE（柔・軽・下重心）'
+       : b==='STRAIGHT'?'STRAIGHT（厚・立体・上重心）'
+       : b==='NATURAL'?'NATURAL（骨感・直線・ラフ）' : b;
+}
+render();
+/* ───── ％バー用：各軸の「右側寄り％」を算出 ───── */
+function axisPercent(axisKey){
+  const arr = state.answers[axisKey].map(Number);
+  const qs  = QUESTIONS[axisKey];
+
+  // 0..1 正規化（左向き設問は反転）
+  const normalized = arr.map((v,i)=>{
+    const s = (v-1)/4;          // 1→0, 5→1
+    return qs[i].pos ? s : (1-s);
+  });
+  const avg = normalized.reduce((a,b)=>a+b,0)/normalized.length; // 0..1
+  const pct = Math.round(avg*100); // 0..100（右側＝codePos方向の％）
+
+  // ラベル決定（どちら寄りか）
+  const ax = AXES.find(a=>a.key===axisKey);
+  const sideLabel = (pct>50) ? ax.posLabel : ax.negLabel;
+  return { pct, sideLabel, posSide: pct>50 };
+}
+
+
+</script>
+
+<script>
+// === JSONPユーティリティ ===
+function jsonp(url){
+  return new Promise((resolve, reject)=>{
+    const cb = '__jp' + Date.now().toString(36);
+    const s = document.createElement('script');
+    const q = (url.includes('?')?'&':'?') + 'callback=' + cb;
+    s.src = url + q;
+    s.async = true;
+    window[cb] = (data)=>{ resolve(data); delete window[cb]; s.remove(); };
+    s.onerror = ()=>{ reject(new Error('JSONP failed')); delete window[cb]; s.remove(); };
+    document.head.appendChild(s);
+  });
+}
+
+// === 集計データ反映 ===
+async function refreshCuteStats(){
+  const data = await jsonp(GAS_URL + '?stats=1');
+  if (!data?.ok) return console.warn('No valid data from GAS');
+
+  const byType = data.byType || {};
+  const total  = data.total || 1;
+  const byBase = data.byBase || {WAVE:0,NATURAL:0,STRAIGHT:0};
+  const ALL_CODES = Object.keys(TYPE_META);
+
+  // ---- 3ベースドーナツ ----
+  for(const base of ['WAVE','NATURAL','STRAIGHT']){
+    const pct = Math.round((byBase[base]||0) / total * 100);
+    const donut = document.querySelector(`.donut[data-key="${base}"]`);
+    const numEl = document.querySelector(`.donut-num[data-num="${base}"]`);
+    if(donut && numEl){
+      numEl.textContent = pct + '%';
+      const C = 2 * Math.PI * 48;
+      const dash = (pct/100) * C;
+      const prog = donut.querySelector('[data-prog]');
+      if(prog) prog.style.strokeDasharray = `${dash} ${C-dash}`;
+    }
+
+    const chipBox = document.querySelector(`.chips.mini[data-chip="${base}"]`);
+    if(chipBox){
+      const group = ALL_CODES
+        .filter(c => TYPE_META[c]?.base === base)
+        .map(c => ({ code:c, n:byType[c]||0 }))
+        .sort((a,b)=>b.n - a.n);
+
+      chipBox.innerHTML = group.map(g=>{
+        const nick = (window.TYPE_NICK && TYPE_NICK[g.code]?.label) || g.code;
+        const emo  = TYPE_META[g.code]?.emoji ?? '🧭';
+        const pct  = ((g.n / total) * 100).toFixed(1);
+        return `<span class="chip" title="${nick}">${emo} ${nick}
+                  <span class="small muted" style="margin-left:4px;">${pct}%</span>
+                </span>`;
+      }).join('');
+    }
+  }
+
+  // ---- 16タイプグリッド ----
+  const grid = document.getElementById('typeGrid');
+  if(grid){
+    const max = Math.max(...Object.values(byType),1);
+    grid.innerHTML = ALL_CODES.map(code=>{
+      const n = byType[code] || 0;
+      const pct = Math.round(n / total * 100);
+      const width = Math.max(3, Math.round(n / max * 100));
+      const emo  = TYPE_META[code]?.emoji ?? '🧭';
+      const nick = (window.TYPE_NICK && TYPE_NICK[code]?.label) || code;
+      return `
+        <div class="type-cell" data-code="${code}" title="${code}">
+          <div class="type-ico">${emo}</div>
+          <div class="type-meta">
+            <div class="type-name">${nick} <span class="muted">(${code})</span></div>
+            <div class="type-bar"><i style="width:${width}%"></i></div>
+            <div class="small muted" style="margin-top:4px">${pct}% ・ ${n}件</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+}
+
+// 起動＆自動更新
+document.addEventListener('DOMContentLoaded', ()=>{
+  refreshCuteStats();
+  setInterval(refreshCuteStats, 60000);
+});
+</script>
+
+
+
+
+
+<script>
+(() => {
+  // 既存の GAS_URL / TYPE_NICK / TYPE_META は上で定義済み
+  const ALL_CODES_CARDS = Object.keys(TYPE_META);
+  const NICK_LABEL = (code) => (window.TYPE_NICK && TYPE_NICK[code]?.label) || code;
+
+  async function renderTypeDistributionCards(){
+    const root = document.getElementById('typeGridCards');
+    if (!root) return;
+
+    let data;
+    try {
+      const r = await fetch(GAS_URL + '?stats=1', { cache:'no-store' });
+      data = await r.json();
+    } catch(e) {
+      data = {
+        total: 100,
+        counts: Object.fromEntries(ALL_CODES_CARDS.map((c,i)=>[c,(i%5+1)*3])),
+      };
+    }
+
+    const counts = data.counts || {};
+    const total  = Math.max(1, data.total|0);
+
+    const makeCard = (code) => {
+      const name = NICK_LABEL(code);
+      const cnt  = counts[code] || 0;
+      const pct  = Math.round(cnt / total * 100);
+　　
+      const card = document.createElement('div');
+      card.className = 'type-card';
+      card.innerHTML = `
+        <div class="type-head">
+          <span class="type-emoji">${TYPE_META[code]?.emoji ?? '✨'}</span>
+          <span class="type-name">${name}</span>
+          <span class="type-code">${code}</span>
+        </div>
+        <div class="type-bar"><i style="width:${pct}%;"></i></div>
+        <div class="type-foot">
+          <span>${cnt}人</span>
+          <span>${pct}%</span>
+        </div>
+      `;
+      return card;
+    };
+
+    root.innerHTML = '';
+    ALL_CODES_CARDS.forEach(c => root.appendChild(makeCard(c)));
+  }
+
+  renderTypeDistributionCards();
+  setInterval(renderTypeDistributionCards, 60000);
+
+
+
+})();</script>
+<script>
+window.addEventListener('DOMContentLoaded', function(){
+  const openBtn  = document.getElementById('navOpen');
+  const closeBtn = document.getElementById('navClose');
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+
+  if(!openBtn || !closeBtn || !drawer || !scrim){
+    console.warn('[drawer] 必要な要素が見つかりません');
+    return;
+  }
+
+  function open(){
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    openBtn.setAttribute('aria-expanded','true');
+    scrim.hidden = false;
+    document.documentElement.style.overflow = 'hidden'; // 背景固定
+  }
+  function close(){
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden','true');
+    openBtn.setAttribute('aria-expanded','false');
+    scrim.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', open,  { passive: true });
+  closeBtn.addEventListener('click', close, { passive: true });
+  scrim.addEventListener('click', close,    { passive: true });
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+});
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', function(){
+  const openBtn  = document.getElementById('navOpen');
+  const closeBtn = document.getElementById('navClose');
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+
+  if(!openBtn || !closeBtn || !drawer || !scrim){
+    console.warn('[drawer] 必要な要素が見つかりません');
+    return;
+  }
+
+  function open(){
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    openBtn.setAttribute('aria-expanded','true');
+    scrim.hidden = false;
+    document.documentElement.style.overflow = 'hidden'; // 背景固定
+  }
+  function close(){
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden','true');
+    openBtn.setAttribute('aria-expanded','false');
+    scrim.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', open,  { passive: true });
+  closeBtn.addEventListener('click', close, { passive: true });
+  scrim.addEventListener('click', close,    { passive: true });
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+});
+</script>
+<script>
+/* ========= CPV（リワード動画）ゲート：追記だけで有効 =========
+   - 既存の renderResult をモンキーパッチ（本体は呼ぶ）
+   - 初回はオーバーレイで詳細をロック → 動画視聴で解除
+   - 本番では showAdAsync() を広告SDK実装に差し替え
+   - 開発中は ?dev=1 をURLにつければ無効化
+============================================================= */
+(function () {
+  if (new URLSearchParams(location.search).get('dev') === '1') return;
+
+  // --- ユーザー1セッション内で1度だけ広告視聴させる ---
+  const CPV_KEY = 'cpv_seen';
+  const cpvSeen = () => sessionStorage.getItem(CPV_KEY) === '1';
+  const setCpvSeen = () => sessionStorage.setItem(CPV_KEY, '1');
+
+  // --- ここを実広告SDKに差し替え（例：リワード動画のPromise）---
+  function showAdAsync() {
+    // ★サンプル：15秒のカウントダウン（デモ用）
+    return new Promise((resolve) => {
+      const timerEl = document.getElementById('cpv-timer');
+      let left = 15;
+      const t = setInterval(() => {
+        left -= 1;
+        if (timerEl) timerEl.textContent = left + ' 秒';
+        if (left <= 0) { clearInterval(t); resolve(); }
+      }, 1000);
+    });
+  }
+
+  // --- オーバーレイ生成（結果の上にフルスクリーン）---
+  function mountOverlay() {
+    const old = document.getElementById('cpv-overlay');
+    if (old) old.remove();
+
+    const wrap = document.createElement('div');
+    wrap.id = 'cpv-overlay';
+    wrap.innerHTML = `
+      <div class="cpv-backdrop"></div>
+      <div class="cpv-panel">
+        <div class="cpv-head">結果の詳細を見る前に</div>
+        <div class="cpv-msg">
+          広告（動画）を視聴すると、<b>詳細コンテンツが解錠</b>されます。<br>
+          ※タイプ名などのサマリーは先に表示しています。
+        </div>
+        <div class="cpv-actions">
+          <button id="cpv-watch" class="cpv-btn">広告を視聴して続ける</button>
+          <div class="cpv-note">（デモ）残り <span id="cpv-timer">15 秒</span></div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(wrap);
+  }
+
+  // --- 詳細を物理的に隠す（オーバーレイで覆う）---
+  function gateOn()  { if (!cpvSeen()) mountOverlay(); }
+  function gateOff() { const el = document.getElementById('cpv-overlay'); if (el) el.remove(); }
+
+  // --- 既存の renderResult をパッチ ---
+  function patchRenderResult() {
+    if (!('renderResult' in window)) return false;
+    if (window.__renderResultPatched) return true;
+
+    const original = window.renderResult;
+    window.renderResult = function () {
+      // まず既存の描画をそのまま実行
+      const ret = original.apply(this, arguments);
+
+      // 初回のみゲートON（詳細はオーバーレイの下にある）
+      if (!cpvSeen()) {
+        gateOn();
+
+        // ボタン→広告→解除
+        document.getElementById('cpv-watch')?.addEventListener('click', async () => {
+          try {
+            await showAdAsync();
+            setCpvSeen();
+            gateOff();
+            // 結果にスクロール（任意）
+            const result = document.getElementById('result') || document.querySelector('[data-result-root]');
+            if (result) result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } catch (e) {
+            // 失敗時は何もしない（ユーザーが再試行できる）
+            console.warn('CPV failed:', e);
+          }
+        });
+      }
+      return ret;
+    };
+
+    window.__renderResultPatched = true;
+    return true;
+  }
+
+  // --- パッチ適用を待つ（まだ定義されてない場合に備える）---
+  let tries = 0;
+  const iv = setInterval(() => {
+    tries++;
+    if (patchRenderResult() || tries > 40) clearInterval(iv); // 最大 ~4秒待機
+  }, 100);
+
+  // --- スタイル（コンパクト／衝突回避のためIDスコープ）---
+  const style = document.createElement('style');
+  style.textContent = `
+  #cpv-overlay { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; }
+  #cpv-overlay .cpv-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.35); backdrop-filter: blur(2px); }
+  #cpv-overlay .cpv-panel { position: relative; width: min(520px, 92vw); padding: 20px 18px; border-radius: 16px;
+    background: var(--card-bg, #fff); box-shadow: 0 10px 30px rgba(0,0,0,.2); font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; }
+  #cpv-overlay .cpv-head { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+  #cpv-overlay .cpv-msg { font-size: 14px; line-height: 1.6; color: #333; margin-bottom: 14px; }
+  #cpv-overlay .cpv-actions { display: flex; align-items: center; gap: 14px; }
+  #cpv-overlay .cpv-btn { appearance: none; border: none; border-radius: 999px; padding: 10px 16px; font-weight: 700; cursor: pointer;
+    background: #111; color: #fff; }
+  #cpv-overlay .cpv-note { font-size: 12px; color: #666; }
+  @media (prefers-color-scheme: dark) {
+    #cpv-overlay .cpv-panel { background: #1d1d1f; color: #eee; }
+    #cpv-overlay .cpv-msg { color: #ddd; }
+    #cpv-overlay .cpv-btn { background: #fff; color: #111; }
+    #cpv-overlay .cpv-note { color: #bbb; }
+  }
+  `;
+  document.head.appendChild(style);
+})();
+</script>
+</body>
+</html>

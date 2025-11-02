@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>タイプギャラリー - 骨格MBTI診断</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .tabs { display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 20px; }
+    .tab { padding:10px 14px; border-radius:12px; border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+           background: var(--card); cursor:pointer; font-weight:700; }
+    .tab.active { background: var(--accent); color:#0b0e15; border-color: transparent; }
+
+    .type-grid { display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .type-card { position:relative; border-radius:16px; overflow:hidden;
+      background: var(--card);
+      border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+      box-shadow:0 8px 24px rgba(0,0,0,.12);
+      transition:transform .2s ease, box-shadow .2s ease; }
+    .type-card:hover { transform: translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.18); }
+
+    .media { position:relative; width:100%; aspect-ratio:4/3; background:#f3f4f6; }
+    .media img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .animal-badge { position:absolute; top:10px; left:10px; padding:8px 10px; border-radius:999px;
+      background: color-mix(in oklab, var(--accent) 25%, white);
+      border:1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+      font-size:13px; font-weight:700; }
+
+    .info { padding:14px 16px 16px; }
+    .code-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
+    .code-badge { font-weight:800; letter-spacing:.5px; padding:4px 8px; border-radius:8px;
+      background: color-mix(in oklab, var(--accent) 20%, transparent);
+      border:1px solid color-mix(in oklab, var(--accent) 30%, transparent); }
+    .name { margin:0; font-size:18px; font-weight:800; }
+    .concept { margin:6px 0 10px; font-size:13px; color:var(--muted); }
+
+    .chips { display:flex; gap:6px; flex-wrap:wrap; }
+    .chip { padding:6px 8px; border-radius:999px; font-size:12px;
+      background: color-mix(in oklab, var(--accent) 12%, transparent);
+      border:1px solid color-mix(in oklab, var(--accent) 22%, transparent);
+      color: color-mix(in oklab, var(--ink) 90%, black);
+    }
+
+    .card-actions { margin-top:12px; display:flex; gap:8px; }
+    .mini { padding:8px 10px; border-radius:10px; border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+      background: color-mix(in oklab, var(--accent) 15%, transparent); font-weight:700; }
+
+    /* 系統背景の雰囲気（淡い差分） */
+    .wave .media { background: linear-gradient(180deg,#ffeaf3,#fff); }
+    .natural .media { background: linear-gradient(180deg,#effaf1,#fff); }
+    .straight .media { background: linear-gradient(180deg,#eaf2ff,#fff); }
+  </style>
+</head>
+<body data-theme="WAVE">
+  <header class="site-header">
+  <a class="brand" href="index.html">16Body<span>Personalities</span></a>
+
+  <!-- PC表示：右上に並ぶ -->
+  <nav class="nav-links">
+    <a href="index.html" class="chip-btn">トップ</a>
+    <a href="gallery.html" class="chip-btn">タイプギャラリー</a>
+    <a href="contact.html" class="chip-btn">お問い合わせ</a>
+  </nav>
+
+  <!-- モバイル表示：ハンバーガー -->
+  <button class="hamburger" id="navOpen" aria-label="メニュー" aria-controls="drawer" aria-expanded="false">
+    <!-- 3本線アイコン（SVG） -->
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+
+<!-- ドロワー本体 -->
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="drawer-brand">16BodyPersonalities</span>
+    <button class="drawer-close" id="navClose" aria-label="閉じる">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="drawer-links">
+    <a href="index.html" class="drawer-item">トップ</a>
+    <a href="app.html" class="drawer-item">診断をはじめる</a>
+    <a href="gallery.html" class="drawer-item">タイプギャラリー</a>
+    <a href="privacy.html" class="drawer-item">プライバシー</a>
+    <a href="terms.html" class="drawer-item">利用規約</a>
+    <a href="contact.html" class="drawer-item">お問い合わせ</a>
+  </nav>
+</aside>
+
+<!-- 半透明オーバーレイ -->
+<div class="scrim" id="scrim" hidden></div>
+<div class="topbar-spacer"></div> <!-- ナビの高さぶん余白（重なり防止） -->
+  
+
+    <!-- フィルタタブ -->
+    <div class="tabs">
+      <button class="tab active" data-filter="ALL">すべて</button>
+      <button class="tab" data-filter="WAVE">WAVE</button>
+      <button class="tab" data-filter="NATURAL">NATURAL</button>
+      <button class="tab" data-filter="STRAIGHT">STRAIGHT</button>
+    </div>
+
+    <!-- グリッド -->
+    <div id="grid" class="type-grid"></div>
+
+    <footer class="footer">
+      <span class="small">© 2025 16BodyPersonalities Project</span>
+      <span><a class="muted" href="terms.html">Terms</a> ・ <a class="muted" href="privacy.html">Privacy</a></span>
+    </footer>
+  </div>
+
+  <script>
+  // 最低限のマスター（画像は images/CODE.jpg）
+  const TYPES = {
+    BNLS:{base:'WAVE', emoji:'🐨', name:'骨格コアラ🐨(Romantic Wave)', concept:'甘くやわらか、包容感のあるロマン。', brands:['SNIDEL','CELFORD','TOCCA'], image:'images/BNLS.jpg'},
+    MNLC:{base:'WAVE', emoji:'🐺', name:'骨格ウルフ🐺(Urban Elegance)', concept:'静かで芯のある優しさ、穏やかに知的な洗練。', brands:['IÉNA','Mila Owen','Plage'], image:'images/MNLC.jpg'},
+    MWLC:{base:'WAVE', emoji:'🦋', name:'骨格バタフライ🦋(Light Wave)', concept:'風に舞う透明感、まっすぐで軽やかな均衡。', brands:['N.O.R.C','IÉNA','LE PHIL'], image:'images/MWLC.jpg'},
+    MWLS:{base:'WAVE', emoji:'🐹', name:'骨格ハムスター🐹(Natural Girly)', concept:'丸みと温かみ、ふんわりとした可憐さ。', brands:['SNIDEL','Kastane','LOWRYS FARM'], image:'images/MWLS.jpg'},
+    MNLS:{base:'WAVE', emoji:'🕊', name:'骨格ドーブ🕊️(Classic Feminine)', concept:'柔らかく上品、穏やかに香るエレガンス。', brands:['TOCCA','EPOCA','ANAYI'], image:'images/MNLS.jpg'},
+    BNLC:{base:'WAVE', emoji:'🐻', name:'骨格テディ🐻(Earth Wave)', concept:'あたたかく包み込む安定感、癒しの重心。', brands:['ROSSO','Plage','relume'], image:'images/BNLC.jpg'},
+
+    BWUC:{base:'NATURAL', emoji:'🦄', name:'骨格ユニコーン🦄(Urban Natural)', concept:'曲線×余白、幻想と構造の調和。', brands:['JS','UA','AURALEE'], image:'images/BWUC.jpg'},
+    BWUS:{base:'NATURAL', emoji:'🦅', name:'骨格イーグル🦅(Fairy Natural)', concept:'軽やかで透徹した知性。', brands:['ENFÖLD','Deuxieme','COS'], image:'images/BWUS.jpg'},
+    BWLC:{base:'NATURAL', emoji:'🦊', name:'骨格フォックス🦊(Classic Natural)', concept:'端正で機敏、自然体の品格。', brands:['IÉNA','Plage','TOMORROWLAND'], image:'images/BWLC.jpg'},
+    BWLS:{base:'NATURAL', emoji:'🦌', name:'骨格バンビ🦌(Pure Natural)', concept:'柔らかく静かな調和、森の中の安らぎ。', brands:['nest Robe','Vermeerist','L’essage'], image:'images/BWLS.jpg'},
+
+    BNUS:{base:'STRAIGHT', emoji:'🐆', name:'骨格パンサー🐆(Sporty Cool)', concept:'凛として構築的、都会的モード。', brands:['Theory','Max Mara','LE PHIL'], image:'images/BNUS.jpg'},
+    MWUC:{base:'STRAIGHT', emoji:'🦈', name:'骨格ドルフィン🦈(Elegant Straight)', concept:'鋭くスマート、研ぎ澄まされたスピード感。', brands:['NIKE','adidas','UNIQLO U'], image:'images/MWUC.jpg'},
+    MNUC:{base:'STRAIGHT', emoji:'🐅', name:'骨格タイガー🐅(Glamorous Cool)', concept:'立体感と色気、強い存在感。', brands:['Max Mara','THE ROW','N°21'], image:'images/MNUC.jpg'},
+    MNUS:{base:'STRAIGHT', emoji:'🦚', name:'骨格ピーコック🦚(Romantic Mode)', concept:'力と優雅の共存、華やかな余韻。', brands:['Self-Portrait','FOXEY','N°21'], image:'images/MNUS.jpg'},
+    BNUC:{base:'STRAIGHT', emoji:'🦉', name:'骨格オウル🦉(Structural Mode)', concept:'精密で構築的、夜に光る知性。', brands:['COS','Theory','AURALEE'], image:'images/BNUC.jpg'},
+    MWUS:{base:'STRAIGHT', emoji:'🐬', name:'骨格ドルフィン🐬(Soft Active)', concept:'すっきり流線、しなやかな躍動感。', brands:['PLEATS PLEASE','UNIQLO U','Theory'], image:'images/MWUS.jpg'}
+  };
+
+  const grid = document.getElementById('grid');
+  const TAB_SELECTOR = '.tab';
+
+  function cardHTML(code, t){
+    const cls = t.base.toLowerCase();
+    const brands = (t.brands||[]).slice(0,3);
+    return `
+      <article class="type-card ${cls}" data-base="${t.base}">
+        <div class="media">
+          <img src="${t.image}" alt="${code} ${t.name}"
+               onerror="this.style.display='none'; this.insertAdjacentHTML('afterend','<div style=&quot;width:100%;height:100%;display:grid;place-items:center;font-weight:700;color:#999;&quot;>${code}</div>')">
+          <div class="animal-badge">${t.emoji} ${code}</div>
+        </div>
+        <div class="info">
+          <div class="code-row">
+            <span class="code-badge">${t.base}</span>
+            <h3 class="name">${t.name}</h3>
+          </div>
+          <p class="concept">${t.concept||''}</p>
+          <div class="chips">
+            ${brands.map(b=>`<span class="chip">${b}</span>`).join('')}
+          </div>
+          <div class="card-actions">
+            + <button class="mini" onclick="location.href='detail.html?code=${code}'">このタイプの詳細</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function render(filter='ALL'){
+    grid.innerHTML = Object.entries(TYPES)
+      .filter(([,t]) => filter==='ALL' ? true : t.base===filter)
+      .map(([code,t]) => cardHTML(code,t))
+      .join('');
+  }
+
+  // 初期表示
+  render('ALL');
+
+  // タブ切替
+  document.querySelectorAll(TAB_SELECTOR).forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll(TAB_SELECTOR).forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      render(btn.dataset.filter);
+      // テーマ色も連動させたい場合↓（ALLはWAVE基調に）
+      document.body.dataset.theme = (btn.dataset.filter==='ALL' ? 'WAVE' : btn.dataset.filter);
+    });
+  });
+  </script>
+  <script>
+window.addEventListener('DOMContentLoaded', function(){
+  const openBtn  = document.getElementById('navOpen');
+  const closeBtn = document.getElementById('navClose');
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+
+  if(!openBtn || !closeBtn || !drawer || !scrim){
+    console.warn('[drawer] 必要な要素が見つかりません');
+    return;
+  }
+
+  function open(){
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    openBtn.setAttribute('aria-expanded','true');
+    scrim.hidden = false;
+    document.documentElement.style.overflow = 'hidden'; // 背景固定
+  }
+  function close(){
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden','true');
+    openBtn.setAttribute('aria-expanded','false');
+    scrim.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', open,  { passive: true });
+  closeBtn.addEventListener('click', close, { passive: true });
+  scrim.addEventListener('click', close,    { passive: true });
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+});
+</script>
+</body>
+</html>

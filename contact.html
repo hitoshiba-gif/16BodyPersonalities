@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>お問い合わせ - 16BodyPersonalities</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* === 可愛いボタン＆カード === */
+    .hero-card .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-card .controls a {
+      background: linear-gradient(135deg, #ffb6c1 0%, #ff77b7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 22px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(255, 119, 183, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+    }
+    .hero-card .controls a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(255, 119, 183, 0.4);
+    }
+
+    /* === フォーム === */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 500px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 16px; /* スマホ余白を確保 */
+      box-sizing: border-box;
+    }
+    label {
+      font-weight: 600;
+      color: var(--text, #333);
+      font-size: 15px;
+    }
+    input, textarea {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+      transition: border 0.2s ease;
+      box-sizing: border-box; /* ←はみ出し防止 */
+    }
+    input:focus, textarea:focus {
+      border: 1px solid #ff9ac7;
+      box-shadow: 0 0 0 3px rgba(255, 154, 199, 0.2);
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    button[type="submit"] {
+      background: linear-gradient(135deg, #ff9ac7 0%, #ff77b7 100%);
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      padding: 12px 24px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 119, 183, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      width: fit-content;
+      align-self: center;
+    }
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 119, 183, 0.4);
+    }
+
+    /* === スマホ対応 === */
+    @media (max-width: 480px) {
+      form {
+        padding: 0 12px;
+      }
+      input, textarea {
+        font-size: 14px;
+        padding: 9px 10px;
+      }
+      button[type="submit"] {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+      }
+    }
+
+    /* === ドロワー / ヘッダー統一 === */
+    .drawer-item { white-space: nowrap; font-size: 15px; }
+    @media (max-width: 420px) { .drawer-item { font-size: 14px; } }
+    .drawer-brand { white-space: nowrap; }
+    .wrap header h1 {
+      text-align: center;
+      font-size: 1.6em;
+      color: var(--accent, #ff77b7);
+    }
+  </style>
+</head>
+
+<body data-theme="WAVE">
+  <header class="site-header">
+    <a class="brand" href="index.html">16Body<span>Personalities</span></a>
+
+    <nav class="nav-links">
+      <a href="index.html" class="chip-btn">トップ</a>
+      <a href="gallery.html" class="chip-btn">タイプギャラリー</a>
+      <a href="contact.html" class="chip-btn">お問い合わせ</a>
+    </nav>
+
+    <button class="hamburger" id="navOpen" aria-label="メニュー" aria-controls="drawer" aria-expanded="false">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- Drawer -->
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="drawer-brand">16BodyPersonalities</span>
+      <button class="drawer-close" id="navClose" aria-label="閉じる">
+        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="drawer-links">
+    <a href="index.html" class="drawer-item">トップ</a>
+    <a href="app.html" class="drawer-item">診断をはじめる</a>
+    <a href="gallery.html" class="drawer-item">タイプギャラリー</a>
+    <a href="privacy.html" class="drawer-item">プライバシー</a>
+    <a href="terms.html" class="drawer-item">利用規約</a>
+    <a href="contact.html" class="drawer-item">お問い合わせ</a>
+  </nav>
+  </aside>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="topbar-spacer"></div>
+
+  <div class="wrap">
+    <header>
+      <h1>お問い合わせ</h1>
+      <span class="badge">ご意見・ご質問などお気軽にどうぞ</span>
+    </header>
+
+    <section class="card hero-card">
+      <p class="muted">
+        ご質問・ご意見・コラボ依頼などございましたら、以下のフォームよりお送りください。<br>
+        担当者より順次返信いたします。
+      </p>
+      <div class="controls">
+        <a href="index.html">トップへ戻る</a>
+        <a href="privacy.html">プライバシー</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <form id="contactForm">
+        <label for="name">お名前（またはニックネーム）</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="message">お問い合わせ内容</label>
+        <textarea id="message" name="message" required></textarea>
+
+        <button type="submit">送信する 💌</button>
+      </form>
+
+      <p id="status" style="text-align:center;margin-top:10px;color:#777;"></p>
+    </section>
+
+    <footer class="footer">
+      <span class="small">© 2025 16BodyPersonalities Project</span>
+      <span>
+        <a class="muted" href="terms.html">利用規約</a> ・
+        <a class="muted" href="privacy.html">プライバシー</a>
+      </span>
+    </footer>
+  </div>
+
+  <script>
+    // --- Drawer ---
+    window.addEventListener('DOMContentLoaded', function(){
+      const openBtn  = document.getElementById('navOpen');
+      const closeBtn = document.getElementById('navClose');
+      const drawer   = document.getElementById('drawer');
+      const scrim    = document.getElementById('scrim');
+      if(!openBtn || !closeBtn || !drawer || !scrim) return;
+
+      function open(){
+        drawer.classList.add('open');
+        drawer.setAttribute('aria-hidden','false');
+        scrim.hidden = false;
+        document.documentElement.style.overflow = 'hidden';
+      }
+      function close(){
+        drawer.classList.remove('open');
+        drawer.setAttribute('aria-hidden','true');
+        scrim.hidden = true;
+        document.documentElement.style.overflow = '';
+      }
+      openBtn.onclick = open;
+      closeBtn.onclick = close;
+      scrim.onclick = close;
+      window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+    });
+
+    // --- Form Submit ---
+    document.getElementById('contactForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const status = document.getElementById('status');
+      status.textContent = "送信中…⏳";
+
+      const data = {
+        name: e.target.name.value,
+        email: e.target.email.value,
+        message: e.target.message.value,
+        t: Date.now()
+      };
+
+      try {
+        // ★ ここにあなたのGoogle Apps Script URLを挿入！
+        const res = await fetch("https://script.google.com/macros/s/AKfycbwduui6FJMJ7fCa0sP_F4JsuR3GHT42NWfGX0xK5gseWVG232j_U4IVca6h_rX6tE7rxg/exec", {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify(data)
+        });
+        status.textContent = "ありがとうございます！送信が完了しました 🎉";
+        e.target.reset();
+      } catch(err) {
+        console.error(err);
+        status.textContent = "エラーが発生しました。時間をおいて再度お試しください。";
+      }
+    });
+  </script>
+</body>
+</html>

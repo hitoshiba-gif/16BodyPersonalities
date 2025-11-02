@@ -1,0 +1,2780 @@
+
+/* ===== THEME (short & clean) ===== */
+:root{
+  --bg: #ffffff;
+  --ink: #222222;
+  --muted: #667085;
+  --accent: #c9b8ff;
+  --card: #ffffff;
+}
+
+/* WAVE（ピンク） */
+body[data-theme="WAVE"]{
+  --bg: #FFF7FA;
+  --ink: #5A2A41;
+  --muted: #8C6677;
+  --accent: #F7C6D9;
+  --card: #FFFFFF;
+}
+/* NATURAL（グリーン） */
+body[data-theme="NATURAL"]{
+  --bg: #F8FBF7;
+  --ink: #324A35;
+  --muted: #6A7C6F;
+  --accent: #B6D7A8;
+  --card: #FFFFFF;
+}
+/* STRAIGHT（ブルー） */
+body[data-theme="STRAIGHT"]{
+  --bg: #F7FAFD;
+  --ink: #1F3347;
+  --muted: #5F6F81;
+  --accent: #A4C6EB;
+  --card: #FFFFFF;
+}
+
+/* ===== 基本（黒固定を完全撤去） ===== */
+html, body{
+  margin:0;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  line-height:1.6;
+  background: var(--bg) !important;      /* ← ここで最優先 */
+  color: var(--ink) !important;
+}
+body::before{ content:none !important; }  /* 黒オーバーレイ無効化 */
+#app, .wrap{
+  background: transparent !important;     /* ラッパの黒を無効化 */
+}
+
+/* レイアウト */
+.wrap{ max-width:980px; margin:0 auto; padding:32px 20px; }
+header{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+h1{ margin:0; font-size:24px; }
+
+/* カード */
+.card{
+  background: var(--card) !important;
+  color: var(--ink) !important;
+  border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  border-radius:16px;
+  box-shadow:0 8px 30px rgba(17 24 39 / .10), 0 2px 10px rgba(17 24 39 / .06);
+  padding:20px;
+}
+
+/* テキスト */
+.muted,.small{ color: var(--muted) !important; }
+.badge,.pill,.tag,.chip{
+  background: color-mix(in oklab, var(--accent) 18%, transparent);
+  border:1px solid color-mix(in oklab, var(--accent) 28%, transparent);
+  color: color-mix(in oklab, var(--ink) 90%, black);
+  border-radius:999px; padding:4px 10px; font-size:12px;
+}
+
+/* ボタン */
+button{
+  appearance:none; border:none; border-radius:12px;
+  padding:12px 16px; font-weight:700; cursor:pointer;
+  background: var(--accent); color:#0b0e15;
+}
+button.secondary{
+  background: color-mix(in oklab, var(--accent) 18%, transparent);
+  border:1px solid color-mix(in oklab, var(--accent) 28%, transparent);
+  color: color-mix(in oklab, var(--ink) 90%, black);
+}
+
+/* 設問/メーター */
+.q,.trait{
+  background: var(--card) !important;
+  border:1px solid color-mix(in oklab, var(--ink) 12%, transparent) !important;
+  border-radius:12px; padding:12px;
+}
+.q h4,.trait .title{
+  margin:0 0 8px 0; font-size:15px;
+  color: color-mix(in oklab, var(--ink) 95%, black) !important;
+}
+.scale label,.trait .ends{ font-size:12px; color: var(--muted) !important; }
+.meter{
+  position:relative; height:10px; border-radius:999px; overflow:hidden;
+  background: color-mix(in oklab, var(--ink) 10%, transparent);
+  border:1px solid color-mix(in oklab, var(--ink) 14%, transparent);
+}
+.meter .fill{
+  position:absolute; inset:0 0 0 0; width:0; height:100%;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 60%, white));
+}
+.meter .thumb{
+  position:absolute; top:50%; transform:translate(-50%,-50%);
+  width:18px; height:18px; border-radius:50%;
+  background:#fff; border:2px solid color-mix(in oklab, var(--ink) 45%, black);
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+
+/* スライダー（Safari/Firefox含む） */
+input[type=range]{ width:100%; height:6px; border-radius:999px;
+  background: color-mix(in oklab, var(--accent) 20%, transparent);
+  accent-color: var(--accent); outline:none; -webkit-appearance:none;
+}
+input[type=range]::-webkit-slider-runnable-track{
+  height:6px; border-radius:999px;
+  background: color-mix(in oklab, var(--accent) 20%, transparent) !important;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:20px; height:20px; margin-top:-7px;
+  border-radius:50%; background:#fff; border:2px solid var(--accent);
+  box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+input[type=range]::-moz-range-track{
+  height:6px; border-radius:999px;
+  background: color-mix(in oklab, var(--accent) 20%, transparent) !important;
+}
+input[type=range]::-moz-range-thumb{
+  width:20px; height:20px; border-radius:50%;
+  background:#fff; border:2px solid var(--accent); box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+
+/* ダッシュボード（黒下地をやめる） */
+.dash{ margin-top:40px; }
+.dash-card{ background: var(--card) !important; border:1px solid color-mix(in oklab, var(--ink) 12%, transparent); border-radius:16px; padding:18px; }
+.dash-frame{ margin-top:12px; border-radius:12px; overflow:hidden; background: var(--card) !important; border:1px solid color-mix(in oklab, var(--ink) 12%, transparent); }
+.dash-embed{ width:100%; aspect-ratio:16/9; display:block; border:0; background:transparent !important; }
+
+/* 小さめデバイス */
+@media (max-width:760px){
+  .wrap{ padding:20px 16px; }
+  .footer{ position: sticky; bottom:0; z-index:20; background: color-mix(in oklab, var(--bg) 92%, transparent); padding-top:10px; margin-top:18px; }
+}
+
+/* === indexカード向けの小要素 === */
+.hero-card {
+  text-align: center;
+  padding: 40px 24px;
+}
+.hero-card h2 { font-size: 22px; margin-bottom: 12px; }
+.hero-card p { font-size: 15px; color: var(--muted); margin-bottom: 24px; }
+.hero-card .controls { justify-content: center; }
+
+/* indexギャラリーの小カード */
+.mini-card {
+  text-align:center;
+  padding: 20px 10px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  background: color-mix(in oklab, var(--card) 96%, transparent);
+  color: var(--ink);
+  font-weight:600;
+  box-shadow:0 4px 14px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.mini-card:hover {
+  transform: translateY(-4px);
+  box-shadow:0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* セクション間の余白 */
+section.card { margin-bottom: 32px; }
+.hero {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 380px; /* 好みで調整（350〜420pxくらいが見やすい） */
+  object-fit: contain; /* 切り取らず全体を収める */
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  background: var(--bg);
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  display: block;
+  margin: 0 auto; /* 中央寄せ */
+}
+@media (max-width: 760px) {
+  .hero {
+    max-height: 300px;
+  }
+}
+
+/* ===== 5段階ボタンUI ===== */
+.scale-btns{
+  display:flex;
+  gap:8px;
+  margin:8px 0 10px;
+}
+.scale-btns .opt{
+  flex:1;
+  padding:10px 0;
+  border-radius:8px;
+  border:1px solid color-mix(in oklab, var(--ink) 15%, transparent);
+  background: color-mix(in oklab, var(--ink) 6%, var(--card));
+  color: color-mix(in oklab, var(--ink) 90%, black);
+  font-size:14px;
+  cursor:pointer;
+  transition:transform .05s ease, background .15s ease;
+}
+.scale-btns .opt:hover{ transform: translateY(-1px); }
+.scale-btns .opt.active{
+  background: var(--accent);
+  color:#0b0e15;
+  border-color: color-mix(in oklab, var(--accent) 40%, transparent);
+  font-weight:700;
+}
+
+#type-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.gallery-card {
+  background: var(--card);
+  border-radius: 16px;
+  border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.gallery-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.3);
+}
+
+.gallery-card img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+.gallery-card .info {
+  padding: 14px;
+}
+
+.gallery-card .info h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.gallery-card .base {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+/* 系統ごとの背景グラデーション */
+.gallery-card.WAVE { background: linear-gradient(180deg,#ffd6e8 0%,#fff 40%,#ffe9f0 100%); }
+.gallery-card.NATURAL { background: linear-gradient(180deg,#e3f7e0 0%,#fff 40%,#d8f5e2 100%); }
+.gallery-card.STRAIGHT { background: linear-gradient(180deg,#e0f0ff 0%,#fff 40%,#d6e7ff 100%); }
+
+.btn:hover {
+  background: #555;
+  transform: translateY(-2px);
+}
+
+/* ===== Share buttons ===== */
+.share-box{
+  margin-top:16px; padding:12px;
+  border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  border-radius:12px;
+}
+.share-buttons{ display:flex; gap:10px; flex-wrap:wrap; }
+.share-btn{
+  padding:10px 14px; border:0; border-radius:10px;
+  font-weight:700; cursor:pointer;
+  background: var(--accent); color:#0b0e15;
+}
+#btn-x{ background:#1da1f2; color:#fff; }
+#btn-line{ background:#00c300; color:#fff; }
+#btn-copy{ background:#555; color:#fff; }
+
+/* 画像がはみ出す問題の最終対策 */
+.hero{
+  width:100%;
+  max-height: 38vh;      /* お好みで 32〜48vh 程度 */
+  object-fit: contain;   /* 全体を収める */
+  border-radius:12px;
+}
+.tag.kind{ background: var(--soft); color: var(--ink); font-weight:700; }
+
+/* ===== Cute Realtime Dashboard ===== */
+.donut-row{
+  display:grid; gap:14px; grid-template-columns:1fr; margin-top:12px;
+}
+@media(min-width:860px){ .donut-row{ grid-template-columns:repeat(3,1fr); } }
+
+.donut-card{
+  border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  border-radius:16px; padding:12px;
+  background: var(--card);
+}
+
+.donut{
+  position:relative; width:140px; height:140px; margin:6px auto;
+}
+.ring{ width:140px; height:140px; transform: rotate(-90deg); }
+.track{ fill:none; stroke: color-mix(in oklab, var(--ink) 16%, transparent); stroke-width:10; }
+.prog{  fill:none; stroke: var(--accent); stroke-width:10; stroke-linecap:round; stroke-dasharray: 0 999; transition: stroke-dasharray .8s cubic-bezier(.2,.7,.1,1); }
+
+.donut-center{
+  position:absolute; inset:0; display:grid; place-items:center;
+  text-align:center;
+}
+.donut-title{ font-size:12px; opacity:.8; }
+.donut-num{ font-size:22px; font-weight:800; margin-top:-6px; }
+
+.type-grid{
+  margin-top:14px;
+  display:grid; gap:10px;
+  grid-template-columns:repeat(2, 1fr);
+}
+@media(min-width:560px){ .type-grid{ grid-template-columns:repeat(3, 1fr); } }
+@media(min-width:860px){ .type-grid{ grid-template-columns:repeat(4, 1fr); } }
+
+.type-cell{
+  display:flex; gap:10px; align-items:center;
+  padding:10px; border-radius:12px;
+  border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+}
+.type-ico{
+  font-size:22px; width:32px; height:32px; display:grid; place-items:center;
+  border-radius:10px;
+  background: color-mix(in oklab, var(--accent) 22%, transparent);
+}
+.type-meta{
+  flex:1; min-width:0;
+}
+.type-name{
+  font-weight:700; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.type-bar{
+  margin-top:6px; height:8px; border-radius:999px; overflow:hidden;
+  background: color-mix(in oklab, var(--ink) 12%, transparent);
+  border:1px solid color-mix(in oklab, var(--ink) 16%, transparent);
+}
+.type-bar > i{
+  display:block; height:100%; width:0%;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 60%, white));
+  transition: width .8s cubic-bezier(.2,.7,.1,1);
+}
+
+.chips.mini{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.chips.mini .chip{ font-size:11px; padding:4px 8px; }
+
+/* ==== 16タイプ比率カード ==== */
+.type-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.type-card{
+  border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  background: var(--card);
+  border-radius:12px;
+  padding:12px;
+  display:flex; flex-direction:column; gap:8px;
+}
+.type-head{ display:flex; align-items:center; gap:8px; }
+.type-emoji{ font-size:18px; line-height:1; }
+.type-code{ font-weight:800; font-size:12px; padding:2px 8px; border-radius:999px;
+  border:1px solid color-mix(in oklab, var(--ink) 18%, transparent); }
+.type-name{ font-size:13px; font-weight:700; }
+.type-bar{
+  height:8px; border-radius:999px; overflow:hidden;
+  background: color-mix(in oklab, var(--ink) 12%, transparent);
+}
+.type-bar > i{
+  display:block; height:100%; width:0%;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 60%, white));
+  transition: width .7s ease;
+}
+.type-foot{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); }
+
+/* ドーナツ下の全チップを気持ちよく並べる */
+.donut-card .chips.mini{
+  display:flex;
+  flex-wrap:wrap;          /* 複数段で折り返す */
+  gap:8px;
+  margin-top:8px;
+}
+
+/* スマホで潰れないように */
+.donut-card .chips.mini .chip{
+  white-space:nowrap;
+  font-size:0.9rem;
+  line-height:1.9;
+  padding:2px 10px;
+}
+
+/* ========== 🩰 ナビゲーション（Privacy / Termsページ用） ========== */
+
+nav {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 182, 193, 0.3);
+  border-radius: 16px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(255, 192, 203, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav .brand a {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #d17a9a;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+nav .brand a:hover {
+  color: #e59bb2;
+}
+
+/* 🩷 ボタンスタイル（ナビ右側） */
+nav .btn {
+  border-radius: 9999px;
+  border: 2px solid #f7b8c6;
+  background: linear-gradient(135deg, #fff, #fff8fa);
+  color: #d56b8a;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 18px;
+  text-decoration: none;
+  margin-left: 8px;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 8px rgba(255, 192, 203, 0.25);
+}
+nav .btn:hover {
+  background: linear-gradient(135deg, #ffe4ec, #fff0f5);
+  color: #b94b6b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(255, 182, 193, 0.4);
+}
+nav .btn.secondary {
+  border-color: #ffd6e0;
+  color: #d16c86;
+  background: #ffffffcc;
+}
+nav .btn.secondary:hover {
+  background: #fff4f7;
+  color: #b95570;
+}
+
+/* 🪞 スクロール時の柔らかい影 */
+nav.scrolled {
+  box-shadow: 0 6px 20px rgba(255, 182, 193, 0.25);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* === 📊 index グラフ表示調整 === */
+
+/* 🩷 ドーナツ3つを並べるコンテナ */
+.donut-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* 🧁 各ドーナツカード */
+.donut-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  text-align: center;
+  padding: 12px;
+}
+
+/* 💫 モバイル対応（600px以下で縦並びに） */
+@media (max-width: 800px) {
+  .donut-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .donut-card {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .donut-card .donut {
+    width: 120px;
+    height: 120px;
+  }
+
+  .donut-card .donut-num {
+    font-size: 16px;
+  }
+
+  .donut-card .donut-title {
+    font-size: 15px;
+  }
+}
+
+/* 🩵 16タイプのグリッド */
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* 📱 モバイルでは1〜2列で見やすく */
+@media (max-width: 700px) {
+  .type-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+/* 各タイプカードの内部 */
+.type-cell {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.type-ico {
+  font-size: 26px;
+  margin-right: 10px;
+}
+.type-meta {
+  flex: 1;
+}
+
+/* 棒グラフのバー */
+.type-bar i {
+  display: block;
+  height: 6px;
+  background: linear-gradient(90deg, #ffc0cb, #ffb6c1);
+  border-radius: 4px;
+}
+
+/* index のドーナツ用 */
+.donut-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:12px;
+}
+.donut-card{
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+  text-align:center;
+  padding:12px;
+}
+
+/* スマホは縦1列に */
+@media (max-width: 768px){
+  .donut-row{ grid-template-columns:1fr; }
+  .donut-card{ max-width:340px; margin:0 auto; }
+  .donut-card .donut{ width:140px; height:140px; margin:0 auto; }
+  .donut-card .donut-num{ font-size:16px; }
+  .donut-card .donut-title{ font-size:15px; }
+}
+
+/* === 📱 Privacy / Terms レスポンシブ調整 === */
+
+/* ページ全体 */
+.wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* hero セクション（上の長いとこ） */
+.hero {
+  background: linear-gradient(180deg, #fff9fb 0%, #ffffff 100%);
+  border: 1px solid #ffdce3;
+  border-radius: 16px;
+  padding: 40px 24px;        /* ←ここを調整 */
+  margin: 12px 0 20px;
+  box-shadow: 0 4px 10px rgba(255, 192, 203, 0.15);
+  text-align: center;
+}
+.hero h1 {
+  color: #b84b6a;
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.hero p {
+  color: #b07088;
+  font-size: 0.95rem;
+}
+
+/* カード部分（本文） */
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  padding: 20px 24px;
+  margin-bottom: 18px;
+}
+.card h2 {
+  font-size: 1.1rem;
+  color: #a44463;
+  margin-top: 20px;
+}
+
+/* 🩷 モバイル最適化 */
+@media (max-width: 768px) {
+  .hero {
+    padding: 28px 16px;  /* ←これで上の長さ統一 */
+    margin-bottom: 16px;
+  }
+  .card {
+    padding: 16px 18px;
+  }
+  .card h2 {
+    font-size: 1rem;
+  }
+  .hero h1 {
+    font-size: 1.4rem;
+  }
+}
+
+/* footer */
+footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #b77c8e;
+  padding: 24px 0 40px;
+}
+footer a {
+  color: #b77c8e;
+  text-decoration: none;
+}
+footer a:hover {
+  color: #d98fa3;
+}
+
+/* リストを柔らかく */
+.list {
+  list-style: none;
+  padding-left: 0;
+}
+.list .item {
+  background: #fff8fa;
+  margin: 6px 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  color: #5e4a50;
+  font-size: 0.95rem;
+}
+
+/* ナビとヒーロー間の余白を統一 */
+nav {
+  margin-bottom: 0;
+  padding-bottom: 8px; /* ←ナビ下の隙間は少しだけ残す */
+}
+
+.hero {
+  margin-top: 0;            /* ←navとの間を詰める */
+  padding: 24px 20px 28px;  /* ←上下バランス調整 */
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.hero h1 {
+  font-size: 1.4rem;
+  color: #a64b6a;
+  margin-bottom: 6px;
+}
+
+.hero p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* --- ネストしたカードのはみ出し防止（モバイル） --- */
+.card .card{
+  margin: 12px 0;           /* 親と同じ左右内側に収める */
+  width: auto;              /* 幅を親の内側に合わせる */
+}
+
+/* 画像そのものを完全レスポンシブに */
+.card img.hero{
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;      /* お好みで */
+}
+
+/* 念のため親カードで横スクロールを出さない */
+.card.result{ overflow: hidden; }
+
+/* タグ列を折り返し可に */
+.tags{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 行を強制的に折り返すためのダミー要素 */
+.tags .break{
+  flex-basis: 100%;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+/* タグの見た目（既存があれば不要） */
+.tags .tag{
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  background: var(--chip-bg, #f6eaf1);
+  color: var(--fg, #5b2742);
+  white-space: nowrap;
+}
+
+/* ---- ブランドチップのはみ出し対策（スマホ最適化） ---- */
+
+/* コンテナをフレックスにして折り返し */
+.chips.brand-chips{
+  display: flex;
+  flex-wrap: wrap;        /* ← これで改行する */
+  gap: 8px;               /* すき間 */
+  row-gap: 8px;
+  align-items: flex-start;
+  margin-top: 6px;
+  overflow: visible;      /* 親の影や丸角が切れないように */
+  max-width: 100%;
+}
+
+/* 各チップは可変幅でOK、必要なら省略表示 */
+.chips.brand-chips .chip{
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;         /* 伸びず、必要なら縮む */
+  min-width: 0;           /* Safari のはみ出し対策 */
+  max-width: 100%;
+  white-space: normal;    /* ← nowrap が効いていたら上書き */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 6px 10px;
+  border-radius: 9999px;
+}
+
+/* スマホでは少しだけ小さくして収まり良く */
+@media (max-width: 480px){
+  .chips.brand-chips .chip{
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+}
+/* === Brand groups (High / Middle / Fast) === */
+.brand-groups{
+  margin-top: 8px;
+  display: grid;
+  gap: 12px;
+}
+.brand-group h4{
+  font-size: 0.95rem;
+  margin: 6px 0;
+  font-weight: 700;
+  opacity: .9;
+}
+.brand-group .chips{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip{
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid var(--border, #ddd);
+  border-radius: 999px;
+  font-size: .85rem;
+  background: var(--card, #fff);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* 2カラム化（横幅がある時だけ） */
+@media (min-width: 720px){
+  .brand-groups{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ダークモードの軽い調整（任意） */
+@media (prefers-color-scheme: dark){
+  .chip{
+    background: rgba(255,255,255,.05);
+    border-color: rgba(255,255,255,.15);
+  }
+}
+
+/* === Brand groups (High / Middle / Fast) === */
+.brand-groups{
+  margin-top: 8px;
+  display: grid;
+  gap: 12px;
+}
+.brand-group h3{
+  font-size: 1rem;
+  margin: 4px 0 8px;
+}
+.brand-group .chips{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* 横幅があるときは2列 */
+@media (min-width: 720px){
+  .brand-groups{ grid-template-columns: 1fr 1fr; }
+}
+/* ===== iPhoneでナビのボタンが割れて見える問題を防止 ===== */
+nav.topbar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+nav.topbar .brand {
+  font-weight:700;
+  font-size:clamp(18px, 4vw, 24px);
+  white-space:nowrap;
+}
+
+nav.topbar .actions {
+  display:flex;
+  gap:8px;
+  flex-wrap:nowrap;              /* ← 折返し禁止 */
+  overflow-x:auto;               /* ← 幅が足りない時は横スクロール */
+  -webkit-overflow-scrolling:touch;
+}
+nav.topbar .actions::-webkit-scrollbar { display:none; }
+
+nav.topbar .actions .btn,
+nav .btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;            /* ← 文字の自動改行を禁止（行分割で丸が千切れるのを防ぐ） */
+  line-height:1;                 /* ← iOSの行高暴れ対策 */
+  border-radius:999px !important;
+  padding:10px 14px;
+  font-size:14px;
+  max-width:none;                /* ← ボタンの最大幅制限を解除 */
+  box-decoration-break:clone;    /* 念のため（複数行でも角丸を維持） */
+}
+
+/* 極小幅時は文字サイズを少し落として、なるべく改行させない */
+@media (max-width: 360px) {
+  nav.topbar .actions .btn { font-size:13px; padding:9px 12px; }
+}
+
+/* ===== ヒーロー見出し（1行で間延びしない） ===== */
+.hero h1,
+.card.hero h1 {
+  line-height:1.2;
+  margin:0 0 8px;
+  font-size: clamp(22px, 5vw, 32px);
+}
+
+/* ===== スマホでフッターが本文に重なるのを防ぐ ===== */
+.footer {
+  position: static !important;   /* 固定配置を解除 */
+  bottom: auto !important;
+}
+body { padding-bottom: env(safe-area-inset-bottom); }
+
+/* もしカード下端にフッターが食い込む時は余白を少し足す */
+.wrap { padding-bottom: 16px; }
+/* === 上部ナビ（app.html） === */
+/* ===== かわいいナビ（スマホで消えない版） ===== */
+.topbar{
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);   /* iPhoneノッチ安全 */
+  z-index: 9999;                        /* 他の要素より前に */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)) 12px;
+  margin-bottom: 14px;
+  border-radius: 16px;
+  background: rgba(255,245,248,.85);
+  -webkit-backdrop-filter: blur(10px);  /* iOS Safari */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(255,170,190,.25);
+}
+
+/* ⭐️ ここが重要：brandは幅固定、actionsが“残り幅”を占有しても縮められる */
+.topbar .brand{ flex: 0 0 auto; }
+.topbar .brand a{
+  text-decoration:none; font-weight:700;
+  font-size: clamp(16px, 4vw, 22px);
+  color:#d75d8c;
+}
+
+.topbar .actions{
+  /* ← スマホで消えないための3点セット */
+  flex: 1 1 auto;   /* 残り幅を占有しつつ縮小OK */
+  min-width: 0;     /* iOS Safari の“はみ出して消える”対策 */
+  overflow-x: auto; /* 足りない分は横スクロール */
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+.topbar .actions::-webkit-scrollbar{ display:none; }
+
+.btn.cute{
+  flex: 0 0 auto;  /* ボタン自体は縮ませない（潰れ防止） */
+  display:inline-flex; align-items:center; gap:.4em;
+  white-space: nowrap;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px; font-weight: 600; letter-spacing:.02em;
+  color:#d75d8c;
+  background: linear-gradient(145deg,#fff0f6,#ffe6ef);
+  border:1.5px solid #f8b6cc;
+  box-shadow: 0 2px 6px rgba(255,150,180,.25);
+  transition: .25s ease;
+}
+.btn.cute:hover{ transform: translateY(-2px); }
+.btn.cute:active{ transform:none; }
+
+/* すごく狭い端末用：ブランド名を少し小さく、ボタンもコンパクトに */
+@media (max-width: 380px){
+  .topbar .brand a{ font-size: 16px; }
+  .btn.cute{ padding: 7px 10px; font-size: 13px; }
+}
+
+/* 親が overflow: hidden だと sticky が隠れるので明示的に無効化 */
+.wrap{ overflow: visible; }
+/* ===== Kawaii Topbar ===== */
+.topbar.kawaii{
+  position: sticky;
+  top: env(safe-area-inset-top, 0);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0)) 12px;
+  margin: 6px 0 14px;
+  border-radius: 16px;
+  background:
+    radial-gradient(110% 90% at 0% 0%, #fff0f6 0%, transparent 60%),
+    radial-gradient(110% 90% at 100% 100%, #f0f9ff 0%, transparent 60%),
+    rgba(255,255,255,0.78);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba(230,160,190,.22), 0 1px 0 rgba(255,255,255,.6) inset;
+  border: 1px solid rgba(255,185,210,.35);
+}
+.topbar .brand{ flex:0 0 auto; }
+.topbar .brand a{
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: #d75d8c;
+  font-size: clamp(16px, 4vw, 22px);
+  text-shadow: 0 1px 0 #fff;
+}
+
+/* 横スクロール可能なボタンレーン（スマホで消えない対策） */
+.topbar .actions{
+  flex: 1 1 auto;
+  min-width: 0;                      /* ← 重要：iOS Safari消失対策 */
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px;
+  mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+}
+.topbar .actions::-webkit-scrollbar{ display:none; }
+
+/* まるっと可愛いボタン */
+.btn.cute{
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  white-space: nowrap;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: #d7588a;
+  background:
+    linear-gradient(180deg, #fff7fb 0%, #ffe9f3 100%);
+  border: 1.5px solid #f6b6cc;
+  box-shadow:
+    0 2px 8px rgba(255,160,190,.25),
+    0 1px 0 #fff inset;
+  text-decoration: none;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.btn.cute:hover{
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 14px rgba(255,160,190,.28),
+    0 1px 0 #fff inset;
+}
+.btn.cute:active{ transform: translateY(0); }
+
+/* アイコンだけの超コンパクト化（極小画面用） */
+@media (max-width: 360px){
+  .btn.cute{ padding: 8px 12px; font-size: 13px; }
+  .topbar .brand a{ font-size: 16px; }
+}
+
+/* ダークテーマでも可愛く */
+@media (prefers-color-scheme: dark){
+  .topbar.kawaii{
+    background:
+      radial-gradient(110% 90% at 0% 0%, rgba(70,40,60,.35) 0%, transparent 60%),
+      radial-gradient(110% 90% at 100% 100%, rgba(40,60,80,.35) 0%, transparent 60%),
+      rgba(20,22,28,.65);
+    border-color: rgba(255,185,210,.25);
+    box-shadow: 0 6px 18px rgba(0,0,0,.35);
+  }
+  .topbar .brand a{ color:#ffb3cd; text-shadow:none; }
+  .btn.cute{
+    color:#ffc2d7;
+    background: linear-gradient(180deg, #2a2630 0%, #2a2230 100%);
+    border-color: rgba(255,185,210,.28);
+    box-shadow: 0 2px 10px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.05) inset;
+  }
+  .btn.cute:hover{
+    box-shadow: 0 6px 18px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.08) inset;
+  }
+}
+
+/* 親の overflow で sticky が隠れないように */
+.wrap{ overflow: visible; }
+
+/* ===== Cute Topbar (sticky) ===== */
+.topbar.kawaii{
+  --topbar-h: 64px;
+  position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--topbar-h);
+  padding: 0 14px;
+  backdrop-filter: blur(10px);
+  background: color-mix(in oklab, var(--bg, #fff) 82%, transparent);
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  border-radius: 14px; /* 端末によっては角丸ヘッダー可愛い */
+}
+.topbar.kawaii .brand a{
+  text-decoration: none; font-weight: 800;
+  font-size: 16px;
+}
+.topbar.kawaii .actions{ display:flex; gap:8px; }
+
+/* スマホで絶対消えないように */
+@supports (position: sticky){
+  .topbar.kawaii{ position: sticky; }
+}
+/* iOSセーフエリア対応 */
+@supports (env(safe-area-inset-top)){
+  .topbar.kawaii{ padding-top: calc(env(safe-area-inset-top)); }
+}
+
+/* ===== Cute Buttons ===== */
+.btn.cute{
+  --btn-bg: color-mix(in oklab, var(--accent,#eab308) 22%, #fff);
+  --btn-bd: color-mix(in oklab, var(--accent,#eab308) 45%, transparent);
+  display:inline-flex; align-items:center; gap:.4em;
+  padding:10px 14px; border-radius:999px; line-height:1;
+  background: var(--btn-bg);
+  border:1px solid var(--btn-bd);
+  box-shadow: 0 2px 0 rgba(0,0,0,.06);
+  text-decoration:none; font-weight:600; font-size:14px;
+  transform: translateY(0); transition: transform .12s ease, box-shadow .12s ease, background .2s ease;
+  white-space: nowrap;
+}
+.btn.cute:hover{ transform: translateY(-1px); box-shadow:0 4px 10px rgba(0,0,0,.08); }
+.btn.cute:active{ transform: translateY(0); box-shadow:0 2px 6px rgba(0,0,0,.06); }
+.btn.cute.primary{
+  --btn-bg: color-mix(in oklab, var(--accent,#eab308) 60%, #fff);
+  --btn-bd: color-mix(in oklab, var(--accent,#eab308) 70%, transparent);
+  color:#111;
+}
+.btn.cute.active{
+  outline:2px solid color-mix(in oklab, var(--accent,#eab308) 65%, transparent);
+}
+
+/* 画面上部の重なり防止用（各ページで .topbar-spacer を1つ置く） */
+.topbar-spacer{ height: var(--topbar-h,64px); }
+
+/* スマホ/横幅狭い時：アクションを横スクロールにして“消えない” */
+@media (max-width: 480px){
+  .topbar.kawaii .actions{
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; gap:6px; padding-bottom:4px;
+  }
+  .topbar.kawaii .actions::-webkit-scrollbar{ display:none; }
+  .btn.cute{ padding:9px 12px; font-size:13px; }
+}
+/* ===== Global vars ===== */
+:root{
+  --header-h: 60px;
+  --radius: 14px;
+  --chip-bg: color-mix(in oklab, var(--accent, #6aa6ff) 12%, #fff);
+  --chip-bd: color-mix(in oklab, var(--accent, #6aa6ff) 32%, transparent);
+}
+
+/* ===== Top Header ===== */
+.site-header{
+  position: sticky;           /* 画面上に固定（iOSでも安定） */
+  top: 0;
+  z-index: 1000;
+  height: var(--header-h);
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  background: var(--card, #fff);
+  border-bottom: 1px solid var(--border, #e6e6e6);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+}
+
+.brand{
+  font-weight: 800;
+  letter-spacing: .2px;
+  text-decoration: none;
+  color: var(--fg, #222);
+  font-size: 18px;
+}
+.brand span{ color: var(--accent, #6aa6ff); }
+
+/* PCナビ */
+.nav-links{
+  display: flex;
+  gap: 8px;
+}
+.chip-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  border: 1px solid var(--chip-bd);
+  color: var(--fg, #222);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  transition: transform .12s ease;
+}
+.chip-btn:hover{ transform: translateY(-1px); }
+
+/* ハンバーガー（モバイルで表示） */
+.hamburger{
+  background: transparent;
+  border: 0;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: none; /* PCでは非表示 */
+  color: var(--fg, #222);
+}
+
+/* モバイル切り替え */
+@media (max-width: 820px){
+  .nav-links{ display: none; }
+  .hamburger{ display: inline-grid; place-items:center; }
+}
+
+/* スペーサー（重なり防止用） */
+.topbar-spacer{ height: 12px; } /* stick headerの場合は少しでOK */
+
+/* ===== Drawer ===== */
+.drawer{
+  position: fixed;
+  inset: 0 0 0 auto; /* 右から */
+  width: min(84vw, 360px);
+  transform: translateX(100%);
+  transition: transform .2s ease-out;
+  background: var(--card, #fff);
+  z-index: 1100;
+  display: flex; flex-direction: column;
+  border-left: 1px solid var(--border, #eee);
+}
+.drawer.open{ transform: translateX(0); }
+
+.drawer-head{
+  height: 54px;
+  display: flex; align-items:center; justify-content: space-between;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border, #eee);
+}
+.drawer-brand{ font-weight: 800; }
+.drawer-close{
+  background: transparent; border: 0; width: 40px; height: 40px; border-radius: 10px;
+}
+.drawer-links{
+  display: grid; gap: 4px;
+  padding: 12px;
+}
+.drawer-item{
+  display: block;
+  padding: 12px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--fg, #222);
+  border: 1px solid var(--border, #eee);
+  background: #fff;
+}
+.drawer-item:hover{ background: #fafafa; }
+
+/* 背景の半透明オーバーレイ */
+.scrim[hidden]{ display: none; }
+.scrim{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.28);
+  z-index: 1050;
+  backdrop-filter: saturate(60%) blur(2px);
+}
+
+/* ===== ドーナツ行（スマホは縦積み） ===== */
+.donut-row{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 820px){
+  .donut-row{
+    grid-template-columns: 1fr;   /* ←スマホは縦1列 */
+  }
+}
+.donut-card{ border-radius: 12px; background: var(--card, #fff); }
+
+/* 16タイプの表がはみ出さないように */
+.type-grid{ min-width: 0; }
+.type-cell{ min-width: 0; }
+.type-name{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 🌸 ドロワー全体 */
+.drawer {
+  background: linear-gradient(180deg, #fffdfd 0%, #fff5f8 100%);
+  border-left: 2px solid #f2c9d2;
+  box-shadow: -6px 0 20px rgba(255, 182, 193, 0.25);
+  transition: transform 0.3s ease-in-out;
+  font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+}
+
+/* ヘッダー部 */
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #ffe4ec;
+  border-bottom: 1px solid #f5d0d8;
+}
+
+.drawer-brand {
+  font-weight: 700;
+  color: #d86b92;
+  font-size: 17px;
+  letter-spacing: 0.03em;
+}
+
+/* 閉じるボタン */
+.drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #d86b92;
+  transition: transform 0.2s ease;
+}
+.drawer-close:hover {
+  transform: rotate(90deg);
+}
+
+/* 各リンク */
+.drawer-links {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+}
+.drawer-item {
+  padding: 12px 22px;
+  text-decoration: none;
+  color: #444;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+  position: relative;
+  border-radius: 999px;
+  margin: 4px 12px;
+}
+.drawer-item:hover {
+  background: #ffeef3;
+  color: #d86b92;
+  transform: translateX(4px);
+}
+
+/* 小さなアイコン風の丸 */
+.drawer-item::before {
+  
+  color: #f4a4b6;
+  margin-right: 10px;
+  font-size: 13px;
+  transition: transform 0.2s ease;
+}
+.drawer-item:hover::before {
+  transform: scale(1.3);
+  color: #d86b92;
+}
+
+/* 区切り線をふんわり */
+.drawer hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #f7c4d1, transparent);
+  margin: 12px 24px;
+}
+
+/* 背景のスクリーンも柔らかく */
+.scrim {
+  background: rgba(255, 200, 220, 0.35);
+  backdrop-filter: blur(3px);
+}
+
+/* スマホでもタップしやすく */
+@media (max-width: 768px) {
+  .drawer-item {
+    font-size: 16px;
+    padding: 14px 20px;
+  }
+}
+
+/* ===== Result hero image（detail.html風） ===== */
+.hero-image{
+  width:100%;
+  min-height:42vh;                /* 画面に気持ち大きめに */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f7f7fa;             /* 優しい背景 */
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,.12);
+  transition:min-height .2s ease;
+}
+.hero-image img{
+  width:100%;
+  height:100%;
+  max-width:820px;                 /* 横の上限 */
+  max-height:80vh;                 /* 縦の上限 */
+  object-fit:contain;              /* はみ出し防止 */
+  display:block;
+  border-radius:12px;
+}
+
+/* 画像が無いときは高さを潰す（onerrorで .is-missing が付く） */
+.hero-image.is-missing{
+  min-height:0;
+  padding:0;
+  box-shadow:none;
+  background:transparent;
+}
+
+/* タイプ別にほんのり色味（任意） */
+.hero-image[data-base="WAVE"]{
+  background:linear-gradient(180deg,#fff0f6 0%, #ffffff 50%);
+}
+.hero-image[data-base="NATURAL"]{
+  background:linear-gradient(180deg,#f0fff3 0%, #ffffff 50%);
+}
+.hero-image[data-base="STRAIGHT"]{
+  background:linear-gradient(180deg,#f2f5ff 0%, #ffffff 50%);
+}
+
+/* スマホ最適化 */
+@media (max-width: 768px){
+  .hero-image{ min-height:36vh; border-radius:14px; }
+  .hero-image img{ max-width:92%; max-height:70vh; }
+}
+
+/* タグ（モチーフアニマル等）が折り返せるように */
+.tags{
+  display:flex;
+  flex-wrap:wrap;                 /* ← これで2行目に折り返し */
+  gap:6px;
+}
+.tag{ white-space:nowrap; }
+
+/* 服シェア相性カード */
+.share-card .match-row { margin-top:10px; }
+.share-card .match-title { font-weight:700; margin-bottom:4px; }
+.share-card .match-main { display:flex; align-items:center; gap:8px; }
+.share-card .chip { display:inline-block; padding:6px 10px; border-radius:999px;
+  background: color-mix(in oklab, var(--accent, #7aa) 12%, transparent);
+  border:1px solid color-mix(in oklab, var(--accent, #7aa) 30%, transparent);
+  font-weight:600; font-size:12px;
+}
+.share-card .match-score { font-weight:700; }
+.match-meter { height:8px; background:#eee; border-radius:999px; overflow:hidden; margin-top:6px; }
+.match-meter i { display:block; height:100%; width:0%; background: currentColor; opacity:.8; }
+
+/* ===== 服シェア相性（わかりやすい説明付き） ===== */
+.share-card.cute { 
+  --sc-bg: color-mix(in oklab, var(--accent, #9ad) 10%, transparent);
+  --sc-bd: color-mix(in oklab, var(--accent, #9ad) 40%, transparent);
+  border: 1px solid var(--sc-bd);
+  background: var(--card);
+  border-radius: 16px;
+}
+
+.share-card .match-row { 
+  margin-top: 12px; 
+  padding: 10px 12px; 
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--sc-bg) 45%, transparent);
+  border: 1px dashed var(--sc-bd);
+}
+.share-card .match-title { 
+  font-weight: 800; 
+  margin-bottom: 6px; 
+}
+.share-card .match-lead { 
+  margin: 6px 0 10px; 
+}
+.share-card .best-box {
+  background: #fff;
+  border: 1px solid var(--sc-bd);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,.06);
+}
+.share-card .best-main {
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  gap: 8px;
+}
+.share-card .best-label { 
+  font-weight: 700; 
+}
+.share-card .best-score { 
+  font-weight: 800; 
+}
+
+.match-meter {
+  height: 8px;
+  background: #eef1f4;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 8px;
+  position: relative;
+}
+.match-meter i {
+  display:block;
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, #ff9eb0, #ffb4e0);
+  border-radius: 999px;
+  animation: fillIn 900ms ease forwards;
+}
+
+.share-card .best-cta { 
+  margin-top: 8px; 
+  text-align: right; 
+}
+.share-card .btn.small { 
+  font-size: 12px; 
+  padding: 6px 10px; 
+  border-radius: 999px; 
+}
+
+.share-card .chip.linklike {
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background: #fff;
+  border: 1px solid var(--sc-bd);
+  font-weight:600; 
+  font-size:12px;
+  transition:all .25s;
+  cursor: pointer;
+  margin: 2px 4px 0 0;
+}
+.share-card .chip.linklike:hover {
+  background: color-mix(in oklab, var(--sc-bg) 40%, #fff);
+  transform: translateY(-1px);
+}
+
+@keyframes fillIn {
+  from { width:0; }
+  to { width: 90%; } /* scoreに合わせたい場合はJSでwidthを動的指定 */
+}
+
+.card.guide h4 { margin: 10px 0 6px; }
+.card.guide ul { padding-left: 18px; margin: 4px 0 10px; }
+.card.guide .note { color: var(--muted); }
+.cute-tips {
+  border-radius: 20px;
+  padding: 18px 20px;
+  background: color-mix(in oklab, var(--tone) 60%, white);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  border: 1px solid color-mix(in oklab, var(--tone) 30%, #aaa);
+  transition: 0.3s ease;
+}
+
+.cute-tips:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.12);
+}
+
+.cute-tips h3 {
+  font-size: 1.2em;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.cute-tips .goal {
+  text-align: center;
+  background: rgba(255,255,255,0.7);
+  border-radius: 12px;
+  padding: 6px 10px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.tips-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.tips-col {
+  background: rgba(255,255,255,0.6);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.4);
+}
+
+.tips-col h4 {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.tips-col .label {
+  font-size: 0.85em;
+  font-weight: 700;
+  color: #666;
+  margin: 2px 0;
+}
+
+.tips-col ul {
+  margin: 0 0 6px 12px;
+  font-size: 0.9em;
+}
+
+.tips-extra {
+  margin-top: 14px;
+  background: rgba(255,255,255,0.5);
+  padding: 10px;
+  border-radius: 14px;
+}
+
+.tips-extra ul {
+  margin: 0 0 6px 14px;
+  font-size: 0.9em;
+}
+
+.tips-extra .quick {
+  margin-top: 8px;
+  text-align: center;
+  font-style: italic;
+  font-size: 0.9em;
+  color: #555;
+}
+/* ===== Mobile-friendly: cute-tips を可愛いまま圧縮させない ===== */
+
+/* 1) カラムを自動調整（スマホは1カラム、タブレットは2） */
+.cute-tips .tips-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* ←可変 */
+  gap: 14px;
+}
+
+/* 2) スマホ向け：1カラム＋余白/文字サイズを少し大きく */
+@media (max-width: 560px) {
+  .cute-tips {
+    padding: 16px 14px;
+    border-radius: 18px;
+  }
+  .cute-tips h3 {
+    font-size: clamp(1.05rem, 3.8vw, 1.25rem);
+    margin-bottom: 8px;
+  }
+  .cute-tips .goal {
+    padding: 6px 10px;
+    font-size: clamp(0.95rem, 3.6vw, 1.05rem);
+  }
+  .cute-tips .tips-row {
+    grid-template-columns: 1fr;   /* ←スマホは縦並び */
+    gap: 10px;
+  }
+  .cute-tips .tips-col {
+    padding: 10px 12px;
+  }
+  .cute-tips .tips-col h4 {
+    font-size: clamp(0.98rem, 3.6vw, 1.08rem);
+  }
+  .cute-tips .tips-col .label {
+    font-size: clamp(0.86rem, 3.3vw, 0.95rem);
+  }
+  .cute-tips .tips-col ul,
+  .cute-tips .tips-extra ul {
+    font-size: clamp(0.92rem, 3.5vw, 1rem);
+    line-height: 1.6;
+  }
+  .cute-tips .tips-extra {
+    padding: 10px 12px;
+  }
+  .cute-tips .tips-extra .quick {
+    font-size: clamp(0.92rem, 3.5vw, 1rem);
+  }
+}
+
+/* 3) 画面が狭いときに “行間が詰まって見える” のを防ぐ */
+.cute-tips li { line-height: 1.6; }
+
+/* 4) 若干のカード拡大（指での可読性UP、でも可愛いまま） */
+@media (max-width: 360px) {
+  .cute-tips { 
+    padding: 14px 12px;
+  }
+  .cute-tips .tips-col { 
+    border-radius: 12px;
+  }
+}
+
+/* 5) iOSズーム対策（ボタン/入力が小さすぎると自動ズームされがち） */
+.cute-tips button,
+.cute-tips input,
+.cute-tips select {
+  font-size: 16px;
+}
+/* ===== ケア・姿勢を中央寄せで可愛く ===== */
+.cute-tips .tips-extra {
+  margin-top: 18px;
+  background: rgba(255,255,255,0.6);
+  padding: 14px;
+  border-radius: 16px;
+  text-align: center;            /* ← 中央寄せ */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cute-tips .tips-extra h4 {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.cute-tips .tips-extra ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.cute-tips .tips-extra ul li::before {
+  content: "🌿 ";
+}
+
+.cute-tips .tips-extra .quick {
+  margin-top: 10px;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #444;
+  background: rgba(255,255,255,0.6);
+  border-radius: 12px;
+  padding: 6px 10px;
+  display: inline-block;
+}
+
+/* モバイルで文字が潰れないように調整 */
+@media (max-width: 560px) {
+  .cute-tips .tips-extra {
+    padding: 12px;
+  }
+  .cute-tips .tips-extra ul li {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+}
+/* ===== 食事・運動も中央寄せでかわいく配置 ===== */
+.cute-tips .tips-col {
+  text-align: center;              /* ← 中央寄せ！ */
+  display: flex;
+  flex-direction: column;
+  align-items: center;             /* ← 子要素の中央寄せ */
+  justify-content: flex-start;
+  background: rgba(255,255,255,0.6);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.4);
+  transition: all 0.3s ease;
+}
+
+.cute-tips .tips-col:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.cute-tips .tips-col h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.cute-tips .tips-col .label {
+  margin-top: 4px;
+  font-weight: 700;
+  color: #666;
+  text-align: center;
+}
+
+.cute-tips .tips-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0;
+  font-size: 0.93rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.cute-tips .tips-col ul li::before {
+  content: "✨ ";
+}
+
+/* ===== スマホ最適化 ===== */
+@media (max-width: 560px) {
+  .cute-tips .tips-col {
+    padding: 10px;
+  }
+  .cute-tips .tips-col h4 {
+    font-size: clamp(1rem, 3.6vw, 1.1rem);
+  }
+  .cute-tips .tips-col ul li {
+    font-size: clamp(0.92rem, 3.5vw, 1rem);
+    line-height: 1.7;
+  }
+}
+/* ===== スタイリング指針（素材・質感など）を中央寄せで可愛く ===== */
+.card.guide .cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  justify-items: center;            /* ← 中央寄せの主役 */
+  align-items: start;
+  margin-top: 10px;
+}
+
+.card.guide .cols > div {
+  background: rgba(255,255,255,0.65);
+  border-radius: 16px;
+  padding: 14px 16px;
+  text-align: center;               /* ← 内容を中央寄せ */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.card.guide .cols > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+.card.guide .cols h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.card.guide .cols h4::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: color-mix(in oklab, var(--accent) 50%, white);
+  margin: 6px auto 10px;
+  border-radius: 2px;
+}
+
+.card.guide .cols ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.card.guide .cols ul li {
+  margin-bottom: 4px;
+  position: relative;
+  text-align: center;
+}
+
+.card.guide .cols ul li::before {
+  content: "💫 ";
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ===== スマホでもふんわり中央に ===== */
+@media (max-width: 560px) {
+  .card.guide .cols {
+    grid-template-columns: 1fr;   /* ← 1カラム縦並び */
+    gap: 12px;
+  }
+  .card.guide .cols > div {
+    padding: 12px 14px;
+  }
+  .card.guide .cols h4 {
+    font-size: clamp(1rem, 3.8vw, 1.1rem);
+  }
+  .card.guide .cols ul li {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+  }
+}
+/* ==========================
+   骨格・ブランド・タイプ固有メモ
+   ========================== */
+
+/* --- カード全体のトーン統一 --- */
+.card.guide {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(200, 200, 200, 0.4);
+  border-radius: 18px;
+  padding: 18px 22px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  text-align: center; /* ← 中央寄せで可愛く */
+}
+
+.card.guide:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* --- 見出しを可愛く --- */
+.card.guide h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.card.guide h3::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 2px;
+  background: color-mix(in oklab, var(--accent) 50%, white);
+  margin: 8px auto 10px;
+  border-radius: 2px;
+}
+
+/* --- 骨格説明 --- */
+.card.guide p {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 12px;
+}
+
+/* --- ブランド一覧をふんわり配置 --- */
+.brand-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+
+.brand-chips .chip {
+  background: color-mix(in oklab, var(--accent) 8%, white);
+  border: 1px solid color-mix(in oklab, var(--accent) 25%, white);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+
+.brand-chips .chip:hover {
+  background: color-mix(in oklab, var(--accent) 15%, white);
+  transform: scale(1.05);
+}
+
+/* --- ブランド3分類（ハイ・ミドル・ファスト） --- */
+.brand-groups {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.brand-group {
+  background: rgba(255,255,255,0.7);
+  border-radius: 14px;
+  padding: 10px 14px;
+  min-width: 160px;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+
+.brand-group h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* --- タイプ固有メモ --- */
+.card.guide ul {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+}
+
+.card.guide ul li {
+  position: relative;
+  margin-bottom: 6px;
+  font-size: 0.93rem;
+  text-align: center;
+}
+
+.card.guide ul li::before {
+  
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* --- スマホで詰まり防止 --- */
+@media (max-width: 600px) {
+  .brand-groups {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-group {
+    width: 90%;
+  }
+
+  .card.guide {
+    padding: 16px;
+  }
+
+  .brand-chips .chip {
+    font-size: 0.92rem;
+    padding: 5px 10px;
+  }
+
+  .card.guide ul li {
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  /* スタイリング指針（圧縮防止） */
+  .card.guide .cols {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .card.guide .cols > div {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
+/* ===== スタイリング指針（素材・質感・ネックライン・シルエット・ライン） ===== */
+.card.guide .cols {
+  display: flex;
+  flex-direction: column;       /* ← ✨縦並びに変更✨ */
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.card.guide .cols > div {
+  width: min(480px, 90%);       /* ← コンテンツの最大幅を制限して中央寄せ */
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 14px 18px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.card.guide .cols > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+.card.guide .cols h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.card.guide .cols h4::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: color-mix(in oklab, var(--accent) 50%, white);
+  margin: 6px auto 10px;
+  border-radius: 2px;
+}
+
+.card.guide .cols ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.card.guide .cols ul li::before {
+  content: "💫 ";
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ===== スマホ最適化（見た目を変えず軽く調整） ===== */
+@media (max-width: 560px) {
+  .card.guide .cols > div {
+    width: 92%;
+    padding: 12px 14px;
+  }
+  .card.guide .cols h4 {
+    font-size: clamp(1rem, 3.8vw, 1.1rem);
+  }
+  .card.guide .cols ul li {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    line-height: 1.8;
+  }
+}
+.contact-callout {
+  text-align: center;
+  background: linear-gradient(135deg, #fff6fa 0%, #ffeaf3 100%);
+  border: 1px solid rgba(255, 182, 193, 0.3);
+  box-shadow: 0 4px 10px rgba(255, 182, 193, 0.2);
+  border-radius: 16px;
+}
+
+.cute-contact-btn {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #ffb6c1, #ff77b7);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(255, 119, 183, 0.35);
+  transition: all 0.2s ease;
+}
+.cute-contact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(255, 119, 183, 0.45);
+}
+.cute-contact-btn span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+}
+/* === Emoji Cloud (Top hero cute background) === */
+.hero-cloud { position: relative; overflow: hidden; }
+.hero-cloud .emoji-cloud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0; /* 背景 */
+}
+
+/* ヒーロー本文は前面へ */
+.hero-cloud > *:not(.emoji-cloud) { position: relative; z-index: 1; }
+
+/* 浮遊する1粒 */
+.emoji-cloud .emo {
+  position: absolute;
+  left: calc(var(--x, 50) * 1%);
+  top: calc(var(--yStart, 110) * 1%);
+  font-size: clamp(16px, calc(var(--size, 24) * 1px), 36px);
+  opacity: var(--opacity, 0.65);
+  transform: translate(-50%, 0) rotate(0deg);
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.12));
+  animation:
+    floatY var(--dur, 12s) ease-in-out infinite alternate,
+    driftX calc(var(--dur, 12s) * 1.8) linear infinite,
+    spin  calc(var(--dur, 12s) * 2) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform;
+}
+
+/* 縦にふわふわ */
+@keyframes floatY {
+  0%   { transform: translate(-50%, 0) rotate(0deg); }
+  100% { transform: translate(-50%, calc(-1 * var(--heightTravel, 60vh))) rotate(0deg); }
+}
+/* 横にゆらゆら */
+@keyframes driftX {
+  0%   { margin-left: calc(-1 * var(--drift, 24px)); }
+  50%  { margin-left: calc( 1 * var(--drift, 24px)); }
+  100% { margin-left: calc(-1 * var(--drift, 24px)); }
+}
+/* ゆっくり微回転 */
+@keyframes spin {
+  from { rotate: 0deg; }
+  to   { rotate: var(--rot, 12deg); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .emoji-cloud .emo { opacity: 0.75; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .emoji-cloud .emo { animation: none; }
+}
+/* === Cute Hero (pastel blobs + soft buttons) === */
+.hero-cute {
+  position: relative;
+  overflow: hidden;
+  padding: 26px 20px 22px;
+  border: none;
+  background: var(--card);
+  isolation: isolate;
+}
+.hero-cute .hero-bg {
+  position: absolute; inset: -10% -6% auto -6%; height: 60%;
+  z-index: 0; pointer-events: none; filter: blur(18px) saturate(1.1);
+}
+.hero-cute .blob {
+  position: absolute; width: 42vmin; height: 42vmin; border-radius: 50%;
+  opacity: .45; mix-blend-mode: plus-lighter;
+  animation: blobFloat 18s ease-in-out infinite;
+}
+.hero-cute .b1 { left: 5%;  top: 6%;  background: radial-gradient(45% 45% at 50% 50%, #ffd1e1 0%, #ffc2e2 40%, transparent 70%); }
+.hero-cute .b2 { left: 38%; top: -6%; background: radial-gradient(45% 45% at 50% 50%, #c9e8ff 0%, #bfe4ff 40%, transparent 70%); animation-delay: -6s; }
+.hero-cute .b3 { right: 0;  top: 10%; background: radial-gradient(45% 45% at 50% 50%, #d9ffd6 0%, #caffd4 40%, transparent 70%); animation-delay: -12s; }
+
+@keyframes blobFloat {
+  0%   { transform: translateY(0) scale(1); }
+  50%  { transform: translateY(-10px) scale(1.03); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.hero-cute .hero-inner { position: relative; z-index: 1; text-align: center; }
+.hero-cute .badge-row { display: inline-flex; gap: 8px; margin-bottom: 10px; }
+.soft-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px; border-radius: 999px;
+  background: color-mix(in oklab, var(--accent, #ff77b7) 10%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent, #ff77b7) 25%, transparent);
+  font-weight: 600; font-size: 12px;
+}
+.soft-badge.accent {
+  background: linear-gradient(120deg, #ffd1e1 0%, #ffe7f3 100%);
+  border-color: #ffc2da;
+}
+
+.hero-title {
+  font-weight: 800; line-height: 1.2; margin: 2px 0 8px;
+  font-size: clamp(20px, 4.8vw, 28px);
+}
+.hero-title .sparkle {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.0) 60%, rgba(255,214,238,.8) 0) no-repeat;
+  box-decoration-break: clone;
+  padding: 0 2px;
+}
+
+/* CTA buttons */
+.cute-cta { display: flex; justify-content: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.btn-cta {
+  background: linear-gradient(135deg, #ff8fb8 0%, #ff61a8 100%);
+  color: #fff; border: 0; border-radius: 14px; padding: 10px 18px;
+  font-weight: 700; box-shadow: 0 8px 20px rgba(255, 97, 168, .25);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(255, 97, 168, .32); }
+.btn-ghost {
+  background: transparent; color: var(--text, #222);
+  border: 1.5px dashed color-mix(in oklab, var(--accent, #ff77b7) 40%, #000 0%);
+  padding: 9px 16px; border-radius: 14px; font-weight: 700;
+}
+
+/* slim emoji ribbon */
+.emoji-ribbon {
+  margin-top: 12px; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.emoji-ribbon .ribbon-track {
+  display: inline-block; white-space: nowrap; padding-block: 6px;
+  animation: ribbonMarquee 22s linear infinite;
+  opacity: .85; font-size: 18px;
+}
+@keyframes ribbonMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* モバイル調整 */
+@media (max-width: 480px) {
+  .btn-cta, .btn-ghost { padding: 10px 14px; border-radius: 12px; }
+  .soft-badge { font-size: 11px; padding: 5px 9px; }
+  .emoji-ribbon .ribbon-track { font-size: 16px; }
+}
+
+/* 低モーションに配慮 */
+@media (prefers-reduced-motion: reduce) {
+  .blob, .emoji-ribbon .ribbon-track { animation: none; }
+  .btn-cta:hover { transform: none; }
+}
+
+/* 無限ループの絵文字リボン */
+.emoji-ribbon {
+  margin-top: 12px;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.emoji-ribbon .ribbon-track {
+  display: flex; gap: 0;
+  width: max-content;
+  will-change: transform;
+  animation: ribbonMarquee var(--ribbon-speed, 28s) linear infinite;
+}
+.emoji-ribbon .loop {
+  display: inline-block;
+  white-space: nowrap;
+  padding-block: 6px;
+  font-size: 18px;
+  opacity: .9;
+  /* 余白を少し入れると見た目が可愛い */
+  margin-right: 2rem;
+}
+
+/* 無限に左へ。2本で-50%動かすと継ぎ目ゼロになる */
+@keyframes ribbonMarquee {
+  0%   { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-50%,0,0); }
+}
+
+/* ホバーで一時停止（PCのみ） */
+@media (hover:hover) {
+  .emoji-ribbon:hover .ribbon-track { animation-play-state: paused; }
+}
+
+/* スマホは少し遅くする */
+@media (max-width: 480px) {
+  .emoji-ribbon .loop { font-size: 16px; }
+  .emoji-ribbon .ribbon-track { animation-duration: 34s; }
+}
+
+/* 低モーション環境では止める */
+@media (prefers-reduced-motion: reduce) {
+  .emoji-ribbon .ribbon-track { animation: none; }
+}
+:root { --card-pad: 22px; }
+
+.emoji-ribbon {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.emoji-ribbon.full {
+  /* カード左右の余白をまたいでフルブリード表示 */
+  display: block;
+  margin-left: calc(-1 * var(--card-pad));
+  margin-right: calc(-1 * var(--card-pad));
+  padding-left: var(--card-pad);
+  padding-right: var(--card-pad);
+}
+
+.ribbon-track {
+  display: flex;
+  gap: 0.5rem;              /* 絵文字の間隔 */
+  width: max-content;
+  will-change: transform;
+  visibility: hidden;     /* 準備できるまで隠す（チラつき防止） */
+}
+.ribbon-track.is-ready {
+  visibility: visible;
+  animation: ribbonMarquee var(--dur, 28s) linear infinite;
+  animation-delay: var(--delay, 0s); /* JSで最適化 */
+}
+
+.loop {
+  display: inline-block;
+  white-space: nowrap;
+  padding-block: 6px;
+  font-size: 18px;
+  opacity: .95;
+}
+
+@keyframes ribbonMarquee {
+  0%   { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-50%,0,0); } /* ちょうど半分ぶん流す：継ぎ目ゼロ */
+}
+
+/* スマホは少し小さく＆ゆっくり */
+@media (max-width: 480px) {
+  .loop { font-size: 16px; }
+}
+
+/* 低モーション環境では停止 */
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-track { animation: none !important; }
+}
+.ribbon-track {
+  display: flex;
+  gap: 0; /* ← これが重要！間隔ゼロにする */
+  width: max-content;
+  will-change: transform;
+  visibility: hidden;
+  font-size: 0; /* ← インラインブロックの改行隙間を潰す */
+}
+
+.loop {
+  display: inline-block;
+  white-space: nowrap;
+  padding-block: 6px;
+  font-size: 18px; /* ← 各ループ内部だけフォントサイズ戻す */
+  opacity: .95;
+  margin: 0; /* ← 念のためマージンもゼロ */
+}
+
+/* ============ 4印象軸（かわいいカード） ============ */
+.axis-section {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  background:
+    radial-gradient(60% 50% at 20% 10%, color-mix(in oklab, var(--accent, #ff77b7) 14%, transparent) 0%, transparent 70%),
+    radial-gradient(60% 50% at 80% 0%,  color-mix(in oklab, var(--accent, #ff77b7) 10%, transparent) 0%, transparent 70%),
+    var(--card, #10131c);
+  border: 1px solid var(--border, #222633);
+  box-shadow: 0 8px 24px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.02);
+}
+
+.axis-head {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 0 10px;
+}
+.axis-head h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: .02em;
+}
+.axis-head .sub {
+  font-size: .85rem;
+  color: var(--muted, #9aa3b2);
+}
+
+.axis-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 960px){
+  .axis-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px){
+  .axis-grid { grid-template-columns: 1fr; }
+}
+
+.axis-card {
+  position: relative;
+  border-radius: 14px;
+  padding: 14px 14px 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00));
+  border: 1px solid color-mix(in oklab, var(--accent, #ff77b7) 18%, var(--border, #222633));
+  box-shadow: 0 6px 16px rgba(0,0,0,.16);
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.axis-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,.2);
+  border-color: color-mix(in oklab, var(--accent, #ff77b7) 26%, var(--border, #222633));
+}
+
+.axis-badge {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 20px; line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
+}
+.axis-card h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.axis-chip {
+  font-size: .75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent, #ff77b7) 30%, transparent);
+  background: color-mix(in oklab, var(--accent, #ff77b7) 10%, transparent);
+}
+
+.axis-scale {
+  margin-top: 8px;
+}
+.axis-bar {
+  height: 8px;
+  background: linear-gradient(90deg,
+    color-mix(in oklab, var(--accent, #ff77b7) 12%, transparent),
+    color-mix(in oklab, var(--accent, #ff77b7) 38%, transparent)
+  );
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+}
+.axis-bar::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,.12), transparent 40%, rgba(255,255,255,.12));
+  mix-blend-mode: screen;
+}
+
+.axis-ends {
+  display: flex; justify-content: space-between;
+  margin-top: 6px; font-size: .86rem; color: var(--muted, #9aa3b2);
+}
+
+/* 軽いキラッ演出 */
+.axis-card::before {
+  content: "";
+  position: absolute; top: -40px; left: -40px; width: 120px; height: 120px;
+  background: radial-gradient(closest-side, rgba(255,255,255,.13), transparent 70%);
+  transform: rotate(15deg);
+  pointer-events: none;
+}
+/* ======= Intro Cute Styles ======= */
+.hero-card.intro-card {
+  --pink: #ff77b7;
+  --peach: #ffb6c1;
+  --ink: oklch(18% 0.03 260);
+  border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent);
+  background:
+    radial-gradient(1200px 400px at 50% -20%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 60%),
+    var(--card);
+}
+
+.kawaii-lede {
+ 
+  margin: 8px auto 14px;
+  max-width: 56ch;
+  line-height: 1.7;
+  font-weight: 500;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 55%, #fff));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  justify-content: center;
+  margin: 8px 0 2px;
+}
+.pill {
+  --bg: color-mix(in oklab, var(--accent) 12%, transparent);
+  --bd: color-mix(in oklab, var(--accent) 28%, transparent);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  font-weight: 600;
+  font-size: 13px;
+}
+.pill .key { 
+  inline-size: 1.9rem; block-size: 1.9rem;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  background: white;
+  border: 1px solid var(--bd);
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+/* 軸カード（絵文字なし・ミニマル） */
+.axis-section {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid color-mix(in oklab, var(--accent) 16%, transparent);
+  border-radius: 16px;
+}
+.axis-head {
+  display: grid; place-items: center;
+  margin-bottom: 8px;
+}
+.axis-head h3 { margin: 0; }
+.axis-head .sub {
+  font-size: 12px; color: var(--muted); margin-top: 4px;
+}
+
+.axis-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+@media (min-width: 720px){ .axis-grid{ grid-template-columns: repeat(4, minmax(0,1fr)); } }
+
+.axis-card {
+  padding: 14px 12px;
+  border-radius: 14px;
+  border: 1px dashed color-mix(in oklab, var(--accent) 35%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--accent) 10%, transparent), transparent 60%),
+    var(--card);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.axis-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+.axis-card h4 { 
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+.axis-chip {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  background: white;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.axis-scale { margin-top: 6px; }
+.axis-bar {
+  height: 8px; border-radius: 999px;
+  background: 
+    linear-gradient(90deg,
+      color-mix(in oklab, var(--accent) 30%, transparent),
+      color-mix(in oklab, var(--accent) 60%, white)
+    );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 35%, transparent);
+}
+.axis-ends {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--muted); margin-top: 6px;
+}
+
+/* “使い方”のふきだし */
+.note-bubble {
+  margin: 10px auto 0;
+  max-width: 60ch;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+  background: color-mix(in oklab, var(--accent) 8%, white);
+  font-size: 13px;
+  text-align: center;
+}
+/* ======= Intro Cute Styles (左寄せ＆横一列版) ======= */
+.hero-card.intro-card {
+  --pink: #ff77b7;
+  --peach: #ffb6c1;
+  border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent);
+  background:
+    radial-gradient(1000px 400px at 50% -20%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 60%),
+    var(--card);
+}
+
+.kawaii-lede {
+  text-align: left;
+  margin: 8px auto 14px;
+  max-width: 64ch;
+  line-height: 1.7;
+  font-weight: 500;
+  color: var(--text, #222);
+}
+
+.pill-list {
+  text-align: center;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 10px 0 4px;
+}
+.pill {
+  --bg: color-mix(in oklab, var(--accent) 12%, transparent);
+  --bd: color-mix(in oklab, var(--accent) 28%, transparent);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  font-weight: 600;
+  font-size: 13px;
+}
+.pill .key { 
+  inline-size: 1.9rem; block-size: 1.9rem;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  background: white;
+  border: 1px solid var(--bd);
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+/* 軸カード：横一列（PC）→2列（スマホ） */
+.axis-section {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid color-mix(in oklab, var(--accent) 16%, transparent);
+  border-radius: 16px;
+}
+.axis-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+}
+@media (max-width: 720px){
+  .axis-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.axis-card {
+  padding: 14px 12px;
+  border-radius: 14px;
+  border: 1px dashed color-mix(in oklab, var(--accent) 35%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--accent) 10%, transparent), transparent 60%),
+    var(--card);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.axis-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+.axis-card h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  display: flex; justify-content: space-between;
+}
+.axis-chip {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  background: white;
+  font-weight: 700;
+}
+.axis-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg,
+    color-mix(in oklab, var(--accent) 30%, transparent),
+    color-mix(in oklab, var(--accent) 60%, white));
+}
+.axis-ends {
+  display: flex; justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.note-bubble {
+  margin: 10px auto 0;
+  max-width: 60ch;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+  background: color-mix(in oklab, var(--accent) 8%, white);
+  font-size: 13px;
+  text-align: left;
+}
+
+/* pillリストだけセンター揃えに変更 */
+.pill-list {
+  display: flex;
+  justify-content: center;   /* ← ココをcenterに */
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 10px 0 4px;
+}
+.axis-section {
+  display: none !important;
+}
+
+.lang-toggle{
+  margin-left: 8px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: color-mix(in oklab, var(--accent, #ff77b7) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent, #ff77b7) 30%, transparent);
+  transition: transform .15s ease, background .2s ease;
+}
+.lang-toggle:active{ transform: scale(0.98); }
+@media (max-width: 720px){
+  .lang-toggle{ padding: 6px 8px; }
+}
+
+/* ===== index専用：ドーナツグラフを縦並びにする（スマホ） ===== */
+/* 無限スクロールの絵文字リボン（カード端から端まで） */
+    .emoji-ribbon.full{
+      margin-top: 18px;
+      width: 100%;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent 0, black 6%, black 94%, transparent 100%);
+    }
+    .emoji-ribbon .ribbon-track{
+      display: inline-block;
+      white-space: nowrap;
+      transform: translateX(0);
+    }
+    .emoji-ribbon .ribbon-track .loop{
+      display:inline-block;
+      padding: 0;               /* ← 粒群間の余白を完全になくす */
+      margin: 0;
+      letter-spacing: 0;        /* ← 粒群間の“隙間”解消 */
+      word-spacing: 0;
+      font-size: 20px;
+      line-height: 1;
+      opacity: .9;
+    }
+    .emoji-ribbon .ribbon-track.is-ready{
+      animation: ribbonSlide var(--dur,28s) linear var(--delay,0s) infinite;
+    }
+    @keyframes ribbonSlide{
+      from{ transform: translateX(0); }
+      to  { transform: translateX(-50%); } /* 2枚分で半分進む */
+    }

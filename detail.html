@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タイプ詳細 - 16BodyPersonalities診断</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .hero-image {
+  width: 100%;
+  min-height: 45vh;                /* ← 高さを少し減らす（前は60vh） */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f8f8;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+@media (max-width: 768px) {
+      .hero-image { min-height: 40vh; }
+      .hero-image img { max-width: 90%; max-height: 70%; }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-image { min-height: 50vh; }
+      .hero-image img { max-width: 70%; max-height: 70%; }
+    }
+.hero-image img {
+  max-width: 80%;                  /* ← 横幅を画面の8割までに制限 */
+  max-height: 80%;                 /* ← 縦も画面の8割までに制限 */
+  object-fit: contain;
+  display: block;
+  border-radius: 12px;
+}
+    .section {
+      background: var(--card);
+      border: 1px solid #222633;
+      border-radius: 16px;
+      padding: 18px 22px;
+      margin-top: 18px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    h2 { margin-top: 0; }
+    ul { padding-left: 20px; }
+    .celeb-list { margin: 0.4em 0; }
+    .chip {
+      display:inline-block;
+      margin:3px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:13px;
+      background:color-mix(in oklab, var(--accent) 10%, transparent);
+      border:1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-header">
+  <a class="brand" href="index.html">16Body<span>Personalities</span></a>
+
+  <!-- PC表示：右上に並ぶ -->
+  <nav class="nav-links">
+    <a href="index.html" class="chip-btn">トップ</a>
+    <a href="gallery.html" class="chip-btn">タイプギャラリー</a>
+    <a href="contact.html" class="chip-btn">お問い合わせ</a>
+  </nav>
+
+  <!-- モバイル表示：ハンバーガー -->
+  <button class="hamburger" id="navOpen" aria-label="メニュー" aria-controls="drawer" aria-expanded="false">
+    <!-- 3本線アイコン（SVG） -->
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+
+<!-- ドロワー本体 -->
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="drawer-brand">16BodyPersonalities</span>
+    <button class="drawer-close" id="navClose" aria-label="閉じる">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="drawer-links">
+    <a href="index.html" class="drawer-item">トップ</a>
+    <a href="app.html" class="drawer-item">診断をはじめる</a>
+    <a href="gallery.html" class="drawer-item">タイプギャラリー</a>
+    <a href="privacy.html" class="drawer-item">プライバシー</a>
+    <a href="terms.html" class="drawer-item">利用規約</a>
+    <a href="contact.html" class="drawer-item">お問い合わせ</a>
+  </nav>
+</aside>
+
+<!-- 半透明オーバーレイ -->
+<div class="scrim" id="scrim" hidden></div>
+<div class="topbar-spacer"></div> <!-- ナビの高さぶん余白（重なり防止） -->
+    <header>
+      <h1 id="title">タイプ詳細</h1>
+      <p class="muted" id="subtitle"></p>
+    </header>
+
+    <div class="hero-image">
+      <img id="hero" alt="タイプ画像">
+    </div>
+
+    <section class="section">
+      <h2>💎 コンセプト</h2>
+      <p id="concept"></p>
+    </section>
+
+    <section class="section">
+      <h2>🦴 骨格の特徴</h2>
+      <p id="bodyDetail"></p>
+    </section>
+
+    <section class="section">
+      <h2>👗 おすすめの服装</h2>
+      <ul id="outfitTips"></ul>
+
+      <h3>避けたほうがよい傾向</h3>
+      <ul id="avoid"></ul>
+    </section>
+
+    <!-- このブロックを celebrities セクションの直前に追加 -->
+<section class="section">
+  <h2>🛍 似合うブランド</h2>
+  <!-- 厳選チップ（既存 brandHints 相当、任意）-->
+  <div id="brandHints" class="chips"></div>
+  <!-- 3カテゴリのブロック -->
+  <div id="brandGroups" class="brand-groups"></div>
+</section>
+
+    <section class="section">
+      <h2>🌟 似ている芸能人</h2>
+      <div id="celebrities"></div>
+    </section>
+
+    <footer class="footer">
+      <button onclick="history.back()" class="btn secondary">← 戻る</button><br>
+      <span>© 2025 Kokkaku MBTI Project</span>
+    </footer>
+  </div>
+
+  <script src="types.js"></script>
+  <script>
+  window.BRAND_BY_TYPE = {
+  /* ============== WAVE（柔・軽・下重心） ============== */
+  BNLS: { // Romantic Wave（骨格コアラ）
+    high:  ['Valentino','Miu Miu','Chloé','Giambattista Valli','Simone Rocha','Ermanno Scervino','Lanvin'],
+    middle:['SNIDEL','CELFORD','LILY BROWN','FRAY I.D','Mila Owen','TOCCA','IÉNA','Apuweiser-riche','Noela','NATURAL BEAUTY BASIC','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','MANGO','Stradivarius','DHOLIC','earth music&ecology']
+  },
+  MNLC: { // Urban Elegance（骨格ウルフ）
+    high:  ['Chloé','Valentino','Max Mara','Celine','Loewe','Alaïa'],
+    middle:['IÉNA','Plage','N.O.R.C','URBAN RESEARCH','TOMORROWLAND','Mila Owen','ENFÖLD','Deuxieme Classe','Spick & Span','UNITED ARROWS','Theory'],
+    fast:  ['ZARA','MANGO','COS','& Other Stories','UNIQLO','GU','H&M']
+  },
+  MWLC: { // Light Wave（骨格バタフライ）
+    high:  ['Chloé','Celine','Valentino','Jil Sander','Stella McCartney'],
+    middle:['N.O.R.C','IÉNA','BEAUTY&YOUTH','LE PHIL','TOMORROWLAND','Mila Owen','FRAY I.D','SNIDEL','LILY BROWN','PLST'],
+    fast:  ['ZARA','COS','UNIQLO','GU','H&M','MANGO','Stradivarius']
+  },
+  MWLS: { // Natural Girly（骨格ハムスター）
+    high:  ['Miu Miu','Valentino','REDValentino','Chloé','See By Chloé'],
+    middle:['SNIDEL','LILY BROWN','Noela','tocco closet','LOWRYS FARM','earth music&ecology','FRAY I.D','gelato pique','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','GRL','DHOLIC','WEGO']
+  },
+  MNLS: { // Classic Feminine（骨格ドーブ）
+    high:  ['Dior','Valentino','Chanel','Chloé','Elie Saab'],
+    middle:['TOCCA','EPOCA','FOXEY','ANAYI','Apuweiser-riche','IÉNA','CELFORD','SNIDEL','PROPORTION','JILL STUART'],
+    fast:  ['ZARA','MANGO','& Other Stories','UNIQLO','GU','H&M']
+  },
+  BNLC: { // Earth Wave（骨格テディ）
+    high:  ['Loewe','The Row','Celine','Max Mara','Bottega Veneta'],
+    middle:['URBAN RESEARCH ROSSO','Plage','JOURNAL STANDARD relume','IÉNA','BEAMS','TOMORROWLAND','Mila Owen','ENFÖLD'],
+    fast:  ['COS','ZARA','UNIQLO','GU','H&M','MANGO']
+  },
+
+  /* ============== NATURAL（骨感・直線・中庸） ============== */
+  BWUC: { // Urban Natural（骨格ユニコーン）
+    high:  ['The Row','Jil Sander','Loewe','Bottega Veneta','Celine'],
+    middle:['JOURNAL STANDARD','UNITED ARROWS','BEAUTY&YOUTH','AURALEE','YLEVE','TOMORROWLAND','ENFÖLD','Deuxieme Classe','Plage'],
+    fast:  ['COS','ZARA','ARKET','UNIQLO','H&M','MANGO']
+  },
+  BWUS: { // Fairy Natural（骨格イーグル）
+    high:  ['Loewe','Celine','Jil Sander','Isabel Marant','Acne Studios'],
+    middle:['ENFÖLD','Deuxieme Classe','TOMORROWLAND','athoos','COS（ミドル扱い）','IÉNA','Plage','STUNNING LURE'],
+    fast:  ['COS','ZARA','& Other Stories','UNIQLO','H&M','MANGO']
+  },
+  BWLC: { // Classic Natural（骨格フォックス）
+    high:  ['Hermès','The Row','Loro Piana','Jil Sander','Celine'],
+    middle:['IÉNA','Plage','TOMORROWLAND','BEAMS','URBAN RESEARCH','UNITED ARROWS','AURALEE','SCYE','MACKINTOSH'],
+    fast:  ['COS','ZARA','UNIQLO','H&M','MANGO','ARKET']
+  },
+  BWLS: { // Pure Natural（骨格バンビ）
+    high:  ['Loewe','Gabriela Hearst','Chloé','JW Anderson'],
+    middle:['nest Robe','Vermeerist BEAMS','Plage','Journal Standard L’essage','ADAM ET ROPÉ','TODAYFUL','IÉNA','ANATOMICA'],
+    fast:  ['COS','UNIQLO','H&M','ZARA','MANGO']
+  },
+
+  /* ============== STRAIGHT（厚・立体・上重心・直線） ============== */
+  BNUS: { // Elegant Straight（骨格パンサー）
+    high:  ['Saint Laurent','Tom Ford','Givenchy','Alexander McQueen','Max Mara'],
+    middle:['Theory','LE PHIL','FOXEY','PLST','Akris punto','HYKE','THE ROW（セレクト取扱想定）','Drawer'],
+    fast:  ['COS','ZARA（Premium）','UNIQLO','PLST','MANGO','& Other Stories']
+  },
+  MWUC: { // Sporty Cool（骨格シャーク）
+    high:  ['Prada Linea Rossa','Moncler','Balenciaga','Stone Island'],
+    middle:['NIKE Sportswear','adidas Originals','P.E NATION','Lululemon','DESCENTE ALLTERRAIN','Nanamica','ARC’TERYX VEILANCE'],
+    fast:  ['Uniqlo U','UNIQLO','GU','ZARA','H&M']
+  },
+  MNUC: { // Glamorous Cool（骨格タイガー）
+    high:  ['Dolce & Gabbana','Versace','Balmain','Alexander McQueen','Max Mara'],
+    middle:['THE ROW','LE CIEL BLEU','N°21','ZARA Premium','STUNNING LURE','ALLSAINTS','AMERI'],
+    fast:  ['ZARA','MANGO','Bershka','UNIQLO','GU','H&M']
+  },
+  MNUS: { // Romantic Mode（骨格ピーコック）
+    high:  ['Valentino','Elie Saab','Oscar de la Renta','Alexander McQueen','Prada'],
+    middle:['Self-Portrait','SNIDEL（ドレス）','FOXEY','Apuweiser-riche','ANAYI','CELFORD','LE PHIL'],
+    fast:  ['ZARA（Evening）','& Other Stories','H&M','MANGO','UNIQLO']
+  },
+  MWUS: { // Soft Active（骨格ドルフィン）
+    high:  ['Issey Miyake','Pleats Please','Hermès（スポーティライン）','Prada'],
+    middle:['PLEATS PLEASE','ISSEY MIYAKE','Theory','Lululemon','COS','ATON','UNIQLO U'],
+    fast:  ['UNIQLO','GU','ZARA','H&M','COS（価格的には中間だが量販も可）']
+  },
+  BNUC: { // Structural Mode（骨格オウル）
+    high:  ['Saint Laurent','Jil Sander','Givenchy','Celine','Tom Ford'],
+    middle:['COS','Theory','AURALEE','HYKE','S’YTE','+J（UNIQLOコラボ）','AKRIS punto'],
+    fast:  ['COS','ZARA（Premium）','UNIQLO','H&M','MANGO']
+  }
+  // --- brandHints（厳選チップ）: types.js 側に type.brandHints がある場合のみ表示 ---
+
+};
+</script>
+  <script>
+    const TYPES = window.KM_TYPES;
+    const params = new URLSearchParams(location.search);
+    const code = (params.get('code') || '').toUpperCase();
+    const type = TYPES[code];
+
+    if(!type){
+      document.getElementById('title').textContent = 'タイプが見つかりません';
+    } else {
+      // テーマを反映
+      document.body.dataset.theme = type.base;
+
+      document.getElementById('title').textContent = `${code} – ${type.name}`;
+      document.getElementById('subtitle').textContent = type.base + " タイプ";
+      document.getElementById('hero').src = type.image;
+      document.getElementById('concept').textContent = type.concept;
+      document.getElementById('bodyDetail').textContent = type.bodyDetail;
+
+      document.getElementById('outfitTips').innerHTML = type.outfitTips.map(t=>`<li>${t}</li>`).join('');
+      document.getElementById('avoid').innerHTML = type.avoid?.map(t=>`<li>${t}</li>`).join('') || '';
+
+      const celeb = type.celebrities;
+      if (celeb) {
+        let html = '';
+        if (celeb.jp) html += `<p class="celeb-list"><b>日本:</b> ${celeb.jp.join('・')}</p>`;
+        if (celeb.kr) html += `<p class="celeb-list"><b>韓国:</b> ${celeb.kr.join('・')}</p>`;
+        if (celeb.global) html += `<p class="celeb-list"><b>海外:</b> ${celeb.global.join('・')}</p>`;
+        document.getElementById('celebrities').innerHTML = html;
+      }
+      // ←ここからBスクリプト
+    if (type.brandHints && type.brandHints.length) {
+      const hints = document.getElementById('brandHints');
+      if (hints) {
+        hints.innerHTML = type.brandHints
+          .map(b => `<span class="chip" title="${b}">${b}</span>`)
+          .join('');
+      }
+    }
+
+    const brandMap = (window.BRAND_BY_TYPE && window.BRAND_BY_TYPE[code]) || null;
+    if (brandMap) {
+      const host = document.getElementById('brandGroups');
+      if (host) {
+        const block = (title, arr) => `
+          <div class="brand-group">
+            <h3>${title}</h3>
+            <div class="chips">
+              ${arr.map(x => `<span class="chip">${x}</span>`).join('')}
+            </div>
+          </div>`;
+        host.innerHTML =
+          block("ハイブランド",   brandMap.high || []) +
+          block("ミドルブランド", brandMap.middle || []) +
+          block("ファスト",       brandMap.fast || []);
+      }
+    }
+    // ←ここまで
+    }
+  </script>
+  <script>
+window.addEventListener('DOMContentLoaded', function(){
+  const openBtn  = document.getElementById('navOpen');
+  const closeBtn = document.getElementById('navClose');
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+
+  if(!openBtn || !closeBtn || !drawer || !scrim){
+    console.warn('[drawer] 必要な要素が見つかりません');
+    return;
+  }
+
+  function open(){
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    openBtn.setAttribute('aria-expanded','true');
+    scrim.hidden = false;
+    document.documentElement.style.overflow = 'hidden'; // 背景固定
+  }
+  function close(){
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden','true');
+    openBtn.setAttribute('aria-expanded','false');
+    scrim.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', open,  { passive: true });
+  closeBtn.addEventListener('click', close, { passive: true });
+  scrim.addEventListener('click', close,    { passive: true });
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+});
+</script>
+</body>
+</html>
