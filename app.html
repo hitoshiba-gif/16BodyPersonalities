@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="color-scheme" content="light dark">
 <title> 16BodyPersonalities</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5269846776939991" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="./styles.css?v=1">
 </head>
 <body data-theme="WAVE">
@@ -1406,7 +1407,9 @@ function renderBodyTipsHTML(code) {
   </div>`;
 }
 
-function renderResult(){
+
+
+function _renderResultCore(){
   const {code,scores}=buildCode();
   const meta=TYPE_META[code]||{name:'未定義タイプ',base:'-',emoji:'',animal:'',image:'',concept:'',brandHints:[],styleNotes:[]};
      document.body.dataset.theme = meta.base;
@@ -1707,6 +1710,89 @@ if (cb) {
 }
 
 
+// ── 既に <body> 直前に広告スニペットを入れていなくても動くよう、JSで動的生成します
+(function ensureInterstitialDom(){
+  if (document.getElementById('resultInterstitial')) return;
+  const tpl = document.createElement('div');
+  tpl.innerHTML = `
+    <div id="resultInterstitial" style="
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.55); z-index:99999;">
+      <div style="width:min(560px,92vw); background:#fff; color:#222; border-radius:12px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.25)">
+        <h3 style="margin:0 0 6px">結果を準備中…</h3>
+        <p id="ri-msg" style="margin:0 0 12px; font-size:14px; color:#666">最適化と描画を行っています</p>
+        <div id="ri-progress" style="height:6px; background:#eee; border-radius:4px; overflow:hidden; margin:8px 0 14px">
+          <div id="ri-bar" style="height:100%; width:0%; background:#4c8bf5; transition:width .2s"></div>
+        </div>
+
+        <!-- 広告枠（AdSense承認後に自動で表示されます） -->
+        <div id="ri-ad" style="min-height:120px; display:block; border:1px dashed #ddd; border-radius:8px; padding:8px; margin:8px 0 12px">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-5269846776939991"
+               data-ad-slot="auto"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+
+        <button id="ri-skip" disabled style="
+          display:inline-block; padding:10px 16px; border:none; border-radius:8px;
+          background:#222; color:#fff; cursor:not-allowed;">15秒後に結果を表示</button>
+      </div>
+    </div>`;
+  document.body.appendChild(tpl.firstElementChild);
+})();
+
+function showResultInterstitial(onDone){
+  const layer = document.getElementById('resultInterstitial');
+  const btn   = document.getElementById('ri-skip');
+  const bar   = document.getElementById('ri-bar');
+  const msg   = document.getElementById('ri-msg');
+  const adBox = document.getElementById('ri-ad');
+
+  // 進捗とカウントダウン
+  layer.style.display = 'flex';
+  let t = 15; // 秒
+  let p = 0;
+  btn.textContent = `${t}秒後に結果を表示`;
+  btn.disabled = true;
+  btn.style.cursor = 'not-allowed';
+
+  const tick = setInterval(()=>{
+    t -= 1;
+    p = Math.min(100, p + 100/15);
+    bar.style.width = `${p}%`;
+    btn.textContent = t > 0 ? `${t}秒後に結果を表示` : `結果を表示する`;
+    if (t <= 0) {
+      clearInterval(tick);
+      btn.disabled = false;
+      btn.style.cursor = 'pointer';
+    }
+  }, 1000);
+
+  // AdSense（承認後に動作）: ページにクライアントJSがある前提
+  try {
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  } catch(e) {
+    // 未承認 or ブロック時は静かにスキップ
+    adBox.style.display = 'none';
+    msg.textContent = '最適化と描画を行っています…';
+  }
+
+  // クリックで閉じて進む
+  btn.onclick = () => {
+    layer.style.display = 'none';
+    onDone && onDone();
+  };
+}
+
+// 外側の「公開API」: これをアプリ側は呼び出す
+function renderResult(){
+  showResultInterstitial(_renderResultCore);
+}
+
+
+
 // テーブルの前に入れたい場合は↓の行の直前に ${barsHTML} を挿入
 
 function baseLabel(b){
@@ -1949,128 +2035,81 @@ window.addEventListener('DOMContentLoaded', function(){
   window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
 });
 </script>
+
+
+<!-- ====== 結果の直前インタースティシャル ====== -->
+<div id="result-prep" style="display:none;">
+  <div class="rp-backdrop"></div>
+  <div class="rp-card">
+    <div class="rp-title">結果を準備中…</div>
+    <div class="rp-sub">15秒ほどお待ちください（無料）</div>
+
+    <!-- AdSense 枠（※ data-ad-slot はあなたの広告ユニットIDに差し替え） -->
+    <ins class="adsbygoogle rp-ad"
+         style="display:block"
+         data-ad-client="ca-pub-5269846776939991"
+         data-ad-slot="1234567890"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+
+    <div class="rp-progress"><div class="rp-bar" style="width:0%"></div></div>
+
+    <button id="rp-skip" class="rp-btn" disabled>結果を見る</button>
+    <div class="rp-note">広告は読み込み状況により表示されないことがあります。</div>
+  </div>
+</div>
+
 <script>
-/* ========= CPV（リワード動画）ゲート：追記だけで有効 =========
-   - 既存の renderResult をモンキーパッチ（本体は呼ぶ）
-   - 初回はオーバーレイで詳細をロック → 動画視聴で解除
-   - 本番では showAdAsync() を広告SDK実装に差し替え
-   - 開発中は ?dev=1 をURLにつければ無効化
-============================================================= */
-(function () {
-  if (new URLSearchParams(location.search).get('dev') === '1') return;
-
-  // --- ユーザー1セッション内で1度だけ広告視聴させる ---
-  const CPV_KEY = 'cpv_seen';
-  const cpvSeen = () => sessionStorage.getItem(CPV_KEY) === '1';
-  const setCpvSeen = () => sessionStorage.setItem(CPV_KEY, '1');
-
-  // --- ここを実広告SDKに差し替え（例：リワード動画のPromise）---
-  function showAdAsync() {
-    // ★サンプル：15秒のカウントダウン（デモ用）
-    return new Promise((resolve) => {
-      const timerEl = document.getElementById('cpv-timer');
-      let left = 15;
-      const t = setInterval(() => {
-        left -= 1;
-        if (timerEl) timerEl.textContent = left + ' 秒';
-        if (left <= 0) { clearInterval(t); resolve(); }
-      }, 1000);
-    });
+/** 結果直前インタースティシャルを表示し、完了後に next() を実行 */
+window.showResultInterstitial = function(next, opts={}){
+  // 1セッション1回だけにしたければ true に
+  const oncePerSession = opts.oncePerSession ?? false;
+  if(oncePerSession && sessionStorage.getItem('rp_shown')==='1'){
+    next?.(); return;
   }
 
-  // --- オーバーレイ生成（結果の上にフルスクリーン）---
-  function mountOverlay() {
-    const old = document.getElementById('cpv-overlay');
-    if (old) old.remove();
+  const el = document.getElementById('result-prep');
+  const btn = document.getElementById('rp-skip');
+  const bar = el.querySelector('.rp-bar');
 
-    const wrap = document.createElement('div');
-    wrap.id = 'cpv-overlay';
-    wrap.innerHTML = `
-      <div class="cpv-backdrop"></div>
-      <div class="cpv-panel">
-        <div class="cpv-head">結果の詳細を見る前に</div>
-        <div class="cpv-msg">
-          広告（動画）を視聴すると、<b>詳細コンテンツが解錠</b>されます。<br>
-          ※タイプ名などのサマリーは先に表示しています。
-        </div>
-        <div class="cpv-actions">
-          <button id="cpv-watch" class="cpv-btn">広告を視聴して続ける</button>
-          <div class="cpv-note">（デモ）残り <span id="cpv-timer">15 秒</span></div>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(wrap);
+  // 表示
+  el.style.display = 'block';
+
+  // AdSenseの広告を読み込み
+  try{ (adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
+
+  // 目安15秒（広告ロードが遅い/無い場合のフェールセーフ込み）
+  const totalMs = 15000;
+  let t0 = Date.now();
+  const timer = setInterval(()=>{
+    const p = Math.min(1, (Date.now()-t0)/totalMs);
+    bar.style.width = Math.round(p*100)+'%';
+    if(p>=1){
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.classList.add('rp-ready');
+      btn.textContent = '結果を見る';
+    }
+  }, 150);
+
+  // クリックでクローズ→結果へ
+  btn.addEventListener('click', onGo, { once:true });
+
+  function onGo(){
+    el.style.display = 'none';
+    if(oncePerSession) sessionStorage.setItem('rp_shown','1');
+    next?.();
   }
 
-  // --- 詳細を物理的に隠す（オーバーレイで覆う）---
-  function gateOn()  { if (!cpvSeen()) mountOverlay(); }
-  function gateOff() { const el = document.getElementById('cpv-overlay'); if (el) el.remove(); }
-
-  // --- 既存の renderResult をパッチ ---
-  function patchRenderResult() {
-    if (!('renderResult' in window)) return false;
-    if (window.__renderResultPatched) return true;
-
-    const original = window.renderResult;
-    window.renderResult = function () {
-      // まず既存の描画をそのまま実行
-      const ret = original.apply(this, arguments);
-
-      // 初回のみゲートON（詳細はオーバーレイの下にある）
-      if (!cpvSeen()) {
-        gateOn();
-
-        // ボタン→広告→解除
-        document.getElementById('cpv-watch')?.addEventListener('click', async () => {
-          try {
-            await showAdAsync();
-            setCpvSeen();
-            gateOff();
-            // 結果にスクロール（任意）
-            const result = document.getElementById('result') || document.querySelector('[data-result-root]');
-            if (result) result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          } catch (e) {
-            // 失敗時は何もしない（ユーザーが再試行できる）
-            console.warn('CPV failed:', e);
-          }
-        });
-      }
-      return ret;
-    };
-
-    window.__renderResultPatched = true;
-    return true;
-  }
-
-  // --- パッチ適用を待つ（まだ定義されてない場合に備える）---
-  let tries = 0;
-  const iv = setInterval(() => {
-    tries++;
-    if (patchRenderResult() || tries > 40) clearInterval(iv); // 最大 ~4秒待機
-  }, 100);
-
-  // --- スタイル（コンパクト／衝突回避のためIDスコープ）---
-  const style = document.createElement('style');
-  style.textContent = `
-  #cpv-overlay { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; }
-  #cpv-overlay .cpv-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.35); backdrop-filter: blur(2px); }
-  #cpv-overlay .cpv-panel { position: relative; width: min(520px, 92vw); padding: 20px 18px; border-radius: 16px;
-    background: var(--card-bg, #fff); box-shadow: 0 10px 30px rgba(0,0,0,.2); font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; }
-  #cpv-overlay .cpv-head { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
-  #cpv-overlay .cpv-msg { font-size: 14px; line-height: 1.6; color: #333; margin-bottom: 14px; }
-  #cpv-overlay .cpv-actions { display: flex; align-items: center; gap: 14px; }
-  #cpv-overlay .cpv-btn { appearance: none; border: none; border-radius: 999px; padding: 10px 16px; font-weight: 700; cursor: pointer;
-    background: #111; color: #fff; }
-  #cpv-overlay .cpv-note { font-size: 12px; color: #666; }
-  @media (prefers-color-scheme: dark) {
-    #cpv-overlay .cpv-panel { background: #1d1d1f; color: #eee; }
-    #cpv-overlay .cpv-msg { color: #ddd; }
-    #cpv-overlay .cpv-btn { background: #fff; color: #111; }
-    #cpv-overlay .cpv-note { color: #bbb; }
-  }
-  `;
-  document.head.appendChild(style);
-})();
+  // 追加の安全策：30秒で自動クローズ（広告0件時の保険）
+  setTimeout(()=>{
+    if(el.style.display!=='none'){
+      btn.disabled = false;
+      btn.classList.add('rp-ready');
+      btn.textContent = '結果を見る';
+    }
+  }, 30000);
+};
 </script>
 </body>
 </html>
