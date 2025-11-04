@@ -2778,3 +2778,26 @@ body { padding-bottom: env(safe-area-inset-bottom); }
       from{ transform: translateX(0); }
       to  { transform: translateX(-50%); } /* 2枚分で半分進む */
     }
+#result-prep .rp-backdrop{
+  position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter:saturate(120%) blur(2px); z-index:9998;
+}
+#result-prep .rp-card{
+  position:fixed; inset:auto 0 0 0; margin:auto; top:50%; transform:translateY(-50%);
+  width:min(520px,92vw); background:#fff; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.2);
+  padding:20px 18px; z-index:9999; text-align:center;
+}
+#result-prep .rp-title{ font-size:1.2rem; font-weight:700; margin-bottom:6px; }
+#result-prep .rp-sub{ color:#666; margin-bottom:12px; }
+#result-prep .rp-ad{ min-height:120px; margin:6px 0 10px; }
+#result-prep .rp-progress{ height:8px; background:#eee; border-radius:999px; overflow:hidden; margin:8px 0 12px; }
+#result-prep .rp-bar{ height:100%; background:#4b9; transition:width .2s; }
+#result-prep .rp-btn{
+  width:100%; padding:12px 16px; border:0; border-radius:10px; font-weight:700; cursor:not-allowed;
+  background:#bbb; color:#fff;
+}
+#result-prep .rp-btn.rp-ready{ background:#1aa180; cursor:pointer; }
+#result-prep .rp-note{ font-size:.8rem; color:#888; margin-top:8px; }
+@media (prefers-color-scheme: dark){
+  #result-prep .rp-card{ background:#141414; color:#eee; }
+  #result-prep .rp-progress{ background:#222; }
+}
