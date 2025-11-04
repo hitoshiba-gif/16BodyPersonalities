@@ -1638,7 +1638,8 @@ if (!state._sentOnce) {
 
   // タイトルとURL
   const shareTitle = `${meta.emoji ?? ''} ${meta.name || code}（${code}）`;
-  const shareUrl   = location.href.split('#')[0];
+  const shareUrl   = new URL('index.html', location.href).href;
+
 
   const bx = document.getElementById('btn-x');
   if (bx) bx.onclick = () => {
