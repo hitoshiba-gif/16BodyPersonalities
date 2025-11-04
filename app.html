@@ -2111,5 +2111,49 @@ window.showResultInterstitial = function(next, opts={}){
   }, 30000);
 };
 </script>
+  <script>
+  // ざっくり検出（LINE/Instagram/Facebookのアプリ内ブラウザ）
+  function isInAppBrowser() {
+    const ua = navigator.userAgent || '';
+    return /Line\/|FBAN|FB_IAB|FBAV|Instagram|Twitter/i.test(ua);
+  }
+
+  // 外部ブラウザで開くヘルパー
+  function openExternally() {
+    try {
+      // iOS/Androidどちらでも、ユーザ操作のclickでwindow.openが最も通りやすい
+      window.open(location.href, '_blank', 'noopener');
+    } catch (e) {
+      // ダメならURLをコピー
+      navigator.clipboard?.writeText(location.href);
+      alert('ブラウザ（Safari/Chrome）で開いてください。リンクをコピーしました。');
+    }
+  }
+
+  // バナーを出す
+  function showInAppWarning() {
+    const bar = document.createElement('div');
+    bar.id = 'iab-warning';
+    bar.style.cssText = `
+      position:sticky; top:0; z-index:9999;
+      background:#111; color:#fff; padding:10px 12px;
+      display:flex; gap:8px; align-items:center; justify-content:space-between;
+      font-size:14px;
+    `;
+    bar.innerHTML = `
+      <span>アプリ内ブラウザでは広告や一部機能が表示されない場合があります。Safari/Chromeで開くと正常に表示されます。</span>
+      <button id="iab-open" style="
+        background:#fff; color:#111; border:none; border-radius:8px;
+        padding:8px 12px; font-weight:600; cursor:pointer;
+      ">ブラウザで開く</button>
+    `;
+    document.body.prepend(bar);
+    document.getElementById('iab-open').onclick = openExternally;
+  }
+
+  if (isInAppBrowser()) {
+    showInAppWarning();
+  }
+</script>
 </body>
 </html>
