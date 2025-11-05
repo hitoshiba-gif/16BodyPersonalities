@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="color-scheme" content="light dark">
 <title> 16BodyPersonalities</title>
-<script type="text/javascript" src="https://pl27989698.effectivegatecpm.com/a9/55/eb/a955ebab49f4f87597bf73b39607e0ee.js"></script>
+<!--script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5269846776939991" crossorigin="anonymous"></script>-->
 
-
+<script type="text/javascript" src="https://pl27989437.effectivegatecpm.com/ae/06/97/ae0697c353ceaa04cad71b481f68bd94.js"></script>
 <link rel="stylesheet" href="./styles.css?v=1">
 </head>
 <body data-theme="WAVE">
@@ -1713,137 +1713,15 @@ if (cb) {
 
 
 // ── 既に <body> 直前に広告スニペットを入れていなくても動くよう、JSで動的生成します
-(function ensureInterstitialDom(){
-  if (document.getElementById('resultInterstitial')) return;
-  const tpl = document.createElement('div');
-  tpl.innerHTML = `
-    <div id="resultInterstitial" style="
-      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-      background:rgba(0,0,0,.55); z-index:99999;">
-      <div style="width:min(560px,92vw); background:#fff; color:#222; border-radius:12px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.25)">
-        <h3 style="margin:0 0 6px">結果を準備中…</h3>
-        <p id="ri-msg" style="margin:0 0 12px; font-size:14px; color:#666">最適化と描画を行っています</p>
-        <div id="ri-progress" style="height:6px; background:#eee; border-radius:4px; overflow:hidden; margin:8px 0 14px">
-          <div id="ri-bar" style="height:100%; width:0%; background:#4c8bf5; transition:width .2s"></div>
-        </div>
 
-        <!-- 広告枠（AdSense承認後に自動で表示されます） -->
-        <div id="ri-ad" style="min-height:120px; display:block; border:1px dashed #ddd; border-radius:8px; padding:8px; margin:8px 0 12px">
-          
-        </div>
 
-        <button id="ri-skip" disabled style="
-          display:inline-block; padding:10px 16px; border:none; border-radius:8px;
-          background:#222; color:#fff; cursor:not-allowed;">15秒後に結果を表示</button>
-      </div>
-    </div>`;
-  document.body.appendChild(tpl.firstElementChild);
-})();
-
-// --- ユーティリティ：インアプリブラウザ検知 ---
-function isInAppBrowser(){
-  const ua = navigator.userAgent.toLowerCase();
-  return ua.includes('line') || ua.includes('fbav') || ua.includes('instagram') || ua.includes('micromessenger');
+function showResultInterstitial(onDone){
+   onDone && onDone();
 }
 
-// --- インタースティシャル表示＆広告ロード ---
-function showResultInterstitial() {
-  // オーバーレイ表示
-  const overlay = document.getElementById('resultInterstitial');
-  const adBox   = document.getElementById('ri-ad');
-  const msgEl   = document.getElementById('ri-msg');
-  const btn     = document.getElementById('ri-skip');
-  const bar     = document.getElementById('ri-bar');
-  if (!overlay || !adBox || !btn) return;
-
-  // 表示状態＆サイズ・前面化の担保
-  overlay.style.display = 'flex';
-  overlay.style.zIndex = '99999';
-  adBox.style.minHeight = '280px';
-  adBox.style.display   = 'block';
-
-  // 進捗バーの見た目（ダミー）
-  let p = 0;
-  const prog = setInterval(()=>{
-    p = Math.min(95, p + 5);
-    bar.style.width = p + '%';
-  }, 300);
-
-  // インアプリなら案内
-  if (isInAppBrowser()) {
-    msgEl.textContent = 'アプリ内ブラウザでは広告が表示されない場合があります。「ブラウザで開く」でSafari/Chromeからお試しください。';
-  } else {
-    msgEl.textContent = '最適化と描画を行っています';
-  }
-
-  // クリック解放（ユーザー操作）でロードする
-  const loadAdOnce = (() => {
-    let done = false;
-    return () => {
-      if (done) return;
-      done = true;
-
-      // 既存をクリアしてからロード
-      adBox.innerHTML = '';
-      try {
-        const s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src  = 'https://pl27989437.effectivegatecpm.com/ae/06/97/ae0697c353ceaa04cad71b481f68bd94.js';
-        s.onload  = () => { /* 読み込み成功（表示はネットワーク次第） */ };
-        s.onerror = () => {
-          msgEl.textContent = '広告の読み込みに失敗しました（ネットワーク/ブロッカーの可能性）';
-        };
-        adBox.appendChild(s);
-      } catch(e) {
-        msgEl.textContent = '広告初期化でエラーが発生しました';
-      }
-
-      // ウォッチドッグ：4秒待っても何も子要素が増えなければフォールバック文言
-      setTimeout(() => {
-        // スクリプト以外（iframe等）が追加されていないかを軽く確認
-        const hasIframe = adBox.querySelector('iframe');
-        if (!hasIframe) {
-          msgEl.textContent = '広告がブロック/非対応の可能性があります。数秒後に結果を表示できます。';
-        }
-      }, 4000);
-    };
-  })();
-
-  // 初回ユーザー操作で広告ロード（ボタンにフック）
-  // まだ押せないが、押した瞬間にもロードが走るようにしておく
-  btn.addEventListener('click', loadAdOnce, { once:true });
-
-  // すぐにロード開始したい場合は下の1行を有効化（任意）
-  // loadAdOnce();
-
-  // 15秒カウントで解放
-  btn.disabled = true;
-  btn.style.cursor = 'not-allowed';
-  let t = 15;
-  btn.textContent = `${t}秒後に結果を表示`;
-  const timer = setInterval(()=>{
-    t--;
-    btn.textContent = t > 0 ? `${t}秒後に結果を表示` : '結果を見る';
-    if (t <= 0) {
-      clearInterval(timer);
-      clearInterval(prog);
-      bar.style.width = '100%';
-      btn.disabled = false;
-      btn.style.cursor = 'pointer';
-    }
-  }, 1000);
-
-  // クリックでオーバーレイを閉じて結果を描画
-  btn.onclick = () => {
-    overlay.style.display = 'none';
-    // ここで本来の結果描画関数を呼ぶ
-    // 例）renderResultCore();  // あなたの結果描画ロジック
-  };
-}
 // 外側の「公開API」: これをアプリ側は呼び出す
 function renderResult(){
-  showResultInterstitial(_renderResultCore);
+  _renderResultCore();
 }
 
 
