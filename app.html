@@ -8,6 +8,8 @@
 <meta name="color-scheme" content="light dark">
 <title> 16BodyPersonalities</title>
 <!--script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5269846776939991" crossorigin="anonymous"></script>-->
+
+<script type="text/javascript" src="https://pl27989437.effectivegatecpm.com/ae/06/97/ae0697c353ceaa04cad71b481f68bd94.js"></script>
 <link rel="stylesheet" href="./styles.css?v=1">
 </head>
 <body data-theme="WAVE">
@@ -127,7 +129,7 @@
 <script>
   document.body.dataset.theme = 'WAVE';
   // ============ Google Sheets連携設定 ============
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwPaosdni87ALfM9SNdZsvtCObkLiSbTZNR1J8NjbvzYpom1HRYRUzlmKewi1-yzkIW/exec"
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxb93EpsZ6S0Xizk9PdBEJC8stOJtYLgJA4X92m_9Q2tulQRgSunmk-xdxIHevIC15d/exec"
 function sendToSheets(payload){
   console.log('[GAS] sending...', payload);
   return fetch(GAS_URL, {
@@ -143,44 +145,6 @@ function sendToSheets(payload){
   .catch(e => console.error('[GAS] error:', e));
 }
 
-// ==== Premium (session-only) ====
-const PREMIUM_SESSION_KEY = 'premiumUnlockedSession';
-
-function hasPremium() {
-  // その場限りの解錠（タブを閉じたら消える）
-  return sessionStorage.getItem(PREMIUM_SESSION_KEY) === '1';
-}
-function grantPremiumSession() {
-  sessionStorage.setItem(PREMIUM_SESSION_KEY, '1');
-}
-function revokePremiumSession() {
-  sessionStorage.removeItem(PREMIUM_SESSION_KEY);
-}
-
-async function promptPremiumUnlock() {
-  // 注意書き＆選択
-  const choice = await selectUnlockMode();
-  if (!choice) return; // キャンセル
-
-  if (choice === 'email+view') {
-    const email = prompt('結果を送るメールアドレスを入力してください📩\n（ここで受信しないと後から結果が見られません）');
-    if (!email) return alert('メールアドレスが入力されていません。');
-
-    try {
-      await sendResultMailJSONP(email);  // ← GAS 側へ送信（②で実装）
-      grantPremiumSession();             // セッションだけ解錠
-      rerenderResultSection();           // リロード無しで完全版を表示
-      alert('完全版をメールで送信しました。今のセッションでも閲覧できます。');
-    } catch (e) {
-      console.error(e);
-      alert('メール送信に失敗しました。時間をおいて再度お試しください。');
-    }
-  } else {
-    // ブラウザ確認のみ（メール送信なし）
-    grantPremiumSession();
-    rerenderResultSection();
-  }
-}
 // ユーザーの同意状態を保存/取得（ローカルに保持）
 const CONSENT_KEY = 'km_consent'; // 'yes' | 'no'
 function getConsent(){ return localStorage.getItem(CONSENT_KEY) ?? 'yes'; } // 既定=同意
@@ -992,64 +956,7 @@ function renderIntro(){
   // 3) 反映
   app.innerHTML = '';
   app.appendChild(el);
-  // ロック解除ボタン（結果内に挿入される #unlock-premium-btn）に紐づけ
-el.querySelector('#unlock-premium-btn')?.addEventListener('click', (ev)=>{
-  ev.preventDefault();
-  promptPremiumUnlock();
-});
-// ==== ロック解除フロー（メール送信 or ブラウザ確認のみ） ====
-// ※ メール送信は JSONP で GAS に GET する（CORS回避）
 
-
-// 小さな選択ダイアログ（素朴実装）
-function selectUnlockMode() {
-  return new Promise((res)=>{
-    const msg = [
-      '完全版の扱いを選んでください：',
-      '1) メールで受け取って保存 ＋ 今だけ表示',
-      '2) 今だけ表示（メール送信なし）'
-    ].join('\n');
-    const r = prompt(msg + '\n\n1 または 2 を入力');
-    if (r === '1') return res('email+view');
-    if (r === '2') return res('view-only');
-    return res(null);
-  });
-}
-
-// JSONP で GAS に結果送信（CORS不要）
-// 送るのは「code」だけ。HTMLはGAS側で生成（②で実装）
-function sendResultMailJSONP(email) {
-  return new Promise((resolve, reject)=>{
-    try {
-      const { code } = buildCode();
-      const cb = '__jp' + Date.now().toString(36);
-      const s = document.createElement('script');
-      const url = `${GAS_URL}?sendMail=1&email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}&callback=${cb}`;
-      window[cb] = (data)=>{
-        try { delete window[cb]; s.remove(); } catch(e){}
-        if (data && data.ok) resolve();
-        else reject(new Error(data?.error || 'sendMail failed'));
-      };
-      s.onerror = ()=>{
-        try { delete window[cb]; s.remove(); } catch(e){}
-        reject(new Error('JSONP failed'));
-      };
-      s.src = url;
-      document.head.appendChild(s);
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-// 結果ブロックだけ差し替え（リロードなし）
-function rerenderResultSection(){
-  const app = document.getElementById('app');
-  if (!app) return;
-  // 結果は renderResult が丸ごと生成してるはずなので、いったん消して再描画
-  app.innerHTML = '';
-  _renderResultCore(); // 既存の結果描画本体をもう一度呼ぶ
-}
   // 4) 挙動
   el.querySelector('#start')?.addEventListener('click', () => {
     // 診断画面へ（ここで初めて進捗バーを出すフローにしているはず）
@@ -1461,41 +1368,13 @@ function goDetails(code){
 }
 
 /* ==== Tips表示ヘルパー ==== */
-// どこか上の方の共通スコープに置いてOK
-
-
-// 配列の先頭 n 件だけ出し、残りはロック表示にする（見た目は <li> を保つ）
-function liPreview(arr, n){
-  const a = Array.isArray(arr) ? arr : [];
-  if (isPremiumUnlocked()) {
-    return a.map(x => `<li>• ${x}</li>`).join('');
-  }
-  const shown = a.slice(0, Math.max(0, n));
-  const lockedCount = Math.max(0, a.length - shown.length);
-  return [
-    ...shown.map(x => `<li>• ${x}</li>`),
-    ...(lockedCount > 0 ? [`<li class="locked">🔒 完全版で残り${lockedCount}件を表示</li>`] : [])
-  ].join('');
-}
 function renderBodyTipsHTML(code) {
   const t = BODY_TIPS[code];
   if (!t) return "";
 
-  // ← ここでロック判定（解除されてなければ鍵カードを返す）
-  if (!hasPremium()) {
-    return `
-      <div class="card cute-tips" style="--tone:#f0f0f0">
-        <h3>🔒 Body Balance Tips（完全版）</h3>
-        <p>ロックを解除すると、食事・運動・ケアまであなた専用の詳細ガイドが表示されます。</p>
-        <button class="btn" id="unlock-premium-btn">完全版をロック解除</button>
-      </div>
-    `;
-  }
-
-  // ここから下は“今のまま”の表示ロジック（既存そのまま）
   const li = arr => (arr || []).map(x => `<li>• ${x}</li>`).join('');
   const pastel = {
-    BN: "#ffd6e8", BW: "#ffe8d6", MN: "#e8ffd6", MW: "#d6f3ff",
+    BN: "#ffd6e8", BW: "#ffe8d6", MN: "#e8ffd6", MW: "#d6f3ff", //系統別色味
     B: "#f8e1ff", M: "#fff5d6"
   }[code.slice(0,2)] || "#f0f0f0";
 
@@ -1503,6 +1382,7 @@ function renderBodyTipsHTML(code) {
   <div class="card cute-tips" style="--tone:${pastel}">
     <h3>💖 Body Balance Tips</h3>
     <p class="goal">🎯 ${t.goal}</p>
+
     <div class="tips-row">
       <div class="tips-col">
         <h4>🍎 食事</h4>
@@ -1511,6 +1391,7 @@ function renderBodyTipsHTML(code) {
         <p class="label">避けるべき！</p>
         <ul>${li(t.diet_avoid)}</ul>
       </div>
+
       <div class="tips-col">
         <h4>🏃‍♀️ 運動</h4>
         <p class="label">筋トレ</p>
@@ -1519,6 +1400,7 @@ function renderBodyTipsHTML(code) {
         <ul>${li(t.train_cardio)}</ul>
       </div>
     </div>
+
     <div class="tips-extra">
       <h4>🧘‍♀️ ケア・姿勢</h4>
       <ul>${li(t.mobility)}${li(t.care)}</ul>
@@ -1526,6 +1408,8 @@ function renderBodyTipsHTML(code) {
     </div>
   </div>`;
 }
+
+
 
 function _renderResultCore(){
   const {code,scores}=buildCode();
@@ -1748,30 +1632,7 @@ if (!state._sentOnce) {
   // ここで一度だけ append
 
   app.appendChild(el);
- const unlockBtn = el.querySelector('#unlock-premium-btn');
-if (unlockBtn) {
-  unlockBtn.addEventListener('click', async () => {
-    try {
-      // 1) 課金処理（本番ではStripe等）→ 成功したら権限付与
-      grantPremium();
-
-      // 2) （任意）メール送信の呼び出し
-      await unlockPremium();  // すでに定義済みの関数を利用
-
-      // 3) その場で結果だけ再描画（リロード無し）
-      const keepY = window.scrollY;
-      const appRoot = document.getElementById('app');
-      if (appRoot) {
-        appRoot.innerHTML = '';
-        renderResult();      // ← 既存関数で再描画
-        window.scrollTo({ top: keepY, behavior: 'instant' });
-      }
-    } catch(e) {
-      console.error(e);
-      alert('ロック解除に失敗しました。もう一度お試しください。');
-    }
-  }, { once: true }); // 多重押下防止
-}
+ 
 // ===== 共有ボタン紐づけ（renderResult() の最後で実行） =====
 (() => {
   const { code } = buildCode();
@@ -1859,9 +1720,6 @@ function showResultInterstitial(onDone){
 }
 
 // 外側の「公開API」: これをアプリ側は呼び出す
-// ==== Premium Lock helpers ====
-
-
 function renderResult(){
   _renderResultCore();
 }
@@ -1899,37 +1757,6 @@ function axisPercent(axisKey){
 </script>
 
 <script>
-  window.Premium = (function(P){
-  if (P && P.__installed) return P; // 既に入ってたら再利用
-
-  const KEY = 'km_premium_v1';
-  const api = {
-    has(){
-      if (window.__forceLock === true) return false; // デバッグで強制ロック
-      return localStorage.getItem(KEY) === '1';
-    },
-    grant(){ localStorage.setItem(KEY,'1'); },
-    revoke(){ localStorage.removeItem(KEY); },
-    __installed: true
-  };
-
-  // URL デバッグ (?grantPremium=1 / ?resetPremium=1 / ?forceLock=1)
-  try{
-    const q = new URLSearchParams(location.search);
-    if (q.get('resetPremium') === '1') api.revoke();
-    if (q.get('grantPremium') === '1') api.grant();
-    if (q.get('forceLock') === '1') window.__forceLock = true;
-  }catch(e){}
-
-  // 既存コード互換（hasPremium() 等を呼んでいても落ちないように）
-  window.hasPremium   = window.hasPremium   || (() => api.has());
-  window.grantPremium = window.grantPremium || (() => api.grant());
-  window.revokePremium= window.revokePremium|| (() => api.revoke());
-
-  return api;
-})(window.Premium || {});
-// ===== /Premium Lock helpers =====
-
 // === JSONPユーティリティ ===
 function jsonp(url){
   return new Promise((resolve, reject)=>{
@@ -2012,10 +1839,6 @@ async function refreshCuteStats(){
 document.addEventListener('DOMContentLoaded', ()=>{
   refreshCuteStats();
   setInterval(refreshCuteStats, 60000);
-  const unlockBtn = document.getElementById('unlockBtn');
-  if (unlockBtn) {
-    unlockBtn.addEventListener('click', unlockPremium);
-  }
 });
 </script>
 
@@ -2264,35 +2087,6 @@ window.showResultInterstitial = function(next, opts={}){
   if (isInAppBrowser()) {
     showInAppWarning();
   }
-</script>
-<script>
-async function unlockPremium() {
-  localStorage.setItem('premiumUnlocked', 'true');
-
-  const email = prompt("結果をメールで受け取るアドレスを入力してください📩");
-  if (!email) return alert("メールアドレスが入力されていません。");
-
-  // 現在の診断結果HTMLを取得
-  const resultHTML = document.querySelector('#app')?.innerHTML || "(結果が見つかりません)";
-
-  // Google Apps Scriptへ送信
-  try {
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sendResultMail: true,
-        email,
-        html: resultHTML
-      })
-    });
-    const data = await res.json();
-    alert(data.message || "診断結果をメールで送信しました📩");
-  } catch (err) {
-    console.error(err);
-    alert("メール送信中にエラーが発生しました。");
-  }
-}
 </script>
 </body>
 </html>
