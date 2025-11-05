@@ -1740,52 +1740,107 @@ if (cb) {
   document.body.appendChild(tpl.firstElementChild);
 })();
 
-function showResultInterstitial(onDone){
-  const layer = document.getElementById('resultInterstitial');
-  const btn   = document.getElementById('ri-skip');
-  const bar   = document.getElementById('ri-bar');
-  const msg   = document.getElementById('ri-msg');
-  const adBox = document.getElementById('ri-ad');
+// --- ユーティリティ：インアプリブラウザ検知 ---
+function isInAppBrowser(){
+  const ua = navigator.userAgent.toLowerCase();
+  return ua.includes('line') || ua.includes('fbav') || ua.includes('instagram') || ua.includes('micromessenger');
+}
 
-  // 進捗とカウントダウン
-  layer.style.display = 'flex';
-  let t = 15; // 秒
+// --- インタースティシャル表示＆広告ロード ---
+function showResultInterstitial() {
+  // オーバーレイ表示
+  const overlay = document.getElementById('resultInterstitial');
+  const adBox   = document.getElementById('ri-ad');
+  const msgEl   = document.getElementById('ri-msg');
+  const btn     = document.getElementById('ri-skip');
+  const bar     = document.getElementById('ri-bar');
+  if (!overlay || !adBox || !btn) return;
+
+  // 表示状態＆サイズ・前面化の担保
+  overlay.style.display = 'flex';
+  overlay.style.zIndex = '99999';
+  adBox.style.minHeight = '280px';
+  adBox.style.display   = 'block';
+
+  // 進捗バーの見た目（ダミー）
   let p = 0;
-  btn.textContent = `${t}秒後に結果を表示`;
+  const prog = setInterval(()=>{
+    p = Math.min(95, p + 5);
+    bar.style.width = p + '%';
+  }, 300);
+
+  // インアプリなら案内
+  if (isInAppBrowser()) {
+    msgEl.textContent = 'アプリ内ブラウザでは広告が表示されない場合があります。「ブラウザで開く」でSafari/Chromeからお試しください。';
+  } else {
+    msgEl.textContent = '最適化と描画を行っています';
+  }
+
+  // クリック解放（ユーザー操作）でロードする
+  const loadAdOnce = (() => {
+    let done = false;
+    return () => {
+      if (done) return;
+      done = true;
+
+      // 既存をクリアしてからロード
+      adBox.innerHTML = '';
+      try {
+        const s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src  = 'https://pl27989437.effectivegatecpm.com/ae/06/97/ae0697c353ceaa04cad71b481f68bd94.js';
+        s.onload  = () => { /* 読み込み成功（表示はネットワーク次第） */ };
+        s.onerror = () => {
+          msgEl.textContent = '広告の読み込みに失敗しました（ネットワーク/ブロッカーの可能性）';
+        };
+        adBox.appendChild(s);
+      } catch(e) {
+        msgEl.textContent = '広告初期化でエラーが発生しました';
+      }
+
+      // ウォッチドッグ：4秒待っても何も子要素が増えなければフォールバック文言
+      setTimeout(() => {
+        // スクリプト以外（iframe等）が追加されていないかを軽く確認
+        const hasIframe = adBox.querySelector('iframe');
+        if (!hasIframe) {
+          msgEl.textContent = '広告がブロック/非対応の可能性があります。数秒後に結果を表示できます。';
+        }
+      }, 4000);
+    };
+  })();
+
+  // 初回ユーザー操作で広告ロード（ボタンにフック）
+  // まだ押せないが、押した瞬間にもロードが走るようにしておく
+  btn.addEventListener('click', loadAdOnce, { once:true });
+
+  // すぐにロード開始したい場合は下の1行を有効化（任意）
+  // loadAdOnce();
+
+  // 15秒カウントで解放
   btn.disabled = true;
   btn.style.cursor = 'not-allowed';
-
-  const tick = setInterval(()=>{
-    t -= 1;
-    p = Math.min(100, p + 100/15);
-    bar.style.width = `${p}%`;
-    btn.textContent = t > 0 ? `${t}秒後に結果を表示` : `結果を表示する`;
+  let t = 15;
+  btn.textContent = `${t}秒後に結果を表示`;
+  const timer = setInterval(()=>{
+    t--;
+    btn.textContent = t > 0 ? `${t}秒後に結果を表示` : '結果を見る';
     if (t <= 0) {
-      clearInterval(tick);
+      clearInterval(timer);
+      clearInterval(prog);
+      bar.style.width = '100%';
       btn.disabled = false;
       btn.style.cursor = 'pointer';
     }
   }, 1000);
 
-  // AdSense（承認後に動作）: ページにクライアントJSがある前提
-  // Adsterra広告を読み込み
-try {
-  const s = document.createElement('script');
-  s.type = 'text/javascript';
-  s.src = '//pl27989437.effectivegatecpm.com/ae/06/97/ae0697c353ceaa04cad71b481f68bd94.js';
-  s.async = true;
-  document.getElementById('ri-ad').appendChild(s);
-} catch(e) {
-  adBox.style.display = 'none';
-  msg.textContent = '広告の読み込み中に問題が発生しました';
-}
-  // クリックで閉じて進む
+  // クリックでオーバーレイを閉じて結果を描画
   btn.onclick = () => {
-    layer.style.display = 'none';
-    onDone && onDone();
+    overlay.style.display = 'none';
+    // ここで本来の結果描画関数を呼ぶ
+    // 例）renderResultCore();  // あなたの結果描画ロジック
   };
 }
-
 // 外側の「公開API」: これをアプリ側は呼び出す
 function renderResult(){
   showResultInterstitial(_renderResultCore);
