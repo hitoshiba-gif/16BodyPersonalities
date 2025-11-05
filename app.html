@@ -8,8 +8,6 @@
 <meta name="color-scheme" content="light dark">
 <title> 16BodyPersonalities</title>
 <!--script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5269846776939991" crossorigin="anonymous"></script>-->
-
-<script type="text/javascript" src="https://pl27989437.effectivegatecpm.com/ae/06/97/ae0697c353ceaa04cad71b481f68bd94.js"></script>
 <link rel="stylesheet" href="./styles.css?v=1">
 </head>
 <body data-theme="WAVE">
@@ -129,7 +127,7 @@
 <script>
   document.body.dataset.theme = 'WAVE';
   // ============ Google Sheets連携設定 ============
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxb93EpsZ6S0Xizk9PdBEJC8stOJtYLgJA4X92m_9Q2tulQRgSunmk-xdxIHevIC15d/exec"
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx830ojBY-t5LdpmOP0OdekpFf5-O8TaxbkSWubG0EuVV_GJRqewkS4jjZzbXZUtdYA/exec"
 function sendToSheets(payload){
   console.log('[GAS] sending...', payload);
   return fetch(GAS_URL, {
@@ -1572,6 +1570,11 @@ ${groupHTML}
          
         ${renderBodyTipsHTML(code)}
         ${celebHTML}
+        <div class="card" style="margin-top:12px; text-align:center;">
+  <h3>完全版レポート</h3>
+  <p class="muted small">“あなた専用”の詳しい提案・ブランド・相性・Q&Aなど全部盛り</p>
+  <button class="btn" id="buy-premium">完全版を購入（¥100）</button>
+</div>
         ${renderShareCardHTML(code)} 
           <p class="small">※ 提案は各軸（骨格/密度/重心/ライン）のスコアとタイプ固有情報から生成しています。</p>
         </div>
@@ -1661,7 +1664,42 @@ if (!state._sentOnce) {
   };
 })();
 
+const buyBtn = el.querySelector('#buy-premium');
+if (buyBtn){
+  buyBtn.addEventListener('click', async () => {
+    // 1) メール
+    const email = prompt('完全版のURLを送るメールアドレスを入力してください📩');
+    if (!email) return;
 
+    // 2) ここで本来は Stripe/PayPay 決済へ遷移（まずは省略でOK）
+
+    // 3) データ準備（answersも含める）
+    const { code, scores } = buildCode();
+    const answers = state.answers || {};
+    const sessionId = localStorage.getItem('km_session') ||
+                      (localStorage.setItem('km_session',(crypto?.randomUUID?.()||Math.random().toString(36).slice(2))),
+                       localStorage.getItem('km_session'));
+
+    // 4) JSONP 保存＆メール送信（GAS側でメール送る）
+    const url = GAS_URL
+      + '?savePremium=1'
+      + '&email='   + encodeURIComponent(email)
+      + '&sessionId='+ encodeURIComponent(sessionId)
+      + '&code='    + encodeURIComponent(code)
+      + '&scores='  + encodeURIComponent(JSON.stringify(scores))
+      + '&answers=' + encodeURIComponent(JSON.stringify(answers));
+
+    try{
+      const res = await jsonp(url); // 既存のjsonpヘルパーを使用
+      if (!res || !res.ok) throw new Error(res?.error || '保存に失敗');
+
+      alert('購入ありがとうございます！\n完全版URLをメールで送りました📩\n（迷惑メールもご確認ください）');
+    }catch(e){
+      console.error(e);
+      alert('エラー：メール送信に失敗しました。時間を置いてお試しください。');
+    }
+  }, { once:false });
+}
   // === 同意チェックの初期状態とイベント ===
 const cb = document.getElementById('consentBox');
 if (cb) {
@@ -1971,122 +2009,9 @@ window.addEventListener('DOMContentLoaded', function(){
 
 
 <!-- ====== 結果の直前インタースティシャル ====== -->
-<div id="result-prep" style="display:none;">
-  <div class="rp-backdrop"></div>
-  <div class="rp-card">
-    <div class="rp-title">結果を準備中…</div>
-    <div class="rp-sub">15秒ほどお待ちください（無料）</div>
 
-    <!-- AdSense 枠（※ data-ad-slot はあなたの広告ユニットIDに差し替え） -->
-    <ins class="adsbygoogle rp-ad"
-         style="display:block"
-         data-ad-client="ca-pub-5269846776939991"
-         data-ad-slot="1234567890"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
 
-    <div class="rp-progress"><div class="rp-bar" style="width:0%"></div></div>
 
-    <button id="rp-skip" class="rp-btn" disabled>結果を見る</button>
-    <div class="rp-note">広告は読み込み状況により表示されないことがあります。</div>
-  </div>
-</div>
 
-<script>
-/** 結果直前インタースティシャルを表示し、完了後に next() を実行 */
-window.showResultInterstitial = function(next, opts={}){
-  // 1セッション1回だけにしたければ true に
-  const oncePerSession = opts.oncePerSession ?? false;
-  if(oncePerSession && sessionStorage.getItem('rp_shown')==='1'){
-    next?.(); return;
-  }
-
-  const el = document.getElementById('result-prep');
-  const btn = document.getElementById('rp-skip');
-  const bar = el.querySelector('.rp-bar');
-
-  // 表示
-  el.style.display = 'block';
-
-  // AdSenseの広告を読み込み
-  try{ (adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
-
-  // 目安15秒（広告ロードが遅い/無い場合のフェールセーフ込み）
-  const totalMs = 15000;
-  let t0 = Date.now();
-  const timer = setInterval(()=>{
-    const p = Math.min(1, (Date.now()-t0)/totalMs);
-    bar.style.width = Math.round(p*100)+'%';
-    if(p>=1){
-      clearInterval(timer);
-      btn.disabled = false;
-      btn.classList.add('rp-ready');
-      btn.textContent = '結果を見る';
-    }
-  }, 150);
-
-  // クリックでクローズ→結果へ
-  btn.addEventListener('click', onGo, { once:true });
-
-  function onGo(){
-    el.style.display = 'none';
-    if(oncePerSession) sessionStorage.setItem('rp_shown','1');
-    next?.();
-  }
-
-  // 追加の安全策：30秒で自動クローズ（広告0件時の保険）
-  setTimeout(()=>{
-    if(el.style.display!=='none'){
-      btn.disabled = false;
-      btn.classList.add('rp-ready');
-      btn.textContent = '結果を見る';
-    }
-  }, 30000);
-};
-</script>
-<script>
-  // ざっくり検出（LINE/Instagram/Facebookのアプリ内ブラウザ）
-  function isInAppBrowser() {
-    const ua = navigator.userAgent || '';
-    return /Line\/|FBAN|FB_IAB|FBAV|Instagram|Twitter/i.test(ua);
-  }
-
-  // 外部ブラウザで開くヘルパー
-  function openExternally() {
-    try {
-      // iOS/Androidどちらでも、ユーザ操作のclickでwindow.openが最も通りやすい
-      window.open(location.href, '_blank', 'noopener');
-    } catch (e) {
-      // ダメならURLをコピー
-      navigator.clipboard?.writeText(location.href);
-      alert('ブラウザ（Safari/Chrome）で開いてください。リンクをコピーしました。');
-    }
-  }
-
-  // バナーを出す
-  function showInAppWarning() {
-    const bar = document.createElement('div');
-    bar.id = 'iab-warning';
-    bar.style.cssText = `
-      position:sticky; top:0; z-index:9999;
-      background:#111; color:#fff; padding:10px 12px;
-      display:flex; gap:8px; align-items:center; justify-content:space-between;
-      font-size:14px;
-    `;
-    bar.innerHTML = `
-      <span>アプリ内ブラウザでは広告や一部機能が表示されない場合があります。Safari/Chromeで開くと正常に表示されます。</span>
-      <button id="iab-open" style="
-        background:#fff; color:#111; border:none; border-radius:8px;
-        padding:8px 12px; font-weight:600; cursor:pointer;
-      ">ブラウザで開く</button>
-    `;
-    document.body.prepend(bar);
-    document.getElementById('iab-open').onclick = openExternally;
-  }
-
-  if (isInAppBrowser()) {
-    showInAppWarning();
-  }
-</script>
 </body>
 </html>
