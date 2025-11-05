@@ -7,7 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="color-scheme" content="light dark">
 <title> 16BodyPersonalities</title>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5269846776939991" crossorigin="anonymous"></script>
+<!--script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5269846776939991" crossorigin="anonymous"></script>-->
+
+<script type="text/javascript" src="//pl27989437.effectivegatecpm.com/ae/06/97/ae0697c353ceaa04cad71b481f68bd94.js"></script>
 <link rel="stylesheet" href="./styles.css?v=1">
 </head>
 <body data-theme="WAVE">
@@ -1640,7 +1642,6 @@ if (!state._sentOnce) {
   const shareTitle = `${meta.emoji ?? ''} ${meta.name || code}（${code}）`;
   const shareUrl   = new URL('index.html', location.href).href;
 
-
   const bx = document.getElementById('btn-x');
   if (bx) bx.onclick = () => {
     const t = encodeURIComponent(`骨格MBTI診断の結果は「${shareTitle}」でした！`);
@@ -1728,12 +1729,7 @@ if (cb) {
 
         <!-- 広告枠（AdSense承認後に自動で表示されます） -->
         <div id="ri-ad" style="min-height:120px; display:block; border:1px dashed #ddd; border-radius:8px; padding:8px; margin:8px 0 12px">
-          <ins class="adsbygoogle"
-               style="display:block"
-               data-ad-client="ca-pub-5269846776939991"
-               data-ad-slot="auto"
-               data-ad-format="auto"
-               data-full-width-responsive="true"></ins>
+          
         </div>
 
         <button id="ri-skip" disabled style="
@@ -1772,14 +1768,17 @@ function showResultInterstitial(onDone){
   }, 1000);
 
   // AdSense（承認後に動作）: ページにクライアントJSがある前提
-  try {
-    (adsbygoogle = window.adsbygoogle || []).push({});
-  } catch(e) {
-    // 未承認 or ブロック時は静かにスキップ
-    adBox.style.display = 'none';
-    msg.textContent = '最適化と描画を行っています…';
-  }
-
+  // Adsterra広告を読み込み
+try {
+  const s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.src = '//pl27989437.effectivegatecpm.com/ae/06/97/ae0697c353ceaa04cad71b481f68bd94.js';
+  s.async = true;
+  document.getElementById('ri-ad').appendChild(s);
+} catch(e) {
+  adBox.style.display = 'none';
+  msg.textContent = '広告の読み込み中に問題が発生しました';
+}
   // クリックで閉じて進む
   btn.onclick = () => {
     layer.style.display = 'none';
@@ -2112,7 +2111,7 @@ window.showResultInterstitial = function(next, opts={}){
   }, 30000);
 };
 </script>
-  <script>
+<script>
   // ざっくり検出（LINE/Instagram/Facebookのアプリ内ブラウザ）
   function isInAppBrowser() {
     const ua = navigator.userAgent || '';
