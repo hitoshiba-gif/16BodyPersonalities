@@ -245,3 +245,17 @@
     [data-page="premium"] .btn-ghost{ display:none !important; }
   }
 }
+/* premiumだけのヒーロー枠調整（切れ防止） */
+[data-page="premium"] .hero-image{
+  aspect-ratio: 4/3;      /* appと同等の入れ物比率に固定（必要なら 3/4 等に） */
+  background: #0c0d12;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.1);
+  overflow: hidden;
+}
+[data-page="premium"] .hero-image img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;     /* 重要：切れずに収まる */
+  display: block;
+}
