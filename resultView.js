@@ -5,7 +5,7 @@
 (function bootstrapSafeGlobals(){
   // ---- AXES（4軸） ----
   const DEFAULT_AXES = [
-    { key:'frame',   posLabel:'肉付き主導（M）',  negLabel:'骨格主導（B）',  codePos:'M', codeNeg:'B' },
+    { key:'frame',   posLabel:'骨格主導（B）',  negLabel:'肉付き主導（M）',  codePos:'B', codeNeg:'M' },
     { key:'surface', posLabel:'身体フレーム広（W）', negLabel:'身体フレーム狭（N）', codePos:'W', codeNeg:'N' },
     { key:'balance', posLabel:'上重心（U）',       negLabel:'下重心（L）',       codePos:'U', codeNeg:'L' },
     { key:'line',    posLabel:'直線（S）',         negLabel:'曲線（C）',         codePos:'S', codeNeg:'C' },
