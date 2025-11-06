@@ -3,18 +3,22 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="dark light"/>
   <title>完全版レポート | 16BodyPersonalities</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=2" />
-  <link rel="stylesheet" href="./premium.css?v=1">
+  <!-- favicon 404 回避 -->
+  <link rel="icon" href="data:,">
+
+  <!-- フォント & CSS（appと同じ見た目に揃える） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./styles.css?v=2"/>
+  <link rel="stylesheet" href="./premium.css?v=1"/>
 </head>
 
-<body data-theme="NATURAL">
+<body data-page="premium" data-theme="WAVE">
   <div class="wrap" id="app">
-
     <header class="site">
       <div class="brand">16Body<b>Personalities</b> <span class="pill">Premium</span></div>
       <div class="tools">
@@ -24,101 +28,174 @@
       </div>
     </header>
 
-    <div id="premium-root" class="grid" style="margin-top:10px">
+    <!-- 結果を差し込む先。絶対にこのIDを残す -->
+    <main id="premium-root" class="grid" style="margin-top:10px">
       <div class="card">
         <h2>読み込み中…</h2>
-        <p class="muted">専用リンク（token）からあなたの完全版レポートを復元しています。</p>
+        <p class="muted">専用リンク（token）から完全版レポートを復元しています。</p>
       </div>
-    </div>
+    </main>
 
-    <div class="footer">
+    <footer class="footer">
       <span>© 2025 16BodyPersonalities Project</span>
       <span class="muted">This report is personalized for you.</span>
-    </div>
-
+    </footer>
   </div>
 
-  <!-- ====== html2canvas / jsPDF ====== -->
+  <!-- 画像/PDF 出力用ライブラリ -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
-  <!-- ====== GAS_URL を window に固定 ====== -->
+  <!-- ====== 設定（GAS 稼働URL：変更不可のまま固定） ====== -->
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbz_nqEUfi7lbvqK2SHkxO1dLW0uKTfhY7wbG80IlcCKgwbxn_MPJ50W64MhhjDygwJ4/exec"
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxVTRr8ju0FPCi7rDiY6lXI4c3oGUOGhmEv8zttNf8yS_1sO01ssg5yWfvgPilcxzvj/exec";
   </script>
 
-  <!-- ====== 便利関数・JSONP ====== -->
-  <script>
-    function normalize01(x, min=1, max=5){ return Math.max(0, Math.min(1, (x-min)/(max-min))); }
-    function pct(x){ return Math.round(x*100); }
-    function uniq(arr){ return [...new Set(arr.filter(Boolean))]; }
-    function pickSome(arr, n){ const a = [...arr]; const out=[]; while(a.length && out.length<n){ out.push(a.splice(Math.floor(Math.random()*a.length),1)[0]); } return out; }
+  <!-- ====== 共通データ（TYPE_META / BODY_TIPS / BRAND_BY_TYPE / TYPE_NICK 等） ====== -->
+  <!-- app で types.js を使っているならファイル名を合わせてOK。ここでは meta.js を想定 -->
+  <script src="./meta.js"></script>
 
+  <!-- ====== 結果ビュー（app と同一の renderResult 群） ====== -->
+  <script src="./resultView.js"></script>
+
+  <!-- ====== ユーティリティ & 起動スクリプト ====== -->
+  <script>
+    // DOMショートカット
+    const $ = (sel, root=document)=>root.querySelector(sel);
+
+    // JSONP（GAS get系で使用）
     function jsonp(url){
       return new Promise((resolve, reject)=>{
         const cb = '__jp' + Math.random().toString(36).slice(2);
         const s  = document.createElement('script');
-        const q  = (url.includes('?')?'&':'?')+'callback='+cb;
-
+        const q  = (url.includes('?') ? '&' : '?') + 'callback=' + cb;
         window[cb] = (data)=>{ resolve(data); cleanup(); };
         s.onerror  = ()=>{ reject(new Error('JSONP failed')); cleanup(); };
-
         s.src = url + q;
         s.async = true;
         document.head.appendChild(s);
-
         function cleanup(){ delete window[cb]; s.remove(); }
       });
     }
-  </script>
 
-  <!-- ====== types.js（type辞書） ====== -->
-  <script src="./types.js"></script>
+    // 同意（必要なら本体と揃える）
+    const getConsent = () => localStorage.getItem('km_consent') || 'yes';
 
-  <!-- ====== app と同じ resultView.js を読み込む ====== -->
-  <script src="./js/resultView.js?v=1"></script>
+    // 初期state（answersは後でtoken復元で上書き）
+    function makeInitialState(){
+      const n = (window.QUESTIONS?.frame?.length || 12);
+      const init = ()=> Array.from({length:n}, ()=>3);
+      return {
+        step: 4,
+        answers: { frame: init(), surface: init(), balance: init(), line: init() }
+      };
+    }
+    // グローバルstate（renderResult が参照）
+    let state = makeInitialState();
 
-  <!-- ====== token 読み込み → 結果表示 ====== -->
-  <script>
-  (async function boot(){
-    try{
-      const params = new URLSearchParams(location.search);
-      const token  = params.get('token');
+    // 画像保存
+    async function saveAsImage(){
+      const root = document.getElementById('premium-root') || document.getElementById('app') || document.body;
+      const canvas = await html2canvas(root, {useCORS:true, scale:2});
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = '16BP-premium.png';
+      a.click();
+    }
 
-      let dataFromToken = null;
+    // PDF保存（A4縦）
+    async function saveAsPDF(){
+      const { jsPDF } = window.jspdf;
+      const root = document.getElementById('premium-root') || document.getElementById('app') || document.body;
+      const canvas = await html2canvas(root, {useCORS:true, scale:2});
+      const img = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ unit:'mm', format:'a4', orientation:'p' });
+      const pageW=210, pageH=297, margin=10;
+      const imgW = pageW - margin*2;
+      const imgH = canvas.height * imgW / canvas.width;
+      pdf.addImage(img, 'PNG', margin, margin, imgW, Math.min(imgH, pageH - margin*2));
+      pdf.save('16BP-premium.pdf');
+    }
 
-      // token があるなら GAS から復元
-      if (token) {
-        const url = `${GAS_URL}?kind=getPremium&token=${encodeURIComponent(token)}`;
-        const res = await jsonp(url);
-        if (res && (res.answers || res.code)) dataFromToken = res;
+    // 自分に再送（GAS: sendMail=1）
+    async function resendMail(){
+      const email = prompt('完全版URLを再送するメールアドレスを入力してください');
+      if (!email) return;
+      // resultView.js に buildCode() がある想定。無いときは token だけでもOK。
+      let code = '';
+      try { code = (typeof buildCode==='function') ? buildCode().code : (window.__PREMIUM_CODE__||''); } catch(_){}
+      try{
+        const r = await jsonp(`${GAS_URL}?sendMail=1&email=${encodeURIComponent(email)}&code=${encodeURIComponent(code||'')}`);
+        if (!r?.ok) throw new Error(r?.error || '送信失敗');
+        alert('送信しました！迷惑メールもご確認ください。');
+      }catch(e){
+        alert('メール送信エラー：' + (e?.message || e));
+      }
+    }
+
+    // ====== 起動：token→GASから answers を復元し、app と同じ描画を実行 ======
+    async function boot(){
+      const root = document.getElementById('premium-root') || document.getElementById('app') || document.body;
+
+      const token = new URLSearchParams(location.search).get('token');
+      if (!token){
+        root.innerHTML = `
+          <div class="card">
+            <h2>トークンが見つかりません</h2>
+            <p class="muted">URLの <code>?token=...</code> を確認してください。</p>
+          </div>`;
+        return;
       }
 
-      // 復元できたら state に注入
-      if (dataFromToken?.answers) {
-        window.state = window.state || {};
-        state.answers = dataFromToken.answers;
+      // GAS: /exec?report=1&token=...
+      let res;
+      try{
+        res = await jsonp(`${GAS_URL}?report=1&token=${encodeURIComponent(token)}`);
+      }catch(e){
+        root.innerHTML = `
+          <div class="card">
+            <h2>読み込みエラー</h2>
+            <p class="muted">${e?.message || e}</p>
+          </div>`;
+        return;
       }
 
-      // 結果描画（app と同じ renderResult を呼ぶ）
+      if (!res?.ok || !res?.data){
+        root.innerHTML = `
+          <div class="card">
+            <h2>復元エラー</h2>
+            <p class="muted">${res?.error || 'token に対応するデータが見つかりませんでした。'}</p>
+          </div>`;
+        return;
+      }
+
+      // state 注入
+      state = makeInitialState();
+      if (res.data.answers) state.answers = res.data.answers;
+      window.__PREMIUM_CODE__   = res.data.code   || '';
+      window.__PREMIUM_SCORES__ = res.data.scores || {};
+
+      // app と同じレンダラで描画（画像→4軸→ブランド→指針→Tips→芸能人→相性 まで全部）
       if (typeof renderResult === 'function') {
         renderResult();
       } else if (typeof _renderResultCore === 'function') {
         _renderResultCore();
       } else {
-        premiumRoot.innerHTML = `
-          <div class="card"><h2>結果ビュー読み込み失敗</h2><p>resultView.js を確認してください。</p></div>
-        `;
+        root.innerHTML = `
+          <div class="card">
+            <h2>結果ビューを読み込めません</h2>
+            <p class="muted">resultView.js のパス/読み込み順を確認してください。</p>
+          </div>`;
+        return;
       }
 
-    } catch(e) {
-      console.error(e);
-      premiumRoot.innerHTML = `
-        <div class="card"><h2>エラー</h2><p>${e.message}</p></div>
-      `;
+      // ツールボタン紐付け
+      document.getElementById('btn-save-img') ?.addEventListener('click', saveAsImage, {passive:true});
+      document.getElementById('btn-save-pdf') ?.addEventListener('click', saveAsPDF,   {passive:true});
+      document.getElementById('btn-send-mail')?.addEventListener('click', resendMail,  {passive:true});
     }
-  })();
-  </script>
 
+    boot();
+  </script>
 </body>
 </html>
