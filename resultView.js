@@ -35,7 +35,110 @@
 
   // GAS_URL は premium 側で固定しているので触らない（undefinedでもOK）
 })();
+// ==== compat shim v2: meta関数の足りない分を安全に補う ====
+(function(){
+  const TM = (typeof TYPE_META !== 'undefined') ? TYPE_META : {};
+  const BRAND = (typeof BRAND_BY_TYPE !== 'undefined') ? BRAND_BY_TYPE : {};
+  const ALL = (typeof ALL_CODES_ORDERED !== 'undefined') ? ALL_CODES_ORDERED
+            : Object.keys(TM).length ? Object.keys(TM) 
+            : ['BNLS','MNLC','MWLC','MWLS','MNLS','BNLC','BWUC','BWUS','BWLC','BWLS','BNUS','MWUC','MNUC','MNUS','MWUS','BNUC'];
 
+  // ベース判定（TYPE_META優先、なければ簡易規則）
+  function inferBase(code){
+    if (TM[code]?.base) return TM[code].base;
+    const wave = new Set(['BNLS','MNLC','MWLC','MWLS','MNLS','BNLC']);
+    const nat  = new Set(['BWUC','BWUS','BWLC','BWLS']);
+    const st   = new Set(['BNUS','MWUC','MNUC','MNUS','MWUS','BNUC']);
+    if (wave.has(code)) return 'WAVE';
+    if (nat.has(code))  return 'NATURAL';
+    if (st.has(code))   return 'STRAIGHT';
+    return 'NATURAL';
+  }
+
+  // 1) どんな骨格？の本文
+  if (typeof window.describeBodyByCode !== 'function'){
+    window.describeBodyByCode = function(code){
+      const m = TM[code] || {};
+      // TYPE_METAに説明項目があるなら優先
+      const cand = m.bodyDesc || m.description || m.concept;
+      if (cand) return cand;
+      // なければベースごとの汎用テキスト
+      const base = inferBase(code);
+      if (base === 'WAVE') {
+        return '肉感・筋肉の厚みがベース。全体は重厚で安定感あり。下重心で下半身に安定が出やすい。輪郭は曲線寄りでソフト。';
+      } else if (base === 'STRAIGHT') {
+        return '厚みと立体感がベース。上重心で上半身に存在感が出やすい。直線を意識した構成が似合いやすい。';
+      } else {
+        return '骨感とフレーム幅がベース。ラフで直線寄りの要素が映える。抜け感や肩線の設計でバランスを整えると良い。';
+      }
+    };
+  }
+
+  // 2) タイプのニックネーム
+  if (typeof window.nickOf !== 'function'){
+    window.nickOf = function(code){
+      const m = TM[code] || {};
+      return m.nick || m.name || code;
+    };
+  }
+
+  // 3) モチーフに込めた意味
+  if (typeof window.whyOf !== 'function'){
+    window.whyOf = function(code){
+      const m = TM[code] || {};
+      return m.why || m.meaning || m.concept || 'タイプの核となる雰囲気やライン設計を象徴しています。';
+    };
+  }
+
+  // 4) 自動ブランド候補（TYPE_METAが持つ brandHints が無ければ最低限を返す）
+  if (typeof window.autoBrands !== 'function'){
+    window.autoBrands = function(code, base){
+      const m = TM[code] || {};
+      if (m.brandHints && m.brandHints.length) return m.brandHints;
+      const b = base || inferBase(code);
+      if (b === 'WAVE')     return ['IÉNA','Mila Owen','Plage','N.O.R.C','URBAN RESEARCH','TOMORROWLAND'];
+      if (b === 'STRAIGHT') return ['Theory','Max Mara','PLST','FOXEY','CELFORD','UNITED ARROWS'];
+      return ['UNIQLO','COS','& Other Stories','ZARA','MARGARET HOWELL','ENFÖLD'];
+    };
+  }
+
+  // 5) 自動スタイル提案（素材・ネック・シルエット・ライン）
+  if (typeof window.autoStyle !== 'function'){
+    window.autoStyle = function(code){
+      const base = inferBase(code);
+      if (base === 'WAVE') {
+        return {
+          fabric: ['薄手ウール','シフォン/ジョーゼット','スムースニット'],
+          neck:   ['ラウンド/スカーフタイ','ハートネック','Vネック＋ドレープ'],
+          silhouette: ['ロングトップス×落ち感ボトム','Aライン/フレア','ドロップショルダー'],
+          lines:  ['バイアスドレープ','マーメイド/フレア','ギャザー控えめ']
+        };
+      } else if (base === 'STRAIGHT') {
+        return {
+          fabric: ['中厚コットン','クリアウール','ハリのあるジャージー'],
+          neck:   ['Vネック','ボートネック','シャツカラー'],
+          silhouette: ['Iライン','ウエスト位置高め','セットアップ'],
+          lines:  ['直線を意識した切替','センタープレス','余計なギャザーなし']
+        };
+      } else {
+        return {
+          fabric: ['リネン/コットン','ドライタッチニット','ツイル'],
+          neck:   ['クルー','ヘンリーネック','オープンカラー'],
+          silhouette: ['ボクシー/ストレート','肩線やや落とす','ワイド/テーパード'],
+          lines:  ['直線×少量のドレープ','オーバル比率','縦の抜けを作る']
+        };
+      }
+    };
+  }
+
+  // 6) ブランドグループの空ガード
+  if (typeof window.BRAND_BY_TYPE === 'undefined'){
+    window.BRAND_BY_TYPE = BRAND; // 既にあればそのまま
+  }
+  if (typeof window.ALL_CODES_ORDERED === 'undefined'){
+    window.ALL_CODES_ORDERED = ALL;
+  }
+})();
 window.state = window.state || {
   step: 5,
   answers: { frame:[], surface:[], balance:[], line:[] },
