@@ -1,0 +1,247 @@
+/* ============================
+   16BodyPersonalities - Premium Only Styles
+   Scope: [data-page="premium"] 以下にのみ適用
+   ============================ */
+
+@layer premium {
+  /* ---- カラートークン（既存styles.cssの変数を上書き） ---- */
+  [data-page="premium"] {
+    /* ベースは既存と近いが、質感を+ */
+    --bg:        #0b0c0f;
+    --card:      #121318;
+    --text:      #f6f7fb;
+    --muted:     #a7aab3;
+    --ring:      rgba(255,255,255,0.18);
+    --shadow:    rgba(0,0,0,0.45);
+    --glass:     rgba(255,255,255,0.04);
+
+    /* テーマ別アクセント（既存トーンを踏襲） */
+    --accent:    #72e0ff; /* WAVE */
+    --accent-2:  #9be9ff;
+
+    /* 微グラデ（リムライト用） */
+    --grad-1:    linear-gradient(180deg, rgba(255,255,255,0.06), transparent);
+    --grad-2:    linear-gradient(90deg, rgba(255,255,255,0.06), transparent 60%);
+  }
+  [data-page="premium"][data-theme="NATURAL"]{
+    --accent:#79e19a; --accent-2:#b6f1cc;
+  }
+  [data-page="premium"][data-theme="STRAIGHT"]{
+    --accent:#f9a846; --accent-2:#ffd19a;
+  }
+
+  /* ---- ページ背景（控えめな高級感） ---- */
+  [data-page="premium"] body,
+  [data-page="premium"] {
+    background:
+      radial-gradient(1200px 800px at 70% -10%, rgba(255,255,255,0.06), transparent 60%),
+      radial-gradient(800px 600px at -10% 90%, rgba(255,255,255,0.05), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ---- コンテナ ---- */
+  [data-page="premium"] #premium-root{
+    max-width: 980px;
+    margin: 32px auto 72px;
+    padding: 0 16px;
+    display: grid;
+    gap: 16px;
+  }
+
+  /* ---- カード（上品なグラス感 + 極薄罫線） ---- */
+  [data-page="premium"] .card{
+    position: relative;
+    border-radius: 18px;
+    background: linear-gradient(180deg, var(--glass), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+      0 12px 30px var(--shadow),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+    padding: 20px 18px;
+    backdrop-filter: blur(8px);
+  }
+  /* 上端に細いリムライト */
+  [data-page="premium"] .card::before{
+    content:"";
+    position:absolute; inset:0;
+    background: var(--grad-1);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  /* ---- タイポ ---- */
+  [data-page="premium"] h1,
+  [data-page="premium"] h2,
+  [data-page="premium"] h3{
+    letter-spacing: .02em;
+    margin: 0 0 .4em;
+  }
+  [data-page="premium"] h1{ font-size: clamp(24px, 3vw, 34px); font-weight:800; }
+  [data-page="premium"] h2{ font-size: clamp(20px, 2.4vw, 26px); font-weight:700; }
+  [data-page="premium"] h3{ font-size: clamp(17px, 2vw, 20px); font-weight:700; }
+  [data-page="premium"] p.muted{ color: var(--muted); margin:.2em 0 0; }
+
+  /* ---- ピル/チップ/ボタン（統一感） ---- */
+  [data-page="premium"] .pill{
+    display:inline-block;
+    padding: .38rem .7rem;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 999px;
+    font-size: .78rem;
+    color: var(--text);
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  }
+
+  [data-page="premium"] .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  [data-page="premium"] .chip{
+    display:inline-block;
+    padding:.42rem .72rem;
+    border-radius: 999px;
+    border:1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.03);
+    font-size:.85rem;
+  }
+
+  [data-page="premium"] .btn-cta{
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:8px;
+    padding:.78rem 1rem;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.18);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02)),
+      radial-gradient(60% 180% at 50% -40%, var(--accent-2), transparent 60%);
+    color:#0a0a0a; /* 少しリッチに見えるようボタン内は明るめテキストに */
+    font-weight:700;
+    text-decoration:none;
+    box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  [data-page="premium"] .btn-cta:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(0,0,0,.45);
+    filter: brightness(1.02);
+  }
+  [data-page="premium"] .btn-ghost{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:.72rem 1rem;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.02);
+    color: var(--text);
+    text-decoration:none;
+  }
+
+  /* ---- ヒーロー画像 ---- */
+  [data-page="premium"] .hero{
+    width: 100%;
+    display: block;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow:
+      0 10px 28px rgba(0,0,0,.45),
+      0 0 0 4px rgba(255,255,255,0.02) inset;
+    background-color: #0c0d12;
+  }
+
+  /* ---- セクション構成（読みやすい余白） ---- */
+  [data-page="premium"] .section{
+    display: grid;
+    gap: 14px;
+  }
+  [data-page="premium"] .section-title{
+    display:flex; align-items:center; gap:10px;
+    font-weight:800;
+    background: var(--grad-2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  [data-page="premium"] .section-title::before{
+    content:"";
+    width:10px; height:10px; border-radius:50%;
+    background: var(--accent);
+    box-shadow: 0 0 16px var(--accent);
+  }
+
+  /* ---- リストを上品に ---- */
+  [data-page="premium"] ul{
+    list-style:none; padding:0; margin:.2rem 0 0;
+    display:grid; gap:.5rem;
+  }
+  [data-page="premium"] ul li{
+    position:relative; padding-left:1.1rem; color: var(--text);
+  }
+  [data-page="premium"] ul li::before{
+    content:""; position:absolute; left:0; top:.6rem;
+    width:6px; height:6px; border-radius:50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* ---- グリッド（画像 + テキスト） ---- */
+  @media (min-width: 880px){
+    [data-page="premium"] .grid-hero{
+      display:grid; grid-template-columns: 1.05fr .95fr; gap:18px;
+      align-items: start;
+    }
+  }
+
+  /* ---- 微アニメ（最小限） ---- */
+  @keyframes subtleIn {
+    from { opacity: 0; transform: translateY(3px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  [data-page="premium"] .card { animation: subtleIn .35s ease both; }
+
+  /* ---- テーブル（もし使う場合） ---- */
+  [data-page="premium"] table{
+    width:100%; border-collapse: collapse;
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:12px; overflow:hidden;
+  }
+  [data-page="premium"] thead th{
+    text-align:left; font-weight:700; padding:.7rem .8rem;
+    background: rgba(255,255,255,0.04);
+  }
+  [data-page="premium"] tbody td{
+    padding:.65rem .8rem; border-top:1px solid rgba(255,255,255,0.08);
+  }
+
+  /* ---- フォーム/入力（将来課金UIを置く想定） ---- */
+  [data-page="premium"] .field{
+    display:grid; gap:.35rem;
+  }
+  [data-page="premium"] .input{
+    background: rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.14);
+    color: var(--text);
+    padding:.7rem .8rem; border-radius:12px;
+    outline: none;
+  }
+  [data-page="premium"] .input:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(114,224,255,.18);
+  }
+
+  /* ---- 印刷(PDF)最適化：影/背景を軽くして文字濃く ---- */
+  @media print {
+    [data-page="premium"] {
+      --bg:#ffffff; --card:#ffffff; --text:#0a0a0a; --muted:#444; --accent:#2a7bc0;
+    }
+    [data-page="premium"] body, [data-page="premium"] {
+      background:#fff !important; color:#0a0a0a !important;
+    }
+    [data-page="premium"] .card{
+      background:#fff !important; box-shadow:none !important; border-color:#e5e7eb !important;
+    }
+    [data-page="premium"] .hero{
+      box-shadow:none !important; border-color:#e5e7eb !important;
+    }
+    [data-page="premium"] .btn-cta,
+    [data-page="premium"] .btn-ghost{ display:none !important; }
+  }
+}
