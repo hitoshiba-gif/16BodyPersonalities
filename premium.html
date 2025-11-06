@@ -99,7 +99,7 @@
 
   <script>
   // ====== 設定 ======
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbzgklx6n1Zs1N4O1qHT31LF331wVjUvy-JdS8iKQHLdAr_goW4CLY1hS7WaIqf_ZqmJ/exec";
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbzRZrR7lq3cGTuzJ10sJeB_XZOo2IrQncvGHM1T_BsPxqvV1XwNiAXDrLfRipUopXL6/exec";
 
   // ====== タイプ辞書（必要最小＋拡張メタ） ======
   // =========================================================
@@ -133,428 +133,679 @@ function jsonp(url){
 //   - notes: 世界観一言
 //   すべて “ベース” 値で、あとで scores で強化/調整する
 // =========================================================
-const PREMIUM_RULES = {
-  // ===== WAVE 6 =====
-  BNLS:{ // 🐨 Koala – Fairy Wave
-    code:'BNLS', name:'Fairy Wave – Koala', base:'WAVE', emoji:'🐨',
-    celebs:{
-      jp:['新垣結衣','橋本環奈','上白石萌音'],
-      kr:['IU','Taeyeon','Nayeon'],
-      global:['Lily Collins','Keira Knightley(軽)','Elle Fanning']
-    },
-    bodyTips:[
-      '重心は「下」に逃がし、上半身は薄く短く',
-      '袖口・足首に抜けをつくると全体が軽く見える',
-      'スカートはミモレ〜ロング、腰位置は高め表示',
-      '厚手や硬い直線は顔まわりから遠ざける'
+const TYPE_META = {
+  /* ============== WAVE（柔・軽・下重心） ============== */
+  BNLS:{ // Romantic Wave
+    name:'骨格コアラ(Romantic Wave)', base:'WAVE', emoji:'🐨', animal:'コアラ',
+    image:'images/BNLS.jpg',
+    concept:'甘くやわらか、包容感のあるロマン。',
+    body:'B=やや骨感 / W=広め / L=下重心 / S=直線強め。上半身は華奢、腰〜ヒップに丸み。骨の主張は弱く、やわらかな陰影と直線的な線が印象の中心。',
+    brandHints:['SNIDEL','CELFORD','TOCCA','Lily Brown','FRAY I.D','IÉNA','Noela'],
+    styleNotes:[
+      '薄手〜中厚で落ち感のある素材（シフォン/サテン/ジョーゼット）',
+      '襟はラウンド/ハート/スカーフタイで柔らかく',
+      'Aラインやマーメイドで下重心を活かしつつ軽さを足す',
+      '配色は中〜淡色のワントーン、黄みを抑えたピンク/ラベンダー',
+      '硬い直線テーラードは“借りてきた感”が出やすい'
     ],
-    hair:['シースルーバング','緩い外巻き','耳後ろタック＋控えめリボン'],
-    makeup:['透明感ベース','粘膜色リップ','涙袋に微細パール'],
-    jewelry:['華奢チェーン','小粒パール','極細リング'],
-    shoes:['ポインテッド低ヒール','華奢ストラップサンダル','バレエシューズ'],
-    bags:['ミニショルダー','半月型ミニ','ソフトポーチ'],
-    denim:['ハイライズ・細〜セミワイド','ライトブルー','裾は細め'],
-    outer:['ショートボレロ','薄手カーデ','軽いトレンチ(とろみ)'],
-    patterns:['小花','ドット小','ピンスト細'],
-    textures:['シフォン','薄手サテン','ファインゲージニット'],
-    stylingFormulas:{
-      spring:['薄手カーデ＋フレアスカート＋バレエ'],
-      summer:['シアーブラウス＋プリーツロング＋ストラップサンダル'],
-      autumn:['とろみトレンチ＋ニットT＋マーメイドスカート'],
-      winter:['ショート軽ダウン＋ニットワンピ＋タイツ(20〜40D)']
-    },
-    capsule:['シアーブラウス(白)','薄手ニット(アイボリー)','プリーツロング','ミモレスカート(無地)','ミニショルダー','バレエ','繊細ネックレス','薄手トレンチ'],
-    qna:[
-      {q:'背が低くてもロング似合う？',a:'ハイウエスト設定&足首の抜けを作ればOK。厚手よりも薄く落ちる生地を。'},
-      {q:'甘くなりすぎるのが不安',a:'甘さは1点だけ。他は無地/ミニマルを選ぶと大人バランスに。'}
+    outfitIdeas:[
+      'レースブラウス＋マーメイドスカート＋2～4cmパンプス',
+      'ショートカーデ＋プリーツスカート＋小ぶりバッグ'
     ],
-    notes:'「軽さと透明感」。直線や厚みは点使いにして、全体は空気を含ませる。'
-  },
-  MNLC:{ // 🐺 Wolf – Urban Elegance
-    code:'MNLC', name:'Urban Elegance – Wolf', base:'WAVE', emoji:'🐺',
-    celebs:{ jp:['有村架純','吉岡里帆'], kr:['Seohyun','Jisoo'], global:['Lily-Rose Depp','Gemma Chan'] },
-    bodyTips:[
-      'Iラインで面を分断しない','ノーカラー/クルーで上半身をコンパクトに',
-      'トップス短め×ボトム長めで脚長','装飾は最小限'
-    ],
-    hair:['つやボブ','外ハネミニ','タイトまとめ'],
-    makeup:['セミマット肌','ナチュラル陰影','MLBBリップ'],
-    jewelry:['ミニマルピアス','薄型レザー時計','細チェーン'],
-    shoes:['ローファー薄底','ポインテッド1〜3cm','ソフトブーツ細'],
-    bags:['スクエアミニ','薄マチショルダー','レザー巾着'],
-    denim:['センタープレス見えのストレート','ワンウォッシュ','丈ジャスト'],
-    outer:['ノーカラージャケット','とろみチェスター','薄手ステン'],
-    patterns:['ピンスト','無地','ごく細チェック'],
-    textures:['スムースジャージ','薄ウール','テンセル'],
-    stylingFormulas:{
-      spring:['ノーカラーJK＋細ボトム＋ローファー'],
-      summer:['クルーT＋サテンスカート＋フラット'],
-      autumn:['とろみチェスター＋Iワンピ＋ショートブーツ'],
-      winter:['薄手タートル＋Iスカート＋ロングコート(ストレート)']
-    },
-    capsule:['ノーカラーJK','Iワンピ','セミストレートパンツ','薄手タートル(黒/ベージュ)','小型レザーバッグ','ローファー','ポインテッド低ヒール','薄チェスター'],
-    qna:[
-      {q:'肩幅が気になる',a:'ラグラン/セットインで肩線を柔らかく。肩パッド強は避ける。'},
-      {q:'オフィスで浮かない？',a:'配色は2色まで、質感で差をつけると静かに映える。'}
-    ],
-    notes:'静かな都会感。Iラインと薄い面でスッと整えるのが鍵。'
-  },
-  MWLC:{ // 🦋
-    code:'MWLC', name:'Light Wave – Butterfly', base:'WAVE', emoji:'🦋',
-    celebs:{ jp:['広瀬すず','森七菜'], kr:['Wonyoung','Arin'], global:['Anya Taylor-Joy','Zendaya(軽ライン)'] },
-    bodyTips:['透け/揺れを1点','濃色は点使い','足首と手首で軽さ','ハイウエスト徹底'],
-    hair:['ゆる巻きロング','セミウェット前髪','低め結び'],
-    makeup:['ツヤ肌','ハイライト鼻根','グロッシーリップ'],
-    jewelry:['極細リング重ね','透明感イヤリング','細ブレス'],
-    shoes:['ストラップサンダル','メリージェーン細','ソフトミュール'],
-    bags:['チェーンミニ','ハーフムーン','透明PVC(少し)'],
-    denim:['ソフトデニム/フレア','ライトブルー','裾軽め'],
-    outer:['シアーシャツ羽織','薄トレンチ','ショートカーデ'],
-    patterns:['小花','マーブル淡','細ドット'],
-    textures:['シアー','薄サテン','レーヨン'],
-    stylingFormulas:{
-      spring:['シアー羽織＋キャミ＋プリーツロング'],
-      summer:['軽サテンワンピ＋細ストラップサンダル'],
-      autumn:['薄トレンチ＋ニットT＋セミフレア'],
-      winter:['ショート軽アウター＋ロングスカート＋タイツ']
-    },
-    capsule:['シアー羽織','キャミ(ニュアンス)','プリーツロング','軽ワンピ','ミニショルダー','細サンダル','繊細アクセ','薄トレンチ'],
-    qna:[
-      {q:'太って見えるのが不安',a:'上は短く/下は長く。厚手を避け、縦ドレープを通す。'}
-    ],
-    notes:'“浮遊感”を主役に。重さは徹底的に排除。'
-  },
-  MWLS:{ // 🐹
-    code:'MWLS', name:'Cute Wave – Hamster', base:'WAVE', emoji:'🐹',
-    celebs:{ jp:['今田美桜','福原遥'], kr:['Yeri','Sana'], global:['Ariana Grande(軽)','Dove Cameron'] },
-    bodyTips:['甘さ1点主義','トップス短/ボトム長','細ヒールよりフラット寄り','丸みは面を小さく'],
-    hair:['内巻きボブ','ハーフアップ','リボン小'],
-    makeup:['チーク丸め','ピンクベージュ','まつ毛は繊細'],
-    jewelry:['小粒パール','ミニモチーフ','細チェーンブレス'],
-    shoes:['バレエ','メリージェーン','ローファー薄'],
-    bags:['バニティミニ','ボックスミニ','曲線ショルダー'],
-    denim:['ハイライズ/テーパード細','ライト〜ミドル','丈短め'],
-    outer:['ショートGジャン軽','ボレロ','薄キルティング(軽)'],
-    patterns:['小ギンガム','ドット小','小花'],
-    textures:['リブ細','ジョーゼット','ライトツイード(薄)'],
-    stylingFormulas:{
-      spring:['短丈ニット＋マーメイド','春色バレエ'],
-      summer:['スカラップ襟ブラウス＋プリーツ'],
-      autumn:['ボレロ＋Iスカート','メリージェーン'],
-      winter:['ショート中綿(軽)＋ミモレ']
-    },
-    capsule:['短丈ニット','襟ディテールブラウス(控えめ)','ミモレ/マーメイド','メリージェーン','バレエ','小型バッグ','小粒アクセ','軽アウター'],
-    qna:[{q:'子どもっぽくならない？',a:'色数は2色まで＋金属は小さく上質に。'}],
-    notes:'キュートは“点”。全体はミニマルで甘辛バランスを。'
-  },
-  MNLS:{ // 🕊
-    code:'MNLS', name:'Calm Wave – Dove', base:'WAVE', emoji:'🕊',
-    celebs:{ jp:['綾瀬はるか','石原さとみ(ソフト時)'], kr:['Suzy','Yoona'], global:['Emma Watson(ソフト)','Anne Hathaway(ソフト)'] },
-    bodyTips:['面の連続で縦を伸ばす','硬直線は少なめ','濃淡コントラストを弱く','首元は詰めすぎない'],
-    hair:['つやセミロング','耳掛け','低いまとめ'],
-    makeup:['ナチュラル陰影','やわらか眉','ピーチローズ'],
-    jewelry:['小ぶりフープ','スキンジュエリー','薄時計'],
-    shoes:['控えめパンプス','ローファー薄','ソフトブーツ'],
-    bags:['縦長トート薄','スリムショルダー','ソフトレザー'],
-    denim:['スリムストレート','ミッドブルー','裾は細'],
-    outer:['薄チェスター','カーデロング','とろみトレンチ'],
-    patterns:['無地中心','細ストライプ','微細柄'],
-    textures:['薄ウール','テンセル','スーピマ'],
-    stylingFormulas:{
-      spring:['薄チェスター＋Iニット＋ストレート'],
-      summer:['とろみブラウス＋ロングスカート'],
-      autumn:['ロングカーデ＋Iワンピ'],
-      winter:['薄タートル＋ロングコート(直線弱)']
-    },
-    capsule:['薄タートル','Iワンピ','ストレートパンツ','ロングカーデ','小型レザー','パンプス','ローファー','薄チェスター'],
-    qna:[{q:'地味に見える',a:'同系色の中で質感差を1点。微光沢で大人の余裕を。'}],
-    notes:'静けさ=上質。境界をにじませ、直線は柔らかく扱う。'
-  },
-  BNLC:{ // 🐻
-    code:'BNLC', name:'Teddy Wave – Bear', base:'WAVE', emoji:'🐻',
-    celebs:{ jp:['本田翼(カジュアル)','多部未華子'], kr:['Wendy','Eunha'], global:['Dakota Johnson(ソフト)','Lily James(ソフト)'] },
-    bodyTips:['軽い起毛/ふわはOKだが重くし過ぎない','上は短/下は長で比率作り','丸みは連続させ過ぎない'],
-    hair:['ふわセミ','前髪薄め','低お団子'],
-    makeup:['ソフトマット肌','血色感チーク','やわ口紅'],
-    jewelry:['マット金具小','テキスタイルピン','小粒ピアス'],
-    shoes:['ソフトブーツ','ラウンドトゥ','スニーカー細め'],
-    bags:['バケツ小','ソフトトート','ミニリュック'],
-    denim:['ゆるストレート(細め)','ライトインディゴ','裾は細'],
-    outer:['軽ボア(薄)','とろみコート','ショート中綿(軽)'],
-    patterns:['杢','小チェック','小花'],
-    textures:['軽起毛','ファインニット','裏毛(薄)'],
-    stylingFormulas:{
-      spring:['薄起毛カーデ＋フレア','ソフトローファー'],
-      summer:['ノースリ＋プリーツロング'],
-      autumn:['軽ボアベスト＋Iワンピ'],
-      winter:['ショート軽中綿＋ロングスカート']
-    },
-    capsule:['軽起毛ニット','プリーツロング','Iワンピ','小型ソフトバッグ','ラウンドトゥ','スニーカー','薄中綿','とろみコート'],
-    qna:[{q:'太って見える',a:'上は短く・縦の抜け(前開け/スリット)を作る。起毛は薄手限定。'}],
-    notes:'包まれ感は“軽さ前提”。空気を含ませて可愛げだけ抽出。'
+    celebrities:{ jp:['梅田みゆ','音沙','岩本照','阿部亮平','大橋和也','表すみれ','倉八音羽'], kr: ['ロゼ（BLACKPINK）','ジミン（RIIZE）','ボムギュ（TXT）'], global:['Lily Collins','Emma Watson'] }
   },
 
-  // ===== NATURAL 4 =====
-  BWUC:{ // 🦄
-    code:'BWUC', name:'Urban Natural – Unicorn', base:'NATURAL', emoji:'🦄',
-    celebs:{ jp:['小松菜奈','杏'], kr:['Krystal','Hyein'], global:['Rosie Huntington-Whiteley','Tilda Swinton(軽)'] },
-    bodyTips:['直線×余白','ルーズ過ぎずボクシー','素材の良さを主役','ウエストは締めすぎない'],
-    hair:['タイトストレート','センターパート','低シニヨン'],
-    makeup:['セミマット','骨格シェーディング控えめ','リップはベージュ系'],
-    jewelry:['太めバングル1点','スクエアピアス','最小限ネックレス'],
-    shoes:['フラット','ローヒールミュール','ミニマルスニーカー'],
-    bags:['キャンバス/レザーM','横長トート','半月ミディ'],
-    denim:['ストレート/セルビッジ薄','リジッド寄り','丈長め'],
-    outer:['シャツアウター','ボクシーコート','リネンジャケット'],
-    patterns:['無地','ボーダー細','ピンスト'],
-    textures:['ドライコットン','リネン','ハーフマット'],
-    stylingFormulas:{
-      spring:['リネンJK＋白T＋ストレートデニム'],
-      summer:['ノースリ＋ストレートパンツ＋フラット'],
-      autumn:['シャツアウター＋Iニット＋ロングスカート'],
-      winter:['ボクシーコート＋ストレートトラウザー']
-    },
-    capsule:['白T(上質)','黒T(上質)','ストレートデニム','リネンJK','ボクシーコート','フラット','ミニマルスニーカー','トート'],
-    qna:[{q:'のっぺりする',a:'素材の“目”が見えるアイテムを1点。アクセは構造的に1点だけ強く。'}],
-    notes:'余白×素材の情報で魅せる。線と面の設計勝ち。'
-  },
-  BWUS:{ // 🦅
-    code:'BWUS', name:'Classic Natural – Eagle', base:'NATURAL', emoji:'🦅',
-    celebs:{ jp:['松雪泰子','竹内結子(直線時)'], kr:['Jennie(直線/ミニマル時)','Bae Doona'], global:['Cate Blanchett(直線)','Rosamund Pike'] },
-    bodyTips:['Iロングで端正に','直線エッジを1-2箇所','起毛厚地は避ける','上中重心意識'],
-    hair:['タイトボブ','外ハネ微','低ポニー'],
-    makeup:['マット寄り','直線眉','赤〜ベリーを点'],
-    jewelry:['スクエアピアス','太ベルト','幅太リング'],
-    shoes:['ローファー厚み','ミドルヒールパンプス','チェルシーブーツ細'],
-    bags:['スクエアショルダー','ストラクチャーM','レザークラッチ'],
-    denim:['センタープレス見え','ダークインディゴ','丈は長め'],
-    outer:['ロングジレ','端正チェスター','シャープトレンチ'],
-    patterns:['ピンスト','直線幾何','グレンチェック(薄)'],
-    textures:['クリスプコットン','ハリ薄サージ','高密度リネン'],
-    stylingFormulas:{
-      spring:['ロングジレ＋Iワンピ','ミドルヒール'],
-      summer:['シャープシャツ＋ストレート','ローファー'],
-      autumn:['チェスター＋タックパンツ'],
-      winter:['端正トレンチ＋ニットT＋Iスカート']
-    },
-    capsule:['ロングジレ','チェスター','タックパンツ','Iワンピ','太ベルト','ローファー','パンプス','構築バッグ'],
-    qna:[{q:'強く見えすぎる',a:'色は3色以内・中明度中心に。直線は1〜2点へ間引く。'}],
-    notes:'直線の正確さと端正さ。エッジは点で効かせる。'
-  },
-  BWLC:{ // 🦊
-    code:'BWLC', name:'Minimal Natural – Fox', base:'NATURAL', emoji:'🦊',
-    celebs:{ jp:['黒木華(ミニマル)','麻生久美子'], kr:['Yoona(ミニマル時)'], global:['Phoebe Tonkin','Hailey Bieber(ミニマル)'] },
-    bodyTips:['情報を削る','直線×面で見せる','配色は2色','艶は点'],
-    hair:['ストレート','外ハネ控えめ','濡れ質感少'],
-    makeup:['セミマット','陰影少','ヌードリップ'],
-    jewelry:['幅太リング1','スクエアトゥ','直線バングル'],
-    shoes:['ミニマルブーツ','ローファー','プレーンパンプス'],
-    bags:['ボックスショルダー','半月ミディ','ハンドル1本'],
-    denim:['ストレート濃','カットオフしない','タックなし'],
-    outer:['ボクシーコート','ノーカラージャケット','シャツアウター'],
-    patterns:['無地のみ推奨','細ストライプ'],
-    textures:['リヨセル混','ライトツイル','ハーフマット'],
-    stylingFormulas:{
-      spring:['ノーカラー＋ストレート＋ローファー'],
-      summer:['ミニマルタンク＋ロングスカート'],
-      autumn:['ボクシーコート＋Iニット'],
-      winter:['モックネック＋ストレート＋ミニマルブーツ']
-    },
-    capsule:['ノーカラーJK','ボクシーコート','Iニット(無地)','ストレートパンツ','ローファー','ミニマルブーツ','ボックスバッグ','白T(上質)'],
-    qna:[{q:'地味？',a:'素材の“エッジ”を1点(ステッチ/切り替え)。アクセは1点だけ太く。'}],
-    notes:'削ぎ落とすほど線が際立つ。無駄0の設計美。'
-  },
-  BWLS:{ // 🦌
-    code:'BWLS', name:'Natural Grace – Deer', base:'NATURAL', emoji:'🦌',
-    celebs:{ jp:['石田ゆり子','原田知世'], kr:['Park Min-young(ソフト直線)'], global:['Natalie Portman(ソフト直線)','Alexa Chung'] },
-    bodyTips:['長い直線を保つ','素朴×上質のミックス','スリット等で“抜け”'],
-    hair:['ナチュラルウェーブ','センターパート','低い結び'],
-    makeup:['ツヤ控えめ','ブラウン/セージ系','自然な血色'],
-    jewelry:['天然石1点','レザーベルト太','小ぶり金具'],
-    shoes:['フラット','ワンベルト','スクエアトゥ'],
-    bags:['かご/キャンバス','縦長トート','レザーM'],
-    denim:['ストレート','ミドルインディゴ','丈やや長め'],
-    outer:['リネンコート','ロングシャツ','軽サファリ'],
-    patterns:['無地','ヘリンボーン薄','ストライプ細'],
-    textures:['リネン','ギャバ(軽)','ドライサテン'],
-    stylingFormulas:{
-      spring:['ロングシャツ＋ストレート＋フラット'],
-      summer:['リネンワンピ＋サンダル'],
-      autumn:['サファリJK＋Iニット＋ロングスカート'],
-      winter:['モック＋ロングコート＋ストレート']
-    },
-    capsule:['リネンアウター','ロングシャツ','Iニット','ストレート','フラット','トート','天然石','太レザーベルト'],
-    qna:[{q:'野暮ったくなる',a:'直線長さを最優先。色を3色以内に抑え、スリットor深めVで抜けを作る。'}],
-    notes:'素朴に凛。長い直線と自然素材で“呼吸”させる。'
+  MNLC:{ // Urban Elegance (Wave)
+    name:'骨格ウルフ(Urban Elegance)', base:'WAVE', emoji:'🐺', animal:'オオカミ',
+    image:'images/MNLC.jpg',
+    concept:'静かで芯のある優しさ、穏やかに知的な洗練。',
+    body:'M=肉感寄り / N=コンパクト / L=下重心 / C=曲線寄り。柔らかさがポイント。脚に厚みが出やすいので上にポイントを。',
+    brandHints:['IÉNA','Mila Owen','Plage','N.O.R.C','URBAN RESEARCH','TOMORROWLAND'],
+    styleNotes:[
+      '“Iライン”を意識した縦長設計',
+      '中厚でハリが出すぎないツイル/ポンチ',
+      'ショート丈トップス＋ハイウエストで視線を上へ',
+      'ニュアンスのグレージュ/トープ/ダスティピンク',
+      '肩幅を誇張するパッド強めは避ける'
+    ],
+    outfitIdeas:[
+      'クロップドシャツ＋タックワイド＋ローファー',
+      'リブニット＋ミディタイト＋ショートブーツ'
+    ],
+    celebrities:{ jp:['佐野愛花','大谷英美里','永瀬廉','高橋恭平','錦戸亮','多田莉音','秋山みづき'],kr: ['ウォニョン（IVE）','ウォンビン（RIIZE）','シニュ（TWS）'], global:['Keira Knightley','Natalie Portman'] }
   },
 
-  // ===== STRAIGHT 6 =====
-  BNUS:{ // 🐆
-    code:'BNUS', name:'Modern Straight – Panther', base:'STRAIGHT', emoji:'🐆',
-    celebs:{ jp:['北川景子','菜々緒'], kr:['Krystal(シャープ)','Nana'], global:['Angelina Jolie','Gal Gadot'] },
-    bodyTips:['上重心を強調','直線と厚み','ハイヒール系OK','黒は主役OK'],
-    hair:['ストレート','センター/かき上げ','タイトまとめ'],
-    makeup:['セミマット','コントラスト強','赤/ボルドー'],
-    jewelry:['太バングル','シャープピアス','メタル面'],
-    shoes:['ポインテッド中〜高ヒール','レザーショートブーツ','ローファー厚め'],
-    bags:['ストラクチャーM','チェーンショルダー','クラッチ'],
-    denim:['ハイライズ/スキニー〜タイト','ダーク濃','切替少'],
-    outer:['テーラードJK','端正チェスター','レザージャケット(軽)'],
-    patterns:['無地','ピンスト強','直線幾何'],
-    textures:['ダブルクロス','コンパクトツイル','厚サテン'],
-    stylingFormulas:{
-      spring:['テーラード＋テーパード＋パンプス'],
-      summer:['Iワンピ(構築)＋ミドルヒール'],
-      autumn:['チェスター＋タイトスカート'],
-      winter:['レザーJK(軽)＋ハイライズデニム']
-    },
-    capsule:['テーラードJK','チェスター','タイトスカート','テーパード','パンプス','ストラクチャーバッグ','黒Iワンピ','レザーJK'],
-    qna:[{q:'強すぎて怖い？',a:'光沢は点に絞り、1点だけ柔らか素材を混ぜる。配色は黒×ニュートラルで調和を。'}],
-    notes:'“直線×厚み×上”。エッジを潔く立てるほど高級感。'
+  MWLC:{ // Light Wave
+    name:'骨格バタフライ(Light Wave)', base:'WAVE', emoji:'🦋', animal:'バタフライ',
+    image:'images/MWLC.jpg',
+    concept:'風に舞う透明感、まっすぐで軽やかな均衡。',
+    body:'M=肉感 / W=広め / L=下重心 / C=曲線。腰〜腿に厚み。軽い素材と縦ラインで“軽やかな直線”を作ると◎。',
+    brandHints:['N.O.R.C','IÉNA','UNIQLO','BEAUTY&YOUTH','TOMORROWLAND','LE PHIL'],
+    styleNotes:[
+      'ハイウエストで脚長補正',
+      '上はコンパクト、下はスッと落ちるIライン',
+      '直線的なシャツ/ノーカラーJKを薄手で',
+      'アクセは細線で軽さを統一',
+      '厚底過多よりフラット～ローヒールで軽量化'
+    ],
+    outfitIdeas:[
+      'ノーカラーシャツ＋ハイウエストパンツ＋ローファー',
+      'クロップドニット＋ストレートデニム＋ミニバッグ'
+    ],
+    celebrities:{ jp:['齋藤櫢愛羅','Vaundy','深澤辰哉','橋本良亮','木村拓哉','相場星音','生方澪枝'], kr:['カリナ（aespa）','ソヒ（RIIZE）','テヒョン（TXT）'], global:['Selena Gomez','Lily Collins'] }
   },
-  MWUC:{ // 🦈
-    code:'MWUC', name:'Cool Straight – Shark', base:'STRAIGHT', emoji:'🦈',
-    celebs:{ jp:['中条あやみ','長谷川潤'], kr:['Karina','Seulgi'], global:['Bella Hadid','Charlize Theron'] },
-    bodyTips:['黒×直線×少光沢','ショート丈トップス強','センタープレス/シームを効かす'],
-    hair:['タイト','ハイポニー','ウェット少'],
-    makeup:['コントラスト強','クールトーン','強めライン'],
-    jewelry:['スティックピアス','幾何ネック','メタリック'],
-    shoes:['シャープブーツ','ポインテッド','ミドルヒール'],
-    bags:['ボックス','メタル金具','ホーボー(直線)'],
-    denim:['スリムストレート/黒','ノンウォッシュ','裾ジャスト'],
-    outer:['ライダース(軽)','シャープトレンチ','ノーカラー直線'],
-    patterns:['無地','直線ブロック','細千鳥(直線)'],
-    textures:['厚サテン','コンパクトニット','ハイゲージ'],
-    stylingFormulas:{
-      spring:['ノーカラー＋黒ストレート'],
-      summer:['タンク＋タイトスカート＋メタルサンダル'],
-      autumn:['ライダース(軽)＋Iワンピ(黒)'],
-      winter:['モック＋シャープトレンチ＋ブーツ']
-    },
-    capsule:['ライダース','黒ストレート','ノーカラーJK','Iワンピ(黒)','ミドルヒール','メタルアクセ','ボックスバッグ','厚サテンTOPS'],
-    qna:[{q:'強くなり過ぎる',a:'白やグレーを挟んで対比を弱める。直線は1箇所だけ最強に。'}],
-    notes:'クール&スリーク。直線と黒でスピード感を。'
+
+  MWLS:{ // Natural Girly
+    name:'骨格ハムスター(Natural Girly)', base:'WAVE', emoji:'🐹', animal:'ハムスター',
+    image:'images/MWLS.jpg',
+    concept:'丸みと温かみ、ふんわりとした可憐さ。',
+    body:'M=肉感 / W=広め / L=下重心 / S=直線。全体にふわっと厚み。可憐ディテールは小さめ＆上側に集約。',
+    brandHints:['SNIDEL','earth music&ecology','Kastane','LOWRYS FARM','tocco closet'],
+    styleNotes:[
+      'Aライン/フレア/ティアードで“下に落ちる”を活かす',
+      '上は短め・袖に少しボリュームで視線UP',
+      '柔らかニット/カットソー中心',
+      '小ぶりバッグ＆繊細アクセで重さを消す',
+      '濃色ワントーンは重たく見えやすい'
+    ],
+    outfitIdeas:[
+      '丸襟ブラウス＋フレアスカート＋バレエシューズ',
+      'ショートカーデ＋ギャザースカート＋ミニショルダー'
+    ],
+    celebrities:{ jp: ['真鍋凪咲','小泉遥香','藤原聡','藤ヶ谷太輔','中村海人','長浜広奈','夏川メガン'], kr: ['ツウィ（TWICE）','サクラ（LE SSERAFIM）','ジュン（SEVENTEEN）'], global:['Ariana Grande','Selena Gomez'] }
   },
-  MNUC:{ // 🐅
-    code:'MNUC', name:'Power Straight – Tiger', base:'STRAIGHT', emoji:'🐅',
-    celebs:{ jp:['米倉涼子','滝沢カレン'], kr:['Yubin','Jessi'], global:['Blake Lively','Naomi Campbell'] },
-    bodyTips:['上重心×コントラスト','構築で輪郭を描く','ハイライズ徹底'],
-    hair:['かき上げ','外巻き強','タイトまとめ'],
-    makeup:['コントラスト強','赤/コバルト','マット寄り'],
-    jewelry:['太ベルト','幾何メタル','ワイドカフ'],
-    shoes:['ピンヒール','甲浅パンプス','レザーショート'],
-    bags:['チェーン/ストラクチャー','台形ハンド','クラッチ'],
-    denim:['テーパード/フルレングス','ダーク','プレス強'],
-    outer:['構築JK','端正チェスター','レザー(直線)'],
-    patterns:['直線幾何','太ストライプ','ブロック'],
-    textures:['厚ウール','ダブルクロス','ハードサテン'],
-    stylingFormulas:{
-      spring:['構築JK＋テーパード＋ピンヒール'],
-      summer:['Iワンピ(厚)＋メタルアクセ'],
-      autumn:['レザーJK＋タイトスカート'],
-      winter:['チェスター＋ハイライズストレート']
-    },
-    capsule:['構築JK','チェスター','テーパード','タイト','ピンヒール','構築バッグ','ハードサテンTOPS','レザーJK'],
-    qna:[{q:'悪目立ちしない？',a:'色数は2色+金属。直線強は1〜2箇所へ集中。'}],
-    notes:'“輪郭を描く”のが使命。強さは配色と線でコントロール。'
+
+  MNLS:{ // Classic Feminine
+    name:'骨格ドーブ（Classic Feminine）', base:'WAVE', emoji:'🕊', animal:'白鳩',
+    image:'images/MNLS.jpg',
+    concept:'柔らかく上品、穏やかに香るエレガンス。',
+    body:'M=肉感 / N=コンパクト / L=下重心 / S=直線。上半身は華奢で胸〜ウエストはなだらか、下半身に安定。',
+    brandHints:['TOCCA','EPOCA','FOXEY','ANAYI','Apuweiser-riche'],
+    styleNotes:[
+      'ハート/ラウンド/浅Vの女性的な襟型',
+      'ミディ〜ロングのフレア/マーメイド',
+      'サテンやジョーゼットの艶で上品に',
+      '真珠/小粒ジュエリーで清潔感',
+      '直線強いジャケットは短丈で軽く'
+    ],
+    outfitIdeas:[
+      'ボウタイブラウス＋ミディフレア＋パールピアス',
+      'ショートジャケット＋マーメイドスカート'
+    ],
+    celebrities:{ jp: ['真中まな','南なつ','井上苑子','渡辺翔太','岸優太','小山慶一郎','天宮芽唯','平松想乃'], kr: ['ナヨン（TWICE）','チェリョン（ITZY）','フィリックス（Stray Kids）'], global:['Ariana Grande','Lily Collins'] }
   },
-  MNUS:{ // 🦚
-    code:'MNUS', name:'Elegant Straight – Peacock', base:'STRAIGHT', emoji:'🦚',
-    celebs:{ jp:['松島花','比留川游'], kr:['Yoona(エレガント時)'], global:['Kate Middleton','Anne Hathaway(構築)'] },
-    bodyTips:['上質な面×直線','艶は点','上重心で視線を上げる'],
-    hair:['つやストレート','上品巻き','低めまとめ'],
-    makeup:['セミマット','上品ブラウン','バーガンディ少'],
-    jewelry:['小ぶりダイヤ風','華奢×面','上質レザー'],
-    shoes:['プレーンパンプス','ミドルヒール','ミニマルブーツ'],
-    bags:['トップハンドル','ストラクチャー','チェーン少'],
-    denim:['ダークストレート','センタープレス風','丈長め'],
-    outer:['端正コート','ロングジレ','テーラード薄'],
-    patterns:['無地','ピンスト極細'],
-    textures:['ダブルクロス','高密度サテン(点)','コンパクトニット'],
-    stylingFormulas:{
-      spring:['ロングジレ＋Iワンピ'],
-      summer:['サテン(点)＋ストレート'],
-      autumn:['端正コート＋タイト'],
-      winter:['モック＋ロングコート＋パンプス']
-    },
-    capsule:['端正コート','ロングジレ','Iワンピ(無地)','ストレートパンツ','パンプス','上質レザーBag','繊細ダイヤ風','コンパクトニット'],
-    qna:[{q:'老けない？',a:'彩度は中〜やや低で。唇だけ艶足し。直線はやり過ぎない。'}],
-    notes:'「上質な面」が主役。艶は“点”。直線は静かに通す。'
+
+  BNLC:{ // Earth Wave
+    name:'骨格テディ(Earth Wave)', base:'WAVE', emoji:'🐻', animal:'クマ',
+    image:'images/BNLC.jpg',
+    concept:'あたたかく包み込む安定感、癒しの重心。',
+    body:'B=骨感 / N=コンパクト / L=下重心 / C=曲線寄り。上半身は華奢だけど、ふっくらとした下半身で曲線を感じるやわらか素材が馴染む。',
+    brandHints:['URBAN RESEARCH ROSSO','Plage','DOORS','JOURNAL STANDARD relume','IÉNA'],
+    styleNotes:[
+      'ロングカーデ/ライトアウターで“包み”を作る',
+      '落ち感あるミッドウェイト素材',
+      'アースカラーの中明度（ベージュ/カーキ/モカ）',
+      '厚底すぎない靴で地面に安定',
+      '上半身に1点だけ明度差で視線UP'
+    ],
+    outfitIdeas:[
+      'ロングカーデ＋Iラインワンピ＋フラット',
+      'スウェット＋サテンスカート＋ローファー'
+    ],
+    celebrities:{ jp: ['櫻井優衣','立花琴末','辻野かなみ','向井康二','佐藤勝利','山田涼介','時田音々','川野明愛'], kr: ['サナ（TWICE）','ガウル（IVE）','ホシ（SEVENTEEN）'], global:['Keira Knightley','Kristen Stewart'] }
   },
-  MWUS:{ // 🐬
-    code:'MWUS', name:'Sporty Straight – Dolphin', base:'STRAIGHT', emoji:'🐬',
-    celebs:{ jp:['広瀬アリス','本田翼(スポーティ時)'], kr:['Hyeri','Yuna ITZY'], global:['Kendall Jenner(スポーティ)','Gigi Hadid'] },
-    bodyTips:['清潔直線×機能素材','上重心ショート×ロング','配色は少なめ'],
-    hair:['ポニテ','キャップ合わせ','ストレート'],
-    makeup:['セミマット','目尻だけ締め','グロス控えめ'],
-    jewelry:['スポーティ時計','小さめフープ','最小限'],
-    shoes:['スニーカー(クリーン)','ローテク白','ミドルソール'],
-    bags:['スポーティミニ','ボディバッグ','ナイロンM'],
-    denim:['ストレート/黒','ジャスト丈','切替少'],
-    outer:['ショートMA-1(軽)','スタンドジップ','ナイロンパーカ'],
-    patterns:['ライン少','配色切替少','無地中心'],
-    textures:['ダンボールニット','撥水ツイル','ナイロン高密度'],
-    stylingFormulas:{
-      spring:['MA-1＋Iニット＋ストレート'],
-      summer:['タンク＋黒ストレート＋白スニーカー'],
-      autumn:['スタンドジップ＋ジョガー細'],
-      winter:['ダンボールニット＋黒デニム＋ブーツ']
-    },
-    capsule:['MA-1(軽)','黒ストレート','白スニーカー','スタンドジップ','ボディバッグ','ダンボールニット','タンク(無地)','ナイロンパーカ'],
-    qna:[{q:'カジュアル過ぎる',a:'色数を2色+金属に制限し、直線的な面を1点追加(センタープレス等)。'}],
-    notes:'機能×直線×清潔。速い印象を濁さない。'
+
+  /* ============== NATURAL（BL系中心） ============== */
+  BWUC:{ // Urban Natural
+    name:'骨格ユニコーン(Urban Natural)', base:'NATURAL', emoji:'🦄', animal:'ユニコーン',
+    image:'images/BWUC.jpg',
+    concept:'広いフレーム×曲線×余白、幻想と構造の調和。',
+    body:'B=骨感 / W=広め / U=上重心 / C=曲線。手足が長くフレームの存在感が強い。余白を残すミニマルが映える。',
+    brandHints:['JOURNAL STANDARD','UNITED ARROWS','BEAUTY&YOUTH','AURALEE','YLEVE','TODAYFUL'],
+    styleNotes:[
+      '曲線×ゆとりのボックス/カーヴィー',
+      'ライトなセットアップで構造を見せる',
+      'ネックはクルー/ボート/スタンド',
+      '色は無彩色＋少量のソフトカラー',
+      '過度な装飾より素材の良さで勝負'
+    ],
+    outfitIdeas:[
+      'ボクシーJK＋ストレートパンツ＋白スニーカー',
+      'スタンドカラーシャツ＋ミニスカート（曲線）'
+    ],
+    celebrities:{ jp: ['tuki','松島聡','数太','中丸雄一','横尾渉','ユンギ（BTS）'], kr: ['カズハ（LE SSERAFIM）','ソンチャン（RIIZE）','ウナク（BOYNEXTDOOR）'], global:['Cara Delevingne','Gigi Hadid'] }
   },
-  BNUC:{ // 🦉
-    code:'BNUC', name:'Classic Straight – Owl', base:'STRAIGHT', emoji:'🦉',
-    celebs:{ jp:['石田ゆり子(端正)','松嶋菜々子'], kr:['Han Hyo-joo'], global:['Natalie Portman(端正)','Keira Knightley(端正)'] },
-    bodyTips:['定番を直線で正確に','上に視線を集める','配色はクラシック'],
-    hair:['内巻きボブ','端正ストレート','低シニヨン'],
-    makeup:['セミマット','クラシックレッド(点)','端正眉'],
-    jewelry:['スカーフ直線柄','レザー小物','小ぶり金具'],
-    shoes:['ローファー','プレーンパンプス','ミニマルブーツ'],
-    bags:['クラシックハンド','スクエアショルダー','トレンチに合う形'],
-    denim:['ストレート/濃','センタープレス見え','丈長め'],
-    outer:['トレンチI','端正チェスター','ノーカラーコート'],
-    patterns:['ストライプ','直線チェック','無地'],
-    textures:['ギャバジン','ダブルクロス','ブロード高密度'],
-    stylingFormulas:{
-      spring:['トレンチ＋シャツ＋テーパード'],
-      summer:['クルーT＋ストレート＋ローファー'],
-      autumn:['ノーカラーコート＋Iニット'],
-      winter:['チェスター＋タイト＋パンプス']
-    },
-    capsule:['トレンチ','チェスター','白シャツ','テーパード','ローファー','パンプス','クラシックバッグ','Iニット'],
-    qna:[{q:'古く見える？',a:'サイズは現代的に(やや短め/細め)。色は2〜3色に抑え、アクセは小さく上質に。'}],
-    notes:'クラシックを今の線で。端正な直線が最強。'
+
+  BWUS:{ // Fairy Natural
+    name:'骨格イーグル(Fairy Natural)', base:'NATURAL', emoji:'🦅', animal:'タカ',
+    image:'images/BWUS.jpg',
+    concept:'軽やかで透徹した知性、俯瞰の美学。',
+    body:'B=骨感 / W=広め / U=上重心 / S=直線寄り。骨感が強く直線的。上に軽さを集めると空気感が出る。',
+    brandHints:['ENFÖLD','Deuxieme Classe','TOMORROWLAND','athoos','COS'],
+    styleNotes:[
+      '上半身ビッグサイズ×下に直線レイヤー',
+      '淡色×無機質アクセ（シルバー/スチール）',
+      'クリーンなスニーカー/ローファー',
+      '透け/シアーで軽さを足す',
+      '可愛げ要素は“量より質感”で'
+    ],
+    outfitIdeas:[
+      'オーバーサイズニット＋スラックス＋メタルアクセ',
+      'シアーシャツ＋ストレートスカート＋ローファー'
+    ],
+    celebrities:{ jp: ['結海（Little Glee Monster）','Aimer','浅見めい','ラウール','伊野尾慧','道枝駿佑','紗和'], kr: ['ウィンター（aespa）','ユナ（ITZY）'], global:['Zendaya','Keira Knightley'] }
+  },
+
+  BWLC:{ // Classic Natural
+    name:'骨格フォックス(Classic Natural)', base:'NATURAL', emoji:'🦊', animal:'キツネ',
+    image:'images/BWLC.jpg',
+    concept:'端正で機敏、自然体の品格。',
+    body:'B=骨感 / W=広め / L=下重心 / C=曲線。肩〜背中のフレームがすっきり。整った曲線で“静の品格”。',
+    brandHints:['IÉNA','Plage','TOMORROWLAND','BEAMS','URBAN RESEARCH'],
+    styleNotes:[
+      'シャツ/テーラードは薄手で端正に',
+      'リネン/コットンで清涼感',
+      'センタープレスでエレガントさを強調',
+      'ベージュ〜ネイビー軸のベーシック配色',
+      '装飾は最小限、形で語る'
+    ],
+    outfitIdeas:[
+      'リネンシャツ＋センタープレス＋ローファー',
+      'ノーカラーJK＋Iラインスカート'
+    ],
+    celebrities:{ jp: ['月足天音','古澤里沙','あいみょん','藤井サチ','しなこ','目黒蓮','二階堂高嗣','菊池風磨','神宮寺勇太','井ノ原快彦','増田貴久','まあたそ','永瀬さら','村谷はるな','栗原一菜'], kr: ['ジョンヨン（TWICE）','ナッティ（KISS OF LIFE）','イソ（IVE）','アイエン（Stray Kids）','ホビ（BTS）','イハン（BOYNEXTDOOR）'], global:['Cara Delevingne','Keira Knightley'] }
+  },
+
+  BWLS:{ // Pure Natural
+    name:'骨格バンビ(Pure Natural)', base:'NATURAL', emoji:'🦌', animal:'シカ',
+    image:'images/BWLS.jpg',
+    concept:'柔らかく静かな調和、森の中の安らぎ。',
+    body:'B=骨感 / W=広め / L=下重心 / S=直線。直線骨格に柔らかい面、テクスチャーミックスで深みを出すと◎。',
+    brandHints:['nest Robe','Vermeerist BEAMS','Plage','Journal Standard L’essage'],
+    styleNotes:[
+      '下に落ちるAライン/バイアス',
+      'コットン/リネン/ガーゼで質感レイヤー',
+      'ソフトカラーのグラデーション',
+      '木/革/布の自然素材アクセ',
+      'ラグジュアリーは艶よりマット'
+    ],
+    outfitIdeas:[
+      'ゆるブラウス＋バイアススカート＋フラット',
+      'コットンワンピ＋レザー小物（小さめ）'
+    ],
+    celebrities:{ jp: ['仲川夏','板倉可奈','藤井風','米津玄師','なごみ','せいら','高橋海斗','松村北斗','高地優吾','玉森裕太','相葉雅紀','清水あす香'], kr: ['チェヨン（TWICE）','リサ（BLACKPINK）','ミンニ（I-DLE）','テテ（BTS）','ジョンハン（SEVENTEEN）','テヨン（NCT）'], global:['Keira Knightley','Kristen Stewart'] }
+  },
+
+  /* ============== STRAIGHT（厚・立体・上重心・直線） ============== */
+  BNUS:{ // Elegant Straight
+    name:'骨格パンサー(Sporty Cool)', base:'STRAIGHT', emoji:'🐆', animal:'パンサー',
+    image:'images/BNUS.jpg',
+    concept:'凛として構築的、都会的モード。',
+    body:'B=骨感強 / N=コンパクト / U=上重心 / S=曲線少。厚みより骨の構造が先に立ち、直線×上重心で“意志の強さ”。',
+    brandHints:['Theory','Max Mara','FOXEY','PLST','LE PHIL','TIBI'],
+    styleNotes:[
+      'ショート丈×ハイウエストで重心をさらに上へ',
+      'ハリ素材のIライン（タフタ/トリアセ/ウール）',
+      'テーラード/ノーカラーの直線軸',
+      '高コントラスト配色でキリッと',
+      '装飾は少なめ、エッジを効かせる'
+    ],
+    outfitIdeas:[
+      'ショートジャケット＋ペンシルスカート＋ヒール',
+      'タートルニット＋ハイウエストスラックス'
+    ],
+    celebrities:{ jp: ['増田彩乃','小川奈々子','平野紫耀','ジェシー','西畑大吾','瀬川陽菜乃','せりな','代田萌花'], kr: ['ユンジン（LE SSERAFIM）','リノ（Stray Kids）','ゴヌク（ZEROBASEONE）','ジョングク（BTS）'], global:['Jennifer Lopez','Scarlett Johansson'] }
+  },
+
+  MWUC:{ // Sporty Cool
+    name:'骨格シャーク(Elegant Straight)', base:'STRAIGHT', emoji:'🦈', animal:'サメ',
+    image:'images/MWUC.jpg',
+    concept:'エレガントかつグラマラスなボディ',
+    body:'M=肉感 / W=広め / U=上重心 / C=曲線。体幹に厚み、上に視線が集まる。機能素材の曲線がハマる。',
+    brandHints:['NIKE Sportswear','adidas Originals','P.E NATION','COS','UNIQLO U'],
+    styleNotes:[
+      '曲線美強調のスキニー×短丈トップス',
+      'モノトーンや寒色でクリーンに',
+      'ツヤを抑えたスポーティミックス',
+      'ボリュームは上：下＝6:4で',
+      '足元は厚底すぎず軽快に'
+    ],
+    outfitIdeas:[
+      'クロップドスウェット＋テーパード＋白スニーカー',
+      '機能JK＋Iラインスカート＋キャップ'
+    ],
+    celebrities:{ jp: ['桜庭遥花','菅田愛貴','京本大我','赤西仁','村上信五','瀬乃真帆子'], kr: ['チェヒョン（Kepler）','アントン（RIIZE）','ナムジュン（BTS）'], global:['Taylor Swift','Gal Gadot'] }
+  },
+
+  MNUC:{ // Glamorous Cool
+    name:'骨格タイガー(Glamorous Cool)', base:'STRAIGHT', emoji:'🐅', animal:'トラ',
+    image:'images/MNUC.jpg',
+    concept:'立体感と色気、強い存在感。',
+    body:'M=肉感強 / N=コンパクト / U=上重心 / C=曲線。胸肩ヒップに立体。ウエストを高くマークして彫刻的に。',
+    brandHints:['Max Mara','ZARA Premium','THE ROW','LE CIEL BLEU','N°21'],
+    styleNotes:[
+      '厚み×直線をいかすクロップドトップス',
+      'ダークトーンに一点光沢（サテン/レザー）',
+      '縦アクセント（ロングネックレス/ベルト）',
+      'ヒールでさらに重心UP',
+      '甘さは抑えめ、曲線は“控えめに一点”'
+    ],
+    outfitIdeas:[
+      'テーラードJK＋ハイウエストタイト＋ピンヒール',
+      'ボディスーツ＋ストレートデニム＋ヒールブーツ'
+    ],
+    celebrities:{ jp: ['松本かれん','桐原美月','坂井仁香','佐久間大介','大西流星','景井ひな','あみち'], kr: ['モモ（TWICE）','ユジン（IVE）','ジゼル（aespa）','バンチャン（Stray Kids）'],global:['Angelina Jolie','Jennifer Lopez'] }
+  },
+
+  MNUS:{ // Romantic Mode
+    name:'骨格ピーコック(Romantic Mode)', base:'STRAIGHT', emoji:'🦚', animal:'クジャク',
+    image:'images/MNUS.jpg',
+    concept:'力と優雅の共存、華やかな余韻。',
+    body:'M=肉感 / N=コンパクト / U=上重心 / S=直線多め。直線骨格に柔らかな曲線要素。厚手サテンやタフタで“強×甘”の調和。',
+    brandHints:['Self-Portrait','N°21','SNIDEL（ドレスライン）','FOXEY','Apuweiser-riche'],
+    styleNotes:[
+      'ウエストマーク強めのフィット&フレア/ペプラム',
+      '厚手サテン/タフタ/ジャカードのリュクス感',
+      'ジュエリーは存在感あるボリューム',
+      '色は寒色～ジュエルトーンでクラシックに',
+      '上のボリュームはややコンパクトに調整'
+    ],
+    outfitIdeas:[
+      'ペプラムトップス＋テーパード＋メタルアクセ',
+      'サテンワンピ＋ショートボレロ'
+    ],
+    celebrities:{ jp: ['川本笑','西野カナ','大森元貴','井口理','有岡大貴','田中陽菜','大澤菜','那須ほほみ'], kr: ['イェジ（ITZY）','ハンビン（ZEROBASEONE）'], global:['Anne Hathaway','Natalie Portman'] }
+  },
+
+  MWUS:{ // Soft Active (Straight)
+    name:'骨格ドルフィン(Soft Active)', base:'STRAIGHT', emoji:'🐬', animal:'イルカ',
+    image:'images/MWUS.jpg',
+    concept:'すっきりとした流線、しなやかな躍動感。',
+    body:'M=肉感 / W=広め / U=上重心 / S=直線寄り。直線ベースに滑らかな流線。軽量素材で“抜け感”。',
+    brandHints:['PLEATS PLEASE','ISSEY MIYAKE','UNIQLO U','Theory','Lululemon'],
+    styleNotes:[
+      '流線を描くプリーツ/ドレープ（過剰ギャザーは避ける）',
+      '上コンパクト×下スッキリで脚長',
+      '襟はクルー/ボートでクリーンに',
+      '配色は寒色中心にクリア',
+      'スポーティ要素はミニマルに'
+    ],
+    outfitIdeas:[
+      'プリーツトップ＋ストレートパンツ＋ミニバッグ',
+      'コンパクトカットソー＋Iラインスカート＋スニーカー'
+    ],
+    celebrities:{ jp: ['早瀬ノエル','福山梨乃','宮野静','宮舘涼太','高木雄也','谷村優真','永瀬碧'], kr: ['ジヒョ（TWICE）','ニンニン（aespa）','ドギョム（SEVENTEEN）'],global:['Taylor Swift','Gal Gadot'] }
+  },
+
+  BNUC:{ // Structural Mode
+    name:'骨格オウル(Structural Mode)', base:'STRAIGHT', emoji:'🦉', animal:'フクロウ',
+    image:'images/BNUC.jpg',
+    concept:'精密で構築的、夜に光る知性。',
+    body:'B=骨感強 / N=コンパクト / U=上重心 / C=曲線。建築的ラインが似合う究極の曲線軸。モノトーン×構造でキメる。',
+    brandHints:['COS','Theory','AURALEE','HYKE','S’YTE','UNIQLO +J'],
+    styleNotes:[
+      'ショート丈ジャケットで上重心を強調',
+      '硬質素材でコントラストをくっきり（ウールギャバ/コットンツイル）',
+      'モノトーンや低彩度配色',
+      '金属系アクセで知性を補強',
+      '装飾は排して“角度”を際立てる'
+    ],
+    outfitIdeas:[
+      'ボクシーJK＋ストレートスラックス＋レザーシューズ',
+      'アーキテクチュラルなワンピ＋ショートブーツ'
+    ],
+    celebrities:{ jp: ['西寿々歌','村川緋杏','吉川ひより','中島健人','櫻井翔','大野智','武田晴安','榊原荷里','希空'], kr: ['ミナ（TWICE）','ジス（BLACKPINK）'], global:['Charlize Theron','Cate Blanchett'] }
+  }
+};
+
+/* ==== 3カテゴリ版ブランドリスト（タイプごと） ==== */
+/* 既存の TYPE_META は変更しない。必要に応じて render で使い分ける。 */
+const BRAND_BY_TYPE = {
+  /* ============== WAVE（柔・軽・下重心） ============== */
+  BNLS: { // Romantic Wave（骨格コアラ）
+    high:  ['Valentino','Miu Miu','Chloé','Giambattista Valli','Simone Rocha','Ermanno Scervino','Lanvin'],
+    middle:['SNIDEL','CELFORD','LILY BROWN','FRAY I.D','Mila Owen','TOCCA','IÉNA','Apuweiser-riche','Noela','NATURAL BEAUTY BASIC','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','MANGO','Stradivarius','DHOLIC','earth music&ecology']
+  },
+  MNLC: { // Urban Elegance（骨格ウルフ）
+    high:  ['Chloé','Valentino','Max Mara','Celine','Loewe','Alaïa'],
+    middle:['IÉNA','Plage','N.O.R.C','URBAN RESEARCH','TOMORROWLAND','Mila Owen','ENFÖLD','Deuxieme Classe','Spick & Span','UNITED ARROWS','Theory'],
+    fast:  ['ZARA','MANGO','COS','& Other Stories','UNIQLO','GU','H&M']
+  },
+  MWLC: { // Light Wave（骨格バタフライ）
+    high:  ['Chloé','Celine','Valentino','Jil Sander','Stella McCartney'],
+    middle:['N.O.R.C','IÉNA','BEAUTY&YOUTH','LE PHIL','TOMORROWLAND','Mila Owen','FRAY I.D','SNIDEL','LILY BROWN','PLST'],
+    fast:  ['ZARA','COS','UNIQLO','GU','H&M','MANGO','Stradivarius']
+  },
+  MWLS: { // Natural Girly（骨格ハムスター）
+    high:  ['Miu Miu','Valentino','REDValentino','Chloé','See By Chloé'],
+    middle:['SNIDEL','LILY BROWN','Noela','tocco closet','LOWRYS FARM','earth music&ecology','FRAY I.D','gelato pique','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','GRL','DHOLIC','WEGO']
+  },
+  MNLS: { // Classic Feminine（骨格ドーブ）
+    high:  ['Dior','Valentino','Chanel','Chloé','Elie Saab'],
+    middle:['TOCCA','EPOCA','FOXEY','ANAYI','Apuweiser-riche','IÉNA','CELFORD','SNIDEL','PROPORTION','JILL STUART'],
+    fast:  ['ZARA','MANGO','& Other Stories','UNIQLO','GU','H&M']
+  },
+  BNLC: { // Earth Wave（骨格テディ）
+    high:  ['Loewe','The Row','Celine','Max Mara','Bottega Veneta'],
+    middle:['URBAN RESEARCH ROSSO','Plage','JOURNAL STANDARD relume','IÉNA','BEAMS','TOMORROWLAND','Mila Owen','ENFÖLD'],
+    fast:  ['COS','ZARA','UNIQLO','GU','H&M','MANGO']
+  },
+
+  /* ============== NATURAL（骨感・直線・中庸） ============== */
+  BWUC: { // Urban Natural（骨格ユニコーン）
+    high:  ['The Row','Jil Sander','Loewe','Bottega Veneta','Celine'],
+    middle:['JOURNAL STANDARD','UNITED ARROWS','BEAUTY&YOUTH','AURALEE','YLEVE','TOMORROWLAND','ENFÖLD','Deuxieme Classe','Plage'],
+    fast:  ['COS','ZARA','ARKET','UNIQLO','H&M','MANGO']
+  },
+  BWUS: { // Fairy Natural（骨格イーグル）
+    high:  ['Loewe','Celine','Jil Sander','Isabel Marant','Acne Studios'],
+    middle:['ENFÖLD','Deuxieme Classe','TOMORROWLAND','athoos','COS（ミドル扱い）','IÉNA','Plage','STUNNING LURE'],
+    fast:  ['COS','ZARA','& Other Stories','UNIQLO','H&M','MANGO']
+  },
+  BWLC: { // Classic Natural（骨格フォックス）
+    high:  ['Hermès','The Row','Loro Piana','Jil Sander','Celine'],
+    middle:['IÉNA','Plage','TOMORROWLAND','BEAMS','URBAN RESEARCH','UNITED ARROWS','AURALEE','SCYE','MACKINTOSH'],
+    fast:  ['COS','ZARA','UNIQLO','H&M','MANGO','ARKET']
+  },
+  BWLS: { // Pure Natural（骨格バンビ）
+    high:  ['Loewe','Gabriela Hearst','Chloé','JW Anderson'],
+    middle:['nest Robe','Vermeerist BEAMS','Plage','Journal Standard L’essage','ADAM ET ROPÉ','TODAYFUL','IÉNA','ANATOMICA'],
+    fast:  ['COS','UNIQLO','H&M','ZARA','MANGO']
+  },
+
+  /* ============== STRAIGHT（厚・立体・上重心・直線） ============== */
+  BNUS: { // Elegant Straight（骨格パンサー）
+    high:  ['Saint Laurent','Tom Ford','Givenchy','Alexander McQueen','Max Mara'],
+    middle:['Theory','LE PHIL','FOXEY','PLST','Akris punto','HYKE','THE ROW（セレクト取扱想定）','Drawer'],
+    fast:  ['COS','ZARA（Premium）','UNIQLO','PLST','MANGO','& Other Stories']
+  },
+  MWUC: { // Sporty Cool（骨格シャーク）
+    high:  ['Prada Linea Rossa','Moncler','Balenciaga','Stone Island'],
+    middle:['NIKE Sportswear','adidas Originals','P.E NATION','Lululemon','DESCENTE ALLTERRAIN','Nanamica','ARC’TERYX VEILANCE'],
+    fast:  ['Uniqlo U','UNIQLO','GU','ZARA','H&M']
+  },
+  MNUC: { // Glamorous Cool（骨格タイガー）
+    high:  ['Dolce & Gabbana','Versace','Balmain','Alexander McQueen','Max Mara'],
+    middle:['THE ROW','LE CIEL BLEU','N°21','ZARA Premium','STUNNING LURE','ALLSAINTS','AMERI'],
+    fast:  ['ZARA','MANGO','Bershka','UNIQLO','GU','H&M']
+  },
+  MNUS: { // Romantic Mode（骨格ピーコック）
+    high:  ['Valentino','Elie Saab','Oscar de la Renta','Alexander McQueen','Prada'],
+    middle:['Self-Portrait','SNIDEL（ドレス）','FOXEY','Apuweiser-riche','ANAYI','CELFORD','LE PHIL'],
+    fast:  ['ZARA（Evening）','& Other Stories','H&M','MANGO','UNIQLO']
+  },
+  MWUS: { // Soft Active（骨格ドルフィン）
+    high:  ['Issey Miyake','Pleats Please','Hermès（スポーティライン）','Prada'],
+    middle:['PLEATS PLEASE','ISSEY MIYAKE','Theory','Lululemon','COS','ATON','UNIQLO U'],
+    fast:  ['UNIQLO','GU','ZARA','H&M','COS（価格的には中間だが量販も可）']
+  },
+  BNUC: { // Structural Mode（骨格オウル）
+    high:  ['Saint Laurent','Jil Sander','Givenchy','Celine','Tom Ford'],
+    middle:['COS','Theory','AURALEE','HYKE','S’YTE','+J（UNIQLOコラボ）','AKRIS punto'],
+    fast:  ['COS','ZARA（Premium）','UNIQLO','H&M','MANGO']
+  }
+};
+
+const TYPE_NICK = {
+  /* WAVE */
+  BNLS:{ label:'骨格コアラ',    en:'Koala',     why:'下重心で包み込むやわらかさと丸みの曲線。穏やかで親和的な印象を持つタイプ。' },
+  MNLC:{ label:'骨格ウルフ',    en:'Wolf',      why:'静かで芯が強い曲線×柔らかさ。都会的で知的、無駄のないバランス感。' },
+  MWLC:{ label:'骨格バタフライ',en:'Butterfly',  why:'軽くて風に舞うような曲線。薄手×Iラインが映えるエアリーさ。' },
+  MWLS:{ label:'骨格ハムスター', en:'Hamster',    why:'全体にふわっと厚みと丸み。下に安定が出やすい愛嬌のある可憐さ。' },
+  MNLS:{ label:'骨格ドーブ',    en:'Dove',      why:'（白鳩）上半身は華奢で下に安定。柔らかい直線で上品に香るクラシックフェミニン。' },
+  BNLC:{ label:'骨格テディ',    en:'Teddy',     why:'直線の芯を感じつつ包容感。アースカラーや落ち感素材で癒やしの安定。' },
+
+  /* NATURAL */
+  BWUC:{ label:'骨格ユニコーン', en:'Unicorn',   why:'長い手足と曲線フレーム。余白を生かすミニマルが映える幻想×構造。' },
+  BWUS:{ label:'骨格イーグル',   en:'Eagle',     why:'上重心の軽さと透徹した知性。直線ベースにほんの少しの曲線で空気感。' },
+  BWLC:{ label:'骨格フォックス', en:'Fox',       why:'端正で機敏、自然体の品格。薄手テーラードやセンタープレスが冴える。' },
+  BWLS:{ label:'骨格バンビ',     en:'Bambi',     why:'直線骨格に柔らかい面。自然素材のレイヤーで森のような静けさ。' },
+
+  /* STRAIGHT */
+  BNUS:{ label:'骨格パンサー',   en:'Panther',   why:'上重心×直線で研ぎ澄まされた構築美。都会的で凛としたムード。' },
+  MWUC:{ label:'骨格シャーク',   en:'Shark',     why:'グラマラスな曲線と機能美。短丈×テーパードのスポーティクリーン。' },
+  MNUC:{ label:'骨格タイガー',   en:'Tiger',     why:'立体的な厚みと存在感。高いウエストマークで彫刻的に魅せる。' },
+  MNUS:{ label:'骨格ピーコック', en:'Peacock',   why:'強さに装飾性が同居。厚手サテンやジュエリーで“強×甘”の華やかさ。' },
+  BNUC:{ label:'骨格オウル',     en:'Owl',       why:'建築的な曲線と知性。モノトーン×構造で夜に光る精密さ。' },
+  MWUS:{ label:'骨格ドルフィン', en:'Dolphin',   why:'滑らかな流線の軽やかさ。プリーツやドレープでしなやかに。' },
+};
+
+/* ==== 16タイプの Body Balance Tips ==== */
+/* すでに同名定数があれば削除してから貼ってね */
+const BODY_TIPS = {
+  /* ========== WAVE（柔・軽・下重心） ========== */
+  BNLS: { // Romantic Wave（コアラ）
+    goal: "下重心を軽く・上半身に視線を上げる",
+    diet_do: ["タンパク質を毎食20g以上", "塩分とむくみ対策（カリウム・水分）", "夜は炭水化物をやや控えめ"],
+    diet_avoid: ["砂糖多めの飲料", "油×粉物の重ね食い"],
+    train_strength: ["ヒップスラスト 12×3", "サイドレッグリフト 15×3", "クラムシェル 15×3"],
+    train_cardio: ["坂道ウォーク 20–30分", "エリプティカル 15分"],
+    mobility: ["腸腰筋ストレッチ", "ふくらはぎのポンプ運動"],
+    care: ["着圧ソックス/リンパ流し", "骨盤前傾の改善"],
+    quick: ["上に短丈/首元にポイントで“軽さ”即演出"]
+  },
+  MNLC: { // Urban Elegance（ウルフ）
+    goal: "縦ライン強調・脚のボリュームをスッキリ",
+    diet_do: ["低脂肪高タンパク（鶏胸/白身魚）", "食物繊維で満腹感"],
+    diet_avoid: ["夜の塩分過多", "間食の小麦スナック"],
+    train_strength: ["スクワット 12×3", "ヒップヒンジ 12×3", "レッグエクステ 12×2"],
+    train_cardio: ["インターバル早歩き 25分", "バイク 15分"],
+    mobility: ["ハム/臀のストレッチ", "足首の可動"],
+    care: ["むくみケア（足湯/マッサージ）"],
+    quick: ["上コンパクト×ハイウエストで重心UP"]
+  },
+  MWLC: { // Light Wave（バタフライ）
+    goal: "軽量直線を作り、下の重さを減らす",
+    diet_do: ["たんぱく＋野菜先食べ", "水分2L/日"],
+    diet_avoid: ["揚げ物続き", "深夜の菓子"],
+    train_strength: ["デッドバグ 12×3", "ブルガリアンスクワット 10×3", "カーフレイズ 20×2"],
+    train_cardio: ["ロングウォーク 30–40分"],
+    mobility: ["股関節/ハムの動的ストレッチ"],
+    care: ["姿勢—胸を開き猫背防止"],
+    quick: ["Iラインの薄手シャツで“縦”を一発強調"]
+  },
+  MWLS: { // Natural Girly（ハムスター）
+    goal: "全体の“ふわ”を締め、上にポイント",
+    diet_do: ["たんぱく＋スープで体温UP", "間食はナッツ/ヨーグルト"],
+    diet_avoid: ["砂糖ミルクたっぷりの飲料", "粉物×脂質のセット"],
+    train_strength: ["プランク 40秒×3", "ヒップアブダクション 15×3", "バードドッグ 12×3"],
+    train_cardio: ["リズムウォーク 20分"],
+    mobility: ["胸椎回旋/肩甲骨ほぐし"],
+    care: ["上短丈・小物上寄せで視線UP"],
+    quick: ["ショートカーデ＋ハイウエで即軽やか"]
+  },
+  MNLS: { // Classic Feminine（ドーブ）
+    goal: "上は華奢維持・下のラインを流線的に",
+    diet_do: ["鉄・亜鉛・ビタミンB群", "良質な脂質（青魚/オリーブ）"],
+    diet_avoid: ["塩分過多", "遅い時間の炭水化物大量"],
+    train_strength: ["グルートブリッジ 15×3", "レッグカール 12×3", "内転筋ワーク 15×2"],
+    train_cardio: ["スイム/クロール 20–30分"],
+    mobility: ["ヒップフレクサー/腸腰筋"],
+    care: ["パール等小粒アクセで上焦点"],
+    quick: ["マーメイド×短丈JKで“品×軽”"]
+  },
+  BNLC: { // Earth Wave（テディ）
+    goal: "包容感は残しつつ、輪郭をシャープに",
+    diet_do: ["温かいスープ先食べ", "たんぱく20g＋褐色脂肪活性（温冷交代浴）"],
+    diet_avoid: ["甘いドリンク", "油っこい夜食"],
+    train_strength: ["ロングヒップスラスト 12×3", "ロウイング 12×3"],
+    train_cardio: ["傾斜ウォーク 25分"],
+    mobility: ["背中/胸のストレッチ"],
+    care: ["上に明度差を1点"],
+    quick: ["ロングカーデで“包みつつ縦”を追加"]
+  },
+
+  /* ========== NATURAL（骨感・直線・中庸） ========== */
+  BWUC: { // Urban Natural（ユニコーン）— スリム下重心
+    goal: "下を引き締め、上の構造を見せる",
+    diet_do: ["十分な総カロリー（痩せすぎ防止）", "たんぱく/炭水化物を運動前後に"],
+    diet_avoid: ["極端な糖質制限", "食事抜き"],
+    train_strength: ["ヒップヒンジ 12×3", "カーフレイズ 20×2", "体幹ローラー 10×3"],
+    train_cardio: ["バイク 20分（軽〜中強度）"],
+    mobility: ["足首/ハムの動的可動"],
+    care: ["姿勢（骨盤中立・胸を開く）"],
+    quick: ["ボクシーJK×ストレートで“構造×余白”"]
+  },
+  BWUS: { // Fairy Natural（イーグル）
+    goal: "上に軽さ・下は直線を通す",
+    diet_do: ["たんぱく＋炭水化物を等配分", "カフェインは午前中に"],
+    diet_avoid: ["塩分と加工肉の積み重ね"],
+    train_strength: ["オーバーヘッドプレス軽 12×3", "ロウ 12×3", "スプリットスクワット 10×3"],
+    train_cardio: ["ジョグor早歩き 25分"],
+    mobility: ["胸椎伸展・肩甲骨モビリティ"],
+    care: ["金属アクセで無機質に軽量化"],
+    quick: ["ビッグトップス×直線ボトムで空気感"]
+  },
+  BWLC: { // Classic Natural（フォックス）
+    goal: "端正な直線を保ち、可動域も確保",
+    diet_do: ["朝に良質タンパク", "水分1.5–2L"],
+    diet_avoid: ["夜の高脂質"],
+    train_strength: ["ベンチサポートロー 12×3", "スクワット 12×3", "ヒップヒンジ 12×3"],
+    train_cardio: ["テンポウォーク 30分"],
+    mobility: ["ハム/股関節の静的ストレッチ"],
+    care: ["センタープレス/シャツで端正さUP"],
+    quick: ["薄手テーラード＋ストレートで即“品”"]
+  },
+  BWLS: { // Pure Natural（バンビ）— ハード寄り
+    goal: "直線骨格の硬さを解き、下の重さを流す",
+    diet_do: ["温かい汁物/発酵食品", "カリウム（海藻/フルーツ）"],
+    diet_avoid: ["冷たい甘味の取りすぎ"],
+    train_strength: ["グッドモーニング 12×3（軽）", "ランジ 10×3"],
+    train_cardio: ["スロージョグ 20分 or 自重サーキット10分"],
+    mobility: ["股関節/腸脛靭帯/ふくらはぎのほぐし"],
+    care: ["自然素材×Aラインで柔らかさ追加"],
+    quick: ["質感ミックス（コットン×リネン）で“静の深み”"]
+  },
+
+  /* ========== STRAIGHT（厚・立体・上重心・直線） ========== */
+  BNUS: { // Sporty Cool（パンサー）— ソリッド①
+    goal: "上重心を活かして“縦”を強化",
+    diet_do: ["高タンパク（体重×1.5g目安）", "食物繊維で血糖緩やか"],
+    diet_avoid: ["揚げ物×粉物", "夜の過食"],
+    train_strength: ["ショートレンジスクワット 10×3", "ショルダープレス 10×3", "ロウ 10×3"],
+    train_cardio: ["HIIT 10分 or 坂道ウォーク20分"],
+    mobility: ["胸/肩の前側を開く"],
+    care: ["高コントラスト配色でシャープに"],
+    quick: ["短丈×ハイウエで一瞬で“脚長”"]
+  },
+  MWUC: { // Elegant Straight（シャーク）— イージー②
+    goal: "厚みを引き締めつつ、クリーンに見せる",
+    diet_do: ["PFCバランスを整える（P:30%/F:25%/C:45% 目安）", "水分2L"],
+    diet_avoid: ["甘いラテ・菓子パン"],
+    train_strength: ["ヒップヒンジ 12×3", "チェストプレス 10×3", "レッグプレス 12×3"],
+    train_cardio: ["トレッドミル傾斜 20分"],
+    mobility: ["股関節/胸椎の可動UP"],
+    care: ["スポーティMIXで清潔感"],
+    quick: ["モノトーン×機能素材ですっきり"]
+  },
+  MNUC: { // Glamorous Cool（タイガー）— アクティブ①
+    goal: "曲線の立体を“彫刻的な縦”へ",
+    diet_do: ["高タンパク＋低GI", "夕食はやや糖質控えめ"],
+    diet_avoid: ["アルコール頻回", "油多め外食"],
+    train_strength: ["ヒップスラスト 10×4", "ラットプル 12×3", "サイドプランク 40秒×2"],
+    train_cardio: ["インターバル歩行 20分"],
+    mobility: ["腸腰筋/胸のストレッチ"],
+    care: ["ダーク×一点光沢で引き締め"],
+    quick: ["ウエスト強調のフィット&フレア"]
+  },
+  MNUS: { // Romantic Mode（ピーコック）— アクティブ②
+    goal: "“強×甘”のバランスを体幹で支える",
+    diet_do: ["タンパク＋野菜2皿", "間食はプロテイン or チーズ"],
+    diet_avoid: ["砂糖の多い飲料", "夜のスナック"],
+    train_strength: ["デッドリフト軽 12×3", "プッシュアップ 8×3", "ヒップアブダクション 15×2"],
+    train_cardio: ["ローパクト有酸素 25分"],
+    mobility: ["胸郭/肩甲骨の可動"],
+    care: ["存在感あるジュエリーは“1点”に集約"],
+    quick: ["ペプラム/タフタで“上集中×縦”"]
+  },
+  MWUS: { // Soft Active（ドルフィン）— イージー①
+    goal: "流線を保ちながら体幹で締める",
+    diet_do: ["たんぱく1日体重×1.2g", "糖質は活動量に合わせて可変"],
+    diet_avoid: ["油×粉の過食", "深夜のスイーツ"],
+    train_strength: ["プリーツ意識の体幹系：ロールアップ 10×3", "ランジ 10×3"],
+    train_cardio: ["バイク/エアロ 25分"],
+    mobility: ["腸腰筋/ハムの動的ストレッチ"],
+    care: ["すっきり襟・寒色でクリアに"],
+    quick: ["上コンパクト×Iラインで即“脚長”"]
+  },
+  BNUC: { // Structural Mode（オウル）— ソリッド②
+    goal: "建築的ラインを際立てるための“締め”",
+    diet_do: ["高タンパク・低脂質寄り", "食物繊維で血糖コントロール"],
+    diet_avoid: ["菓子パン/揚げ物の連続"],
+    train_strength: ["ショート丈が映える体幹：ハンギングニーレイズ 10×3", "ルーマニアンDL 10×3"],
+    train_cardio: ["坂道ウォーク 20分 or クロスバイク 20分"],
+    mobility: ["ハム/臀・胸のストレッチ"],
+    care: ["モノトーン×カッティングで知性強調"],
+    quick: ["ショートJKで上重心をさらに明確化"]
   }
 };
 
 // 型の存在チェック用
-const ALL_CODES = Object.keys(PREMIUM_RULES);
+const ALL_CODES = Object.keys(TYPE_META || {});
 
 // =========================================================
 // 3) スコア連動パーソナライズ
 //    scores = {frame,surface,balance,line} mean:1..5
 // =========================================================
-function buildPremiumAdvice(code, scores){
-  const rule = PREMIUM_RULES[code] || PREMIUM_RULES.BNLS;
-  const f = normalize01(scores?.frame?.mean ?? 3);   // 骨感/厚み(高→構築OK)
-  const s = normalize01(scores?.surface?.mean ?? 3); // 表面密度(高→艶/硬質OK)
-  const b = normalize01(scores?.balance?.mean ?? 3); // 重心(高→上重心)
-  const l = normalize01(scores?.line?.mean ?? 3);    // ライン(高→直線)
+ function withArrayDefaults(obj){
+    const o = JSON.parse(JSON.stringify(obj||{}));
+    // 配列として使う可能性があるキーを全部初期化
+    for (const k of ['bodyTips','textures','patterns','hair','makeup','jewelry','shoes','bags','denim','outer','capsule','qna']){
+      if (!Array.isArray(o[k])) o[k] = [];
+    }
+    // stylingFormulas はオブジェクト
+    if (!o.stylingFormulas) o.stylingFormulas = { spring:'', summer:'', autumn:'', winter:'' };
+    return o;
+  }
 
-  // 深掘りコメント
+  function celebListFrom(rule){
+    // 互換対応： celebrities {jp,kr,global} or celebs {jp,kr,global}
+    const c = rule.celebrities || rule.celebs || {};
+    const jp = Array.isArray(c.jp) ? c.jp : [];
+    const kr = Array.isArray(c.kr) ? c.kr : [];
+    const gl = Array.isArray(c.global) ? c.global : [];
+    return { jp, kr, global: gl };
+  }
+
+  function buildPremiumAdvice(code, scores){
+  // ベース：TYPE_META
+  const meta   = TYPE_META[code] || {};
+  const brands = BRAND_BY_TYPE[code] || {};
+  const nick   = TYPE_NICK[code]?.label || '';
+  const bt     = BODY_TIPS[code] ? flattenBodyTips(BODY_TIPS[code]) : [];
+
+  // スコア正規化
+  const f = normalize01(scores?.frame?.mean ?? 3);
+  const s = normalize01(scores?.surface?.mean ?? 3);
+  const b = normalize01(scores?.balance?.mean ?? 3);
+  const l = normalize01(scores?.line?.mean ?? 3);
+
   const summary = [
     `直線/曲線：${pct(l)}%（${l>=0.5?'直線寄り':'曲線寄り'}）`,
     `重心：${pct(b)}%（${b>=0.5?'上重心':'下重心'}）`,
-    `表面密度：${pct(s)}%（${s>=0.5?'クリア/硬質を点で':'マット/ソフト寄り'}）`,
-    `フレーム：${pct(f)}%（${f>=0.5?'構築要素OK':'面の連続/柔の優先'}）`,
+    `表面密度：${pct(s)}%（${s>=0.5?'クリア/硬質寄り':'マット/ソフト寄り'}）`,
+    `フレーム：${pct(f)}%（${f>=0.5?'構築要素OK':'面の連続/柔重視'}）`,
   ];
 
-  // 推奨の微調整（前回より踏み込み）
-  const adj = JSON.parse(JSON.stringify(rule));
+  // adj に meta をコピー（image/celebs 等を保持）
+  const adj = JSON.parse(JSON.stringify(meta));
+  adj.code = code;
+  adj.nickLabel = nick;
+  adj.brands = brands;
 
-  // 1) ライン調整
+  // bodyTips: TYPE_METAに元からあるなら前に、BODY_TIPSを後ろに結合
+  adj.bodyTips = Array.isArray(adj.bodyTips) ? adj.bodyTips.slice() : [];
+  adj.bodyTips.push(...bt);
+
+  // スコアに応じた微調整（必要なければそのままでOK）
+  adj.patterns = Array.isArray(adj.patterns) ? adj.patterns : [];
+  adj.textures = Array.isArray(adj.textures) ? adj.textures : [];
+  adj.shoes    = Array.isArray(adj.shoes)    ? adj.shoes    : [];
+  adj.jewelry  = Array.isArray(adj.jewelry)  ? adj.jewelry  : [];
+  adj.outer    = Array.isArray(adj.outer)    ? adj.outer    : [];
+
   if (l >= 0.65){
     adj.patterns = uniq(['ピンスト','直線幾何', ...adj.patterns]);
     adj.textures = uniq(['コンパクトニット', ...adj.textures]);
@@ -565,39 +816,37 @@ function buildPremiumAdvice(code, scores){
     adj.bodyTips.unshift('曲線ドレープで輪郭を柔らかく');
   }
 
-  // 2) 重心調整
   if (b >= 0.65){
-    adj.bodyTips.unshift('トップスは短めorショートアウターで視線を上に');
+    adj.bodyTips.unshift('短丈トップスorショートアウターで上に視線集約');
     adj.shoes = uniq(['ミドルヒール', ...adj.shoes]);
   } else if (b <= 0.35){
-    adj.bodyTips.unshift('ロングボトム/ハイウエストで重心を下に逃がす');
+    adj.bodyTips.unshift('ハイウエスト/ロングボトムで下の重さを逃がす');
     adj.shoes = uniq(['フラット/ローヒール', ...adj.shoes]);
   }
 
-  // 3) 表面密度調整
   if (s >= 0.6){
     adj.textures = uniq(['厚サテン(点)', ...adj.textures]);
     adj.jewelry  = uniq(['メタル面/幾何', ...adj.jewelry]);
-    adj.bodyTips.unshift('艶は“点”。一箇所で締める');
+    adj.bodyTips.unshift('艶は“点”に集約する');
   } else if (s <= 0.4){
     adj.textures = uniq(['リネン/ドライ', ...adj.textures]);
     adj.jewelry  = uniq(['天然素材/小粒', ...adj.jewelry]);
     adj.bodyTips.unshift('マット素材で情報を整える');
   }
 
-  // 4) フレーム調整
   if (f >= 0.6){
     adj.outer = uniq(['テーラード/構築', ...adj.outer]);
     adj.bodyTips.unshift('襟/肩/ベルトで構築1点');
   } else if (f <= 0.4){
     adj.outer = uniq(['とろみ系/ノーカラー', ...adj.outer]);
-    adj.bodyTips.unshift('面の連続を優先。段差を作りすぎない');
+    adj.bodyTips.unshift('面の連続を優先し段差を作りすぎない');
   }
 
-  // 有名人マッチ（スコアから3名提案：直線寄り→直線寄りの顔立ち/骨格寄りを優先…超簡易）
-  const celebBucket = l>=0.55 ? [...(adj.celebs?.global||[]),...(adj.celebs?.kr||[])]
-                               : [...(adj.celebs?.jp||[]),...(adj.celebs?.kr||[])];
-  const celebPick = pickSome(uniq(celebBucket), 3);
+  // 参考芸能人のピックアップ
+  const celebBucket = (l>=0.55)
+    ? uniq([...(adj.celebrities?.global||[]), ...(adj.celebrities?.kr||[])])
+    : uniq([...(adj.celebrities?.jp||[]),     ...(adj.celebrities?.kr||[])]);
+  const celebPick = pickSome(celebBucket, 3);
 
   return {
     ...adj,
@@ -606,45 +855,47 @@ function buildPremiumAdvice(code, scores){
   };
 }
 
-// =========================================================
-// 4) 表示
-// =========================================================
-function sectionList(title, items){
-  if (!items?.length) return '';
-  return `
-    <section class="card" style="margin:12px 0;">
-      <h3>${title}</h3>
-      <ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul>
-    </section>`;
-}
-function sectionChips(title, items){
-  if (!items?.length) return '';
-  return `
-    <section class="card" style="margin:12px 0;">
-      <h3>${title}</h3>
-      <div class="chips">${items.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
-    </section>`;
-}
-function sectionKV(title, kvObj){
-  if (!kvObj) return '';
-  const keys = Object.keys(kvObj);
-  if (!keys.length) return '';
-  return `
-    <section class="card" style="margin:12px 0;">
-      <h3>${title}</h3>
-      ${keys.map(k=>`
-        <h4 style="margin:10px 0 4px;">${k}</h4>
-        <div class="chips">${(kvObj[k]||[]).map(x=>`<span class="chip">${x}</span>`).join('')}</div>
-      `).join('')}
-    </section>`;
+  // =========================================================
+  // 4) 表示ヘルパ
+  // =========================================================
+  function sectionList(title, items){
+    if (!items?.length) return '';
+    return `
+      <section class="card" style="margin:12px 0;">
+        <h3>${title}</h3>
+        <ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </section>`;
+  }
+  function sectionChips(title, items){
+    if (!items?.length) return '';
+    return `
+      <section class="card" style="margin:12px 0;">
+        <h3>${title}</h3>
+        <div class="chips">${items.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+      </section>`;
+  }
+  function flattenBodyTips(bt){
+  if(!bt) return [];
+  const out = [];
+  if(bt.goal) out.push(`目標：${bt.goal}`);
+  const order = ['quick','care','mobility','train_strength','train_cardio','diet_do','diet_avoid'];
+  const label = {
+    quick:'クイック対処', care:'ケア', mobility:'モビリティ',
+    train_strength:'筋トレ', train_cardio:'有酸素', diet_do:'食事（やる）', diet_avoid:'食事（避ける）'
+  };
+  for(const k of order){
+    if(Array.isArray(bt[k]) && bt[k].length){
+      out.push(`${label[k]}：${bt[k].join('／')}`);
+    }
+  }
+  return out;
 }
 
-function renderPremiumView(data){
+  function renderPremiumView(data){
   const root = document.getElementById('premium-root');
   const code = data.code;
   const adv  = buildPremiumAdvice(code, data.scores||{});
 
-  // 季節別コーデ
   const seasonal = adv.stylingFormulas ? [
     ['春', adv.stylingFormulas.spring],
     ['夏', adv.stylingFormulas.summer],
@@ -654,11 +905,18 @@ function renderPremiumView(data){
 
   root.innerHTML = `
     <div class="card" style="margin-top:12px;">
-      <h2>${adv.emoji} ${adv.name} <span class="muted">(${adv.code})</span></h2>
-      <p class="muted">${adv.notes||''}</p>
-      <div class="chips" style="margin-top:6px;">
-        <span class="chip">${adv.base}</span>
+      <div class="hero">
+        <div class="ico">${adv.emoji||''}</div>
+        <div>
+          <h2>${adv.name} <span class="muted">(${adv.code})</span></h2>
+          <p class="muted">${adv.notes||adv.concept||''}</p>
+          <div class="chips" style="margin-top:6px;">
+            <span class="chip">${adv.base||''}</span>
+            ${adv.nickLabel ? `<span class="chip">${adv.nickLabel}</span>` : ''}
+          </div>
+        </div>
       </div>
+      ${adv.image ? `<div class="kv"><img src="${adv.image}" alt="${adv.name}"></div>` : ''}
     </div>
 
     ${sectionList('あなたの傾向サマリ', adv.summary)}
@@ -674,396 +932,72 @@ function renderPremiumView(data){
     ${sectionChips('デニム/ボトム適性', adv.denim)}
     ${sectionChips('アウター適性', adv.outer)}
 
-    <section class="card" style="margin:12px 0;">
-      <h3>季節別コーデ式（Formula）</h3>
-      <ul>
-        ${seasonal.map(([k,v])=> v ? `<li><b>${k}</b>：${v}</li>`:'').join('')}
-      </ul>
-    </section>
+    ${adv.brands ? `
+      ${sectionChips('ブランド（High）', adv.brands.high)}
+      ${sectionChips('ブランド（Middle）', adv.brands.middle)}
+      ${sectionChips('ブランド（Fast）', adv.brands.fast)}
+    ` : ''}
+
+    ${seasonal.length ? `
+      <section class="card" style="margin:12px 0;">
+        <h3>季節別コーデ式（Formula）</h3>
+        <ul>${seasonal.map(([k,v])=> v ? `<li><b>${k}</b>：${v}</li>`:'').join('')}</ul>
+      </section>
+    ` : ''}
 
     ${sectionChips('最小カプセル8（これだけで困らない）', adv.capsule)}
 
-    <section class="card" style="margin:12px 0;">
-      <h3>よくある質問（あなた向け回答）</h3>
-      <ul>
-        ${(adv.qna||[]).map(qa=>`<li><b>Q.</b> ${qa.q}<br><b>A.</b> ${qa.a}</li>`).join('')}
-      </ul>
-    </section>
-
-    <section class="card" style="margin:12px 0;">
-      <h3>買い物チェックリスト（自動生成）</h3>
-      <ul>
-        ${uniq([
-          ...(adv.capsule||[]),
-          ...(adv.outer||[]).slice(0,2),
-          ...(adv.shoes||[]).slice(0,2),
-          ...(adv.bags||[]).slice(0,2),
-          ...(adv.jewelry||[]).slice(0,2),
-        ]).map(x=>`<li>${x}</li>`).join('')}
-      </ul>
-      <p class="small muted">※ リストはスコアとタイプから自動生成。被りは自動で整理しています。</p>
-    </section>
+    ${adv.qna?.length ? `
+      <section class="card" style="margin:12px 0;">
+        <h3>よくある質問（あなた向け回答）</h3>
+        <ul>${adv.qna.map(qa=>`<li><b>Q.</b> ${qa.q}<br><b>A.</b> ${qa.a}</li>`).join('')}</ul>
+      </section>
+    ` : ''}
   `;
 }
-
-// =========================================================
-// 5) token → データ取得
-// =========================================================
-async function loadPremiumDataByToken(){
-  const params = new URLSearchParams(location.search);
-  const token  = params.get('token');
-  if (!token) throw new Error('missing token');
-  const url = `${GAS_URL}?report=1&token=${encodeURIComponent(token)}`;
-  const res = await jsonp(url);
-  if (!res?.ok) throw new Error(res?.error || 'failed');
-  return res.data; // { code, scores, answers, email, sessionId }
-}
-
-// =========================================================
-// 6) 起動
-// =========================================================
-(async ()=>{
-  try{
-    const data = await loadPremiumDataByToken();
-    if (!ALL_CODES.includes(data.code)) {
-      throw new Error('Unknown code: '+data.code);
-    }
-    renderPremiumView(data);
-  }catch(e){
-    const root = document.getElementById('premium-root');
-    root.innerHTML = `
-      <div class="card" style="margin-top:12px;">
-        <h3>エラー</h3>
-        <p class="warn">${String(e.message||e)}</p>
-        <p class="small">メールで届いたURL（?token=...）をそのまま開いてください。</p>
-      </div>`;
-    console.error(e);
+  // =========================================================
+  // 5) token → データ取得 & 起動（単一路線）
+  // =========================================================
+  
+  // boot()の直前あたりに追記
+  function mockData(code='BNLS'){
+    return { token:'dev', sessionId:'dev', email:'dev@example.com',
+      code, scores:{ frame:0.5, surface:0.5, balance:0.5, line:0.5 }, answers:{} };
   }
-})();
 
-
-// 1) スコア→運動傾向フラグ
-function deriveTendencies(scores){
-  const f = normalize01(scores?.frame?.mean ?? 3);   // フレーム厚み/構築
-  const s = normalize01(scores?.surface?.mean ?? 3); // 表面密度（硬質/艶=高）
-  const b = normalize01(scores?.balance?.mean ?? 3); // 重心（上=高 / 下=低）
-  const l = normalize01(scores?.line?.mean ?? 3);    // 直線（高）/曲線（低）
-
-  return {
-    prefersStrength: f >= 0.55 || l >= 0.60,     // 筋トレ相性
-    prefersLISS:     l <= 0.45 || s <= 0.45,     // 低強度有酸素（ウォーク等）
-    okHIIT:          l >= 0.60 && s >= 0.55,     // HIIT適性（無理はしない）
-    focusGlutes:     b <= 0.45,                  // 下重心→ヒップ/ハムで引き上げ
-    focusUpper:      b >= 0.60,                  // 上重心→背中/体幹で安定
-    needsMobility:   (s <= 0.45) || (l <= 0.45), // 柔軟/モビリティ
-    recoveryPriority: s >= 0.60                  // 硬質寄り→回復意識高め
-  };
-}
-
-// 2) タイプ別 基本方針（ベース）
-const BASE_BY_CODE = {
-  // WAVE（柔・軽・下重心・曲線）
-  WAVE: {
-    dietFocus: [
-      '炭水化物は低GI中心（オートミール・玄米・全粒パン）',
-      '脂質は質重視：オリーブ油/ナッツ/青魚のDHA・EPA',
-      'タンパク質は体重×1.2〜1.6 g/日を目安（鶏胸/卵/ギリシャヨーグルト/大豆）',
-    ],
-    trainingFocus: [
-      'LISS（速歩・バイク）で“疲れを残さない脂肪燃焼”を土台に',
-      'ヒップヒンジ（ヒップスラスト・RDL）で下半身を引き上げ',
-      '肩周りは過負荷を避け、広背筋/体幹で姿勢リフト',
-    ]
-  },
-  // NATURAL（骨感・直線・フレーム広）
-  NATURAL: {
-    dietFocus: [
-      '三大栄養素バランス型：P(25〜30%) F(25〜30%) C(40〜50%)を目安に',
-      '食物繊維20g/日以上（海藻・豆・野菜）で満腹感と血糖コントロール',
-      '水分は体重×30〜35 ml/日を目安（無糖）',
-    ],
-    trainingFocus: [
-      '機能的サーキット（上/下/体幹を交互）で全身を効率的に',
-      'ロングストレートを意識したプランク群・ロウ系で姿勢安定',
-      'LISS＋必要に応じてミニHIIT（関節に違和感がなければ）',
-    ]
-  },
-  // STRAIGHT（厚・立体・上重心・直線）
-  STRAIGHT: {
-    dietFocus: [
-      'タンパク質体重×1.6〜2.0 g/日、精製糖は控えめ',
-      'トレ前後は炭水化物を適量（吸収の良いものをトレ周りに集約）',
-      'ナトリウム/カリウム/マグネシウムを整えて浮腫み対策',
-    ],
-    trainingFocus: [
-      'コンパウンド（スクワット/デッドリフト/RDL/ベンチ/ロウ）中心に週2〜3',
-      '有酸素は15〜25分のテンポ走 or バイクで心肺も確保',
-      '過度なパンプ狙いよりフォームと重量進捗をトラック',
-    ]
-  }
-};
-
-// 3) タイプ→ベース判定（あなたの16タイプに対応）
-function baseOf(code){
-  const wave  = new Set(['BNLS','MNLC','MWLC','MWLS','MNLS','BNLC']);
-  const nat   = new Set(['BWUC','BWUS','BWLC','BWLS']);
-  const straight = new Set(['BNUS','MWUC','MNUC','MNUS','MWUS','BNUC']);
-  if (wave.has(code)) return 'WAVE';
-  if (nat.has(code)) return 'NATURAL';
-  if (straight.has(code)) return 'STRAIGHT';
-  return 'NATURAL';
-}
-
-// 4) 個別プラン生成
-function buildDietPlan(code, scores){
-  const base = baseOf(code);
-  const t = deriveTendencies(scores);
-  const baseRule = BASE_BY_CODE[base];
-
-  // 週次トレ構成（45–60分/回想定）
-  const days = [];
-  // Day1：下半身 or 全身（スコアで分岐）
-  days.push({
-    title: t.prefersStrength ? 'Day1: 下半身ストレングス' : 'Day1: 全身サーキット',
-    blocks: t.prefersStrength ? [
-      'ヒップスラスト 4×8-12（RPE7-8）',
-      'RDL 3×8-10',
-      'ブルガリアンSplit 3×8/脚',
-      'ラットプル or ロウ 3×10-12',
-      'プランク 3×45-60秒'
-    ] : [
-      'ゴブレットスクワット 3×12',
-      'インバーテッドロウ 3×10',
-      'ヒップヒンジ 3×12',
-      'プッシュアップ（膝OK） 3×10',
-      'サイドプランク 左右 3×30-45秒'
-    ]
-  });
-
-  // Day2：LISS / HIIT
-  days.push({
-    title: t.okHIIT ? 'Day2: ミニHIIT（控えめ）' : 'Day2: LISSウォーク',
-    blocks: t.okHIIT ? [
-      'バイク 5分WU → 20秒全力 / 100秒イージー × 6〜8 → 5分CD',
-      'モビリティ（股関節/胸椎）10分'
-    ] : [
-      '速歩 40〜60分（会話できる強度）',
-      'モビリティ（足首/股関節/胸椎）10分'
-    ]
-  });
-
-  // Day3：上半身 or 体幹
-  days.push({
-    title: t.prefersStrength ? 'Day3: 上半身ストレングス' : 'Day3: 体幹・姿勢スペシャル',
-    blocks: t.prefersStrength ? [
-      'ベンチプレス or ダンベルベンチ 4×6-10',
-      'ワンハンドロウ 3×10/側',
-      'ショルダープレス（軽） 3×10',
-      'フェイスプル 3×12-15',
-      'デッドバグ 3×10/側'
-    ] : [
-      'デッドバグ 3×10/側',
-      'バードドッグ 3×10/側',
-      'ヒップリフト 3×12',
-      'Y-T-W（肩甲帯） 各2×10',
-      '呼吸リセット（腹圧）5分'
-    ]
-  });
-
-  // Day4：LISS（必要なら+ミニ坂道）
-  days.push({
-    title: 'Day4: LISS or 坂道ウォーク',
-    blocks: [
-      t.prefersLISS ? '速歩 45分' : '緩やかな坂 30分（息切れしない程度）',
-      'ストレッチ（ハム/臀筋/胸）10分'
-    ]
-  });
-
-  // 休息日：任意に挿入（最低週1）
-  const restNote = '週1日は完全休養 or ストレッチのみ。睡眠7–8hを最優先。';
-
-  // 体の部位フォーカス
-  const bodyFocus = [];
-  if (t.focusGlutes) bodyFocus.push('ヒップ/ハム：ヒンジ種目を最優先、週2回');
-  if (t.focusUpper)  bodyFocus.push('背中/体幹：ロウ/プランク群で姿勢リフト');
-  if (t.needsMobility) bodyFocus.push('モビリティ：足首/股関節/胸椎に毎回10分');
-  if (bodyFocus.length===0) bodyFocus.push('全身のバランス強化をベースに、弱点は週末セットで補強');
-
-  // 食事：ベース＋個別調整
-  const diet = [...baseRule.dietFocus];
-  if (t.recoveryPriority) diet.unshift('回復重視：就寝1–2h前に軽タンパク+炭水化物少量、入浴で深部体温コントロール');
-  if (t.prefersStrength)  diet.push('トレ後30–90分にP20–30g + C30–60gを目安');
-  if (t.prefersLISS)      diet.push('LISS日は脂質をやや増やして満足感を確保');
-
-  // コンビニ攻略（日本向け）
-  const konbini = [
-    'サラダチキン / 焼き魚 / 豆腐 / ゆで卵',
-    'オートミール / もち麦おにぎり / 玄米系おにぎり',
-    'ギリシャヨーグルト / 無糖ヨーグルト / チーズ少量',
-    'カットサラダ + 和え物（海藻・ひじき・豆）',
-    'ナッツ小袋（食べ過ぎ注意）',
-    '無糖炭酸水 / 緑茶 / ブラックコーヒー'
-  ];
-
-  // 1日の食事モデル（例）
-  const dayMenu = [
-    '朝：オートミール＋無脂肪ヨーグルト＋ベリー＋蜂蜜少量 / ゆで卵',
-    '昼：鶏胸グリル or 鮭＋玄米150g＋サラダ（オリーブ油）',
-    '間：プロテイン or チーズ/ナッツ少量',
-    '夜：白身魚 or 豆腐ステーキ＋温野菜＋味噌汁（根菜は適量）',
-    'トレ後（必要時）：バナナ＋プロテイン',
-  ];
-
-  // 7・14・28日の進め方
-  const milestones = [
-    'Day 1–7：フォーム習得＆食事リズム固定（外食は「主食・主菜・副菜」を守る）',
-    'Day 8–14：重量 or 回数を+1〜2、歩数+1000/日、睡眠固定',
-    'Day 15–28：弱点部位に+1セット、間食はたんぱく質優先、夜の画面時間-30分',
-  ];
-
-  // サプリ（任意・一般的な範囲）※体質に合わない場合や服薬中は医師に相談
-  const supplements = [
-    'ホエイ or ソイプロテイン（不足分の補助）',
-    'クレアチン3–5g/日（筋出力の底上げ・十分な水分と併用）',
-    'ビタミンD/オメガ3（食事で不足する場合の補助）'
-  ];
-
-  // 水分・睡眠
-  const lifestyle = [
-    '水分：体重×30–35ml/日を目安（トレ日は+500–1000ml）',
-    '睡眠：7–8時間。就寝90分前入浴→室温18–20℃で入眠を促す',
-    'NEAT：エレベータ→階段、1時間毎に立つ、1日8000–10000歩目標'
-  ];
-
-  return {
-    base, tendencies: t, days, restNote, bodyFocus,
-    diet, konbini, dayMenu, milestones, supplements, lifestyle
-  };
-}
-
-// 5) 表示ヘルパ
-function sectionList(title, arr){
-  if (!arr?.length) return '';
-  return `
-    <section class="card" style="margin:12px 0;">
-      <h3>${title}</h3>
-      <ul>${arr.map(x=>`<li>${x}</li>`).join('')}</ul>
-    </section>`;
-}
-function sectionBlocks(title, days){
-  if (!days?.length) return '';
-  return `
-    <section class="card" style="margin:12px 0;">
-      <h3>${title}</h3>
-      ${days.map(d=>`
-        <div class="card" style="margin:8px 0; padding:10px;">
-          <h4 style="margin:0 0 6px;">${d.title}</h4>
-          <ul>${d.blocks.map(x=>`<li>${x}</li>`).join('')}</ul>
-        </div>
-      `).join('')}
-    </section>`;
-}
-
-// 6) (任意) カロリー目安UI（入力しない場合はスキップ可能）
-function calorieWidget(){
-  return `
-    <section class="card" style="margin:12px 0;">
-      <h3>カロリー/タンパク質の目安（任意）</h3>
-      <p class="small muted">※ おおよその目安。医療・栄養指導ではありません。</p>
-      <div class="row" style="gap:8px; align-items:center; flex-wrap:wrap;">
-        <input id="wkg" type="number" min="30" max="200" placeholder="体重(kg)" style="padding:8px; width:120px;">
-        <input id="hcm" type="number" min="130" max="210" placeholder="身長(cm)" style="padding:8px; width:120px;">
-        <select id="act" style="padding:8px;">
-          <option value="sed">活動少（デスク中心）</option>
-          <option value="light">やや活動</option>
-          <option value="mod">適度に活動</option>
-          <option value="high">活動高い</option>
-        </select>
-        <button id="calcKcal" class="btn">目安を計算</button>
-      </div>
-      <div id="kcalOut" class="muted" style="margin-top:8px;"></div>
-    </section>
-  `;
-}
-function wireCalorieWidget(){
-  const btn = document.getElementById('calcKcal');
-  if (!btn) return;
-  btn.onclick = ()=>{
-    const w = Number(document.getElementById('wkg').value||0);
-    const h = Number(document.getElementById('hcm').value||0);
-    const act = (document.getElementById('act').value||'sed');
-
-    if (!w || !h){
-      document.getElementById('kcalOut').textContent = '体重と身長を入力してください。';
-      return;
-    }
-    // ざっくり式：基礎代謝≒ 22 * 体重 で簡易（安全側）
-    const bmr = 22 * w;
-    const mult = act==='sed'?1.35 : act==='light'?1.5 : act==='mod'?1.7 : 1.9;
-    const tdee = Math.round(bmr * mult);
-    const cut10 = Math.round(tdee * 0.9);   // ▲10%（緩やか）
-    const cut15 = Math.round(tdee * 0.85);  // ▲15%（標準）
-    const proteinLow  = Math.round(w * 1.4);
-    const proteinHigh = Math.round(w * 1.8);
-    document.getElementById('kcalOut').innerHTML =
-      `維持カロリー目安：<b>${tdee} kcal/日</b><br>
-       ダイエット目安：<b>${cut10}〜${cut15} kcal/日</b><br>
-       たんぱく質：<b>${proteinLow}〜${proteinHigh} g/日</b>（食事で分割）`;
-  };
-}
-
-// 7) 外部から呼ぶ：プレミアムデータで描画
-function renderFitness(premiumData){
-  const root = document.getElementById('fitness-root');
-  const plan = buildDietPlan(premiumData.code, premiumData.scores||{});
-
-  root.innerHTML = `
-    <div class="card" style="margin-top:16px;">
-      <h2>🏃‍♀️ ダイエット＆運動プラン（あなただけの提案）</h2>
-      <p class="small muted">※ 一般的な健康情報です。既往症・服薬中は医療専門家にご相談ください。</p>
-    </div>
-
-    ${sectionBlocks('週プログラム（45–60分/回の目安）', plan.days)}
-    <div class="card" style="margin:8px 0; padding:10px;"><b>休息の指針：</b>${plan.restNote}</div>
-
-    ${sectionList('体のフォーカス', plan.bodyFocus)}
-    ${sectionList('食事の基本方針', plan.diet)}
-    ${calorieWidget()}
-    ${sectionList('1日の食事モデル（例）', plan.dayMenu)}
-    ${sectionList('コンビニ攻略（日本向け）', plan.konbini)}
-    ${sectionList('進め方のマイルストーン（7/14/28日）', plan.milestones)}
-    ${sectionList('生活習慣（睡眠・水分・NEAT）', plan.lifestyle)}
-    ${sectionList('任意サプリ（体質・医師に相談のうえ）', plan.supplements)}
-  `;
-
-  wireCalorieWidget();
-}
-
-// 8) 既存のプレミアム描画後に呼び出してね：
-//   renderPremiumView(data); の直後に renderFitness(data) を呼ぶ。
-
-// ====== データ取得：token → GAS(report) ======
   async function boot(){
-    const token = new URL(location.href).searchParams.get('token') || '';
-    const root = document.getElementById('premium-root');
+    const root  = document.getElementById('premium-root');
+    const url   = new URL(location.href);
+    const dev   = url.searchParams.get('dev');
+    const codeQ = url.searchParams.get('code') || 'BNLS';
 
-    if(!token){
-      root.innerHTML = `<div class="card"><h2 class="danger">専用リンクが無効です</h2><p class="muted">URLの <span class="kbd">?token=...</span> が見つかりません。</p></div>`;
+    if (dev === '1') {
+      const data = mockData(codeQ);
+      renderPremiumView(data);
+      window.__premiumData = data;
       return;
     }
 
+    const token = url.searchParams.get('token') || '';
+    if(!token){
+      root.innerHTML = `<div class="card"><h2 class="danger">専用リンクが無効です</h2>
+        <p class="muted">URLに <span class="kbd">?token=...</span> を付けるか、
+        開発用に <span class="kbd">?dev=1&code=BNLS</span> を使ってください。</p></div>`;
+      return;
+    }
+
+    // ここから下は既存のJSONP処理（そのまま）
     try{
       const res = await jsonp(`${GAS_URL}?report=1&token=${encodeURIComponent(token)}`);
-      if(!res || !res.ok || !res.data){
-        throw new Error(res?.error || 'データが取得できませんでした');
-      }
-      // data: { token, sessionId, email, code, scores, answers }
+      if(!res || !res.ok || !res.data) throw new Error(res?.error || 'データが取得できませんでした');
       renderPremiumView(res.data);
-      window.__premiumData = res.data; // エクスポート/再送で利用
+      window.__premiumData = res.data;
     }catch(e){
       root.innerHTML = `<div class="card"><h2 class="danger">読み込み失敗</h2><p class="muted">${String(e.message||e)}</p></div>`;
+      console.error(e);
     }
   }
+
 
   // ====== 画像/PDF/再送ボタン ======
   async function saveAsImage(){
@@ -1078,23 +1012,26 @@ function renderFitness(premiumData){
     const canvas = await html2canvas(el, {scale:2, backgroundColor:'#0b0c0f', useCORS:true});
     const img = canvas.toDataURL('image/jpeg', .92);
     const pdf = new jsPDF({orientation:'p', unit:'pt', format:'a4'});
+
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
-    const imgW = pageW; const imgH = canvas.height * (imgW / canvas.width);
-    let y = 0;
-    let remain = imgH;
-    while(remain > 0){
-      pdf.addImage(img, 'JPEG', 0, y?0:0, imgW, Math.min(imgH, pageH));
-      remain -= pageH;
-      if(remain > 0){ pdf.addPage(); y += pageH; }
-    }
+    const imgW = pageW;
+    const imgH = canvas.height * (imgW / canvas.width);
+
+    // 1ページに収める（多ページ化は見た目崩れやすいのでシンプルに）
+    const scale = Math.min(pageW / canvas.width, pageH / canvas.height);
+    const drawW = canvas.width * scale;
+    const drawH = canvas.height * scale;
+    const offsetX = (pageW - drawW) / 2;
+    const offsetY = 0; // 上寄せ
+
+    pdf.addImage(img, 'JPEG', offsetX, offsetY, drawW, drawH);
     pdf.save('premium-report.pdf');
   }
   async function resendMail(){
     const email = prompt('送信先メールアドレスを入力してください📩'); if(!email) return;
     const data = window.__premiumData;
     if(!data){ alert('データ未読込です。ページを再読み込みしてください。'); return; }
-    // シンプルHTMLを作ってPOST（GASのdoPost: sendResultMail）
     const html = document.getElementById('premium-root').innerHTML;
     try{
       await fetch(GAS_URL, {
