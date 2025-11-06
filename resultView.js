@@ -4,6 +4,38 @@
 // ==================================================
 
 // ---- stateの最低限初期化（premiumで answers を復元する前提） ----
+// ==== compat shim (put at very top of resultView.js) ====
+// meta.js / types.js が未定義でも落ちないように保険を張る
+(function(){
+  // デフォルトAXES（appの表示ラベルに合わせて必要なら文言調整してOK）
+  const DEFAULT_AXES = [
+    { key:'frame',   posLabel:'肉付き主導（M）', negLabel:'骨格主導（B）', codePos:'M', codeNeg:'B' },
+    { key:'surface', posLabel:'身体フレーム広（W）', negLabel:'身体フレーム狭（N）', codePos:'W', codeNeg:'N' },
+    { key:'balance', posLabel:'上重心（U）',        negLabel:'下重心（L）',        codePos:'U', codeNeg:'L' },
+    { key:'line',    posLabel:'直線（S）',          negLabel:'曲線（C）',          codePos:'S', codeNeg:'C' },
+  ];
+
+  // AXES を用意
+  window.AXES = window.AXES || DEFAULT_AXES;
+
+  // 質問定義が無い場合は長さだけ揃うダミー（全問 pos=true 想定）
+  if (!window.QUESTIONS) {
+    const mk = (n)=> Array.from({length:n}, ()=>({ pos:true }));
+    const len = 12; // appと同じ設問数に合わせて
+    window.QUESTIONS = { frame:mk(len), surface:mk(len), balance:mk(len), line:mk(len) };
+  }
+
+  // TYPE_META が無いと全ての参照で落ちるので空でも置く
+  window.TYPE_META = window.TYPE_META || {};
+
+  // 全16コード配列（meta側に無ければ固定の並びを出す）
+  window.ALL_CODES_ORDERED = window.ALL_CODES_ORDERED || Object.keys(window.TYPE_META).length
+    ? Object.keys(window.TYPE_META)
+    : ['BNLS','MNLC','MWLC','MWLS','MNLS','BNLC','BWUC','BWUS','BWLC','BWLS','BNUS','MWUC','MNUC','MNUS','MWUS','BNUC'];
+
+  // GAS_URL は premium 側で固定しているので触らない（undefinedでもOK）
+})();
+
 window.state = window.state || {
   step: 5,
   answers: { frame:[], surface:[], balance:[], line:[] },
