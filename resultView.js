@@ -877,122 +877,21 @@ let palette = getPaletteByCode(code, { season: currentSeason });
 
 
   // 2) TOPS / 3) BOTTOMS のフィットチェック（すでに気に入ってた7チェックの分割版）
-  const fitBlock = (kind)=> {
-    const items = (kind==='tops'
-      ? buildPersonalFitChecklistV2(code) // 既存7項目（上で定義済を流用）
-      : buildPersonalFitChecklistV2_bottoms(code) // 下で定義するボトムス版
-    ).map((it,i)=>`
-      <div class="fit7-item">
-        <label class="fit7-label">
-          <input type="checkbox" data-fitcheck-${kind} />
-          <span>${it.text}</span>
-        </label>
-        ${it.hint ? `<button class="fit7-hint" aria-label="ヒント" title="ヒント" data-${kind}-h="${i}">？</button>` : ``}
-        ${it.hint ? `<div class="fit7-pop" data-${kind}-pop="${i}" role="note">${it.hint}</div>` : ``}
-      </div>
-    `).join('');
-    return `
-      <section class="premium-card fit7 prm-fit prm-${kind}">
-        <div class="prm-sec-head">
-          <h3 class="premium-title">${kind==='tops'?'👕 TOPS フィットチェック':'👖 BOTTOMS フィットチェック'}</h3>
-          <p class="muted small">5つ以上チェックで<strong>「買い」</strong>の目安</p>
-        </div>
-        <div class="fit7-list">${items}</div>
-        <div class="fit7-result muted small" id="fit7-result-${kind}">まだ判定できないよ</div>
-      </section>
-    `;
-  };
-
+  
   // 4) カプセル・クローゼット（春夏/秋冬の最小ワードローブ）
-  const capsule = `
-    <section class="premium-card prm-capsule">
-      <div class="prm-sec-head">
-        <h3 class="premium-title">🧳 Capsule Closet（季節別ミニマム）</h3>
-        <p class="muted small">まずはここから揃えれば、毎日迷わない。</p>
-      </div>
-      <div class="prm-capsule-grid">
-        ${capCard('Spring/Summer', [
-          'とろみシャツ（白/生成）',
-          'Iラインスカート or センタープレスパンツ',
-          '薄手ロングカーデ or リネンブレザー',
-          '甲浅フラット/ローファー',
-          '繊細ネックレス（45cm前後）'
-        ])}
-        ${capCard('Autumn/Winter', [
-          '襟元に逃げのあるニット（V/ボート）',
-          'ウール調ストレートパンツ',
-          'ミドル丈コート（比翼/直線多め）',
-          'ショートブーツ（つま先ややシャープ）',
-          'メタル系ピアス（小粒）'
-        ])}
-      </div>
-    </section>
-  `;
+  
 
   // 5) DO / DON’T（超具体）
-  const doDont = `
-    <section class="premium-card prm-dodont">
-      <div class="prm-sec-head">
-        <h3 class="premium-title">✅ DO / ❌ DON’T（迷ったらここ）</h3>
-      </div>
-      <div class="prm-dodont-grid">
-        <div class="prm-do">
-          <h4>DO</h4>
-          <ul>
-            <li>上：前だけINで脚長演出（もたつかないか横から確認）</li>
-            <li>縦線：前立て/センタープレスなど「1本の線」を入れる</li>
-            <li>素材：光沢より“落ち感”優先（ハリは1点だけ）</li>
-            <li>丈：アウターはヒップ中間〜下で迷ったら“下”</li>
-            <li>靴：甲浅＆少し尖りで足の線を長く</li>
-          </ul>
-        </div>
-        <div class="prm-dont">
-          <h4>DON’T</h4>
-          <ul>
-            <li>上も下もふくらませる（ボリューム×ボリューム）</li>
-            <li>ギャザー/フリルを多箇所に分散（1箇所だけに）</li>
-            <li>襟元を詰めたままネックレスなし</li>
-            <li>ヒップハンガーで腰回りの段差を強調</li>
-            <li>大きい柄を上下で重ねる（面が割れ過ぎ）</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-  `;
+ 
 
   // 6) お買い物チェックリスト（店頭でそのまま使える）
-  const shopList = `
-    <section class="premium-card prm-shop">
-      <div class="prm-sec-head">
-        <h3 class="premium-title">🛒 お買い物チェックリスト</h3>
-        <p class="muted small">鏡の前で“はい/いいえ”だけで判断できるカード。</p>
-      </div>
-      <div class="prm-shop-grid">
-        <label><input type="checkbox"> 肩線は肩先ジャスト（前後につっぱらない）</label>
-        <label><input type="checkbox"> 前だけINにしてもお腹が段差にならない</label>
-        <label><input type="checkbox"> 縦の線がうねらずにまっすぐ落ちる</label>
-        <label><input type="checkbox"> 生地は落ち感＞光沢（1点だけ光沢OK）</label>
-        <label><input type="checkbox"> 靴を履くと脚長＞脚幅に“見える”</label>
-        <label><input type="checkbox"> 座っても腰回りが食い込まない</label>
-      </div>
-    </section>
-  `;
+  
 
   // 7) 共有/QR（保存・共有）
-  const share = `
-    <section class="premium-card prm-share">
-      <div class="prm-sec-head">
-        <h3 class="premium-title">🔗 保存と共有</h3>
-      </div>
-      <div class="prm-share-row">
-        <button class="btn" onclick="window.print()">PDFに保存</button>
-        <button class="btn" onclick="navigator.share ? navigator.share({title:'16BodyPersonalities', url:location.href}) : alert('共有APIが使えない端末です')">リンクを共有</button>
-      </div>
-    </section>
-  `;
+  
 
   // まとめて返す
-  return hero + fitBlock('tops') + fitBlock('bottoms') + capsule + doDont + shopList + share;
+  return hero 
 }
 
 // ===== bottoms版 7チェック（具体）
@@ -1539,8 +1438,7 @@ function _renderResultCore(){
 
   root.innerHTML=''; 
   root.appendChild(el);
-  root.insertAdjacentHTML('beforeend', renderFit7HTML(code));   // ← ここで1回だけ
-  root.insertAdjacentHTML('beforeend', renderPremiumCutePack(code));
+  
 wireSeasonTabsAll(root); // ← これを追加.  
   wireFit7(root);
   wirePremiumHero(root);   
