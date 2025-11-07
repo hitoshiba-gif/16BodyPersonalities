@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>購入ありがとうございます | 16BodyPersonalities</title>
+  <style>
+    :root{ --ink:#111; --muted:#666; --line:#e5e7eb; --ok:#0c9248; --err:#b00020; }
+    body{ font-family: system-ui,-apple-system,"Segoe UI",Inter,Arial,sans-serif; background:#fafafa; color:var(--ink); }
+    .wrap{ max-width: 720px; margin: 32px auto 64px; padding: 0 16px; }
+    .card{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; box-shadow:0 4px 20px rgba(0,0,0,.04); }
+    h1{ font-size:22px; margin:0 0 8px; }
+    p{ margin:6px 0; color:var(--muted); }
+    .grid{ display:grid; gap:12px; }
+    .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    input[type="email"]{ flex:1; min-width:240px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; font-size:14px; }
+    button{ appearance:none; padding:10px 14px; border-radius:10px; border:1px solid #111; background:#111; color:#fff; font-weight:700; cursor:pointer; }
+    button.secondary{ background:#fff; color:#111; }
+    .ok{ color:var(--ok); font-weight:700; }
+    .err{ color:var(--err); font-weight:700; }
+    .small{ font-size:12px; color:var(--muted); }
+    .kbd{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background:#f4f4f5; border:1px solid var(--line); padding:2px 6px; border-radius:6px; }
+    .pill{ display:inline-block; padding:4px 8px; border:1px solid var(--line); border-radius:999px; background:#f7f7f7; font-size:12px; color:#333; }
+    .status{ padding:10px 12px; border:1px dashed var(--line); border-radius:10px; background:#fcfcfc; }
+    .mt{ margin-top:12px; }
+    .hide{ display:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card grid">
+      <div>
+        <h1>ご購入ありがとうございます 🎉</h1>
+        <p>決済は正常に完了しました。完全版URLをお送りするため、メール送信の最終ステップを行います。</p>
+        <div class="status" id="status">準備中…</div>
+      </div>
+
+      <div class="grid">
+        <div class="row">
+          <label for="email"><span class="pill">受取用メール</span></label>
+          <input id="email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email"/>
+          <button id="send">メール送信</button>
+          <button id="retry" class="secondary">もう一度送る</button>
+        </div>
+        <p class="small">※ 迷惑メールフォルダもご確認ください。届かない場合は別アドレスで再送をお試しください。</p>
+      </div>
+
+      <div class="grid">
+        <div class="row">
+          <span class="pill">決済セッションID</span>
+          <span id="sid" class="kbd">—</span>
+        </div>
+        <div class="row">
+          <span class="pill">セッション（ローカル）</span>
+          <span id="ls" class="kbd">—</span>
+        </div>
+      </div>
+
+      <div class="row mt">
+        <button id="toHome" class="secondary">トップに戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ====== 設定（既存があれば流用） ======
+  // 既に global に GAS_URL / jsonp があるなら下の定義は自動で無効化されます。
+  window.GAS_URL = window.GAS_URL || "https://script.google.com/macros/s/AKfycbzRZrR7lq3cGTuzJ10sJeB_XZOo2IrQncvGHM1T_BsPxqvV1XwNiAXDrLfRipUopXL6/exec"; // ←差し替え
+
+  // 簡易 JSONP（未定義なら注入）
+  if (typeof window.jsonp !== 'function') {
+    window.jsonp = function(url, timeoutMs = 15000){
+      return new Promise((resolve, reject)=>{
+        const cb = 'jsonp_cb_' + Math.random().toString(36).slice(2);
+        const t = setTimeout(()=>{ cleanup(); reject(new Error('JSONP timeout')); }, timeoutMs);
+        function cleanup(){
+          clearTimeout(t);
+          try{ delete window[cb]; }catch(_){}
+          if (script && script.parentNode) script.parentNode.removeChild(script);
+        }
+        window[cb] = (data)=>{ cleanup(); resolve(data); };
+        const delim = url.includes('?') ? '&' : '?';
+        const script = document.createElement('script');
+        script.src = url + delim + 'callback=' + cb;
+        script.onerror = ()=>{ cleanup(); reject(new Error('JSONP network error')); };
+        document.head.appendChild(script);
+      });
+    };
+  }
+
+  // ====== ユーティリティ ======
+  const qs = new URLSearchParams(location.search);
+  const sessionIdLS = localStorage.getItem('km_session') ||
+                      (localStorage.setItem('km_session', (crypto?.randomUUID?.()||Math.random().toString(36).slice(2))),
+                       localStorage.getItem('km_session'));
+
+  // Stripe Checkout / Payment Link が付ける可能性あり
+  const stripeSessionId = qs.get('session_id') || '';
+
+  // 購入前に保存したデータ
+  const pendingEmail   = localStorage.getItem('km_email_pending') || '';
+  const pendingPayload = (()=>{ try{ return JSON.parse(localStorage.getItem('km_pending_payload')||'{}'); }catch(_){ return {}; }})();
+
+  // UI要素
+  const $ = (sel)=>document.querySelector(sel);
+  const elStatus = $('#status');
+  const elEmail  = $('#email');
+  const elSend   = $('#send');
+  const elRetry  = $('#retry');
+  const elSid    = $('#sid');
+  const elLs     = $('#ls');
+  const elHome   = $('#toHome');
+
+  // 初期表示
+  elSid.textContent = stripeSessionId || '（なし）';
+  elLs.textContent  = sessionIdLS || '—';
+  if (pendingEmail) elEmail.value = pendingEmail;
+
+  // ステータス表示補助
+  function setStatus(msg, kind){
+    elStatus.textContent = msg;
+    elStatus.classList.toggle('ok', kind==='ok');
+    elStatus.classList.toggle('err', kind==='err');
+  }
+
+  // GAS に送る本体
+  async function sendToGAS(email, payload, {isRetry=false}={}){
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+      setStatus('有効なメールアドレスを入力してください。', 'err');
+      elEmail.focus();
+      return;
+    }
+    setStatus('送信中…少しお待ちください。');
+
+    // payload 準備（不足項目のフォールバック）
+    const code    = payload?.code    || 'UNKNOWN';
+    const scores  = payload?.scores  || {};
+    const answers = payload?.answers || {};
+    const sess    = payload?.sessionId || sessionIdLS;
+
+    // JSONP URL（既存ロジックに揃える）
+    const url = window.GAS_URL
+      + '?savePremium=1'
+      + '&email='     + encodeURIComponent(email)
+      + '&sessionId=' + encodeURIComponent(sess)
+      + '&code='      + encodeURIComponent(code)
+      + '&scores='    + encodeURIComponent(JSON.stringify(scores))
+      + '&answers='   + encodeURIComponent(JSON.stringify(answers))
+      + (stripeSessionId ? '&stripe_session=' + encodeURIComponent(stripeSessionId) : '')
+      + (isRetry ? '&retry=1' : '');
+
+    try{
+      const res = await window.jsonp(url);
+      if (!res || !res.ok){
+        throw new Error(res?.error || '送信に失敗しました');
+      }
+
+      // 送信成功：ローカル掃除
+      localStorage.removeItem('km_email_pending');
+      localStorage.removeItem('km_pending_payload');
+
+      setStatus('✅ 完了しました！ 完全版のURLをメールでお送りしました。迷惑メールもご確認ください。', 'ok');
+    }catch(err){
+      console.error(err);
+      setStatus('エラー：送信に失敗しました。メールを確認して再度お試しください。', 'err');
+    }
+  }
+
+  // 自動送信（データがある場合のみ一度だけ）
+  (function autoKick(){
+    if (pendingPayload && Object.keys(pendingPayload).length && (pendingEmail || elEmail.value)){
+      setStatus('自動で送信を試行しています…');
+      sendToGAS(elEmail.value || pendingEmail, pendingPayload).catch(()=>{});
+    }else{
+      setStatus('メールアドレスを確認して「メール送信」を押してください。');
+    }
+  })();
+
+  // ボタン動作
+  elSend.addEventListener('click', ()=>{
+    const email = elEmail.value.trim();
+    // thanks ページで打ち直す可能性があるので、最新メールを保存（次回再訪時に復元）
+    localStorage.setItem('km_email_pending', email);
+    sendToGAS(email, pendingPayload);
+  });
+
+  elRetry.addEventListener('click', ()=>{
+    const email = elEmail.value.trim() || pendingEmail;
+    sendToGAS(email, pendingPayload, {isRetry:true});
+  });
+
+  elHome.addEventListener('click', ()=>{
+    // 必要に応じてトップへのパスに変更
+    location.href = './app.html';
+  });
+  </script>
+</body>
+</html>

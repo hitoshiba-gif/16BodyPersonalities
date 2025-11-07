@@ -127,7 +127,7 @@
 <script>
   document.body.dataset.theme = 'WAVE';
   // ============ Google Sheets連携設定 ============
-const GAS_URL = "https://script.google.com/macros/s/AKfycbz_nqEUfi7lbvqK2SHkxO1dLW0uKTfhY7wbG80IlcCKgwbxn_MPJ50W64MhhjDygwJ4/exec"
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzRZrR7lq3cGTuzJ10sJeB_XZOo2IrQncvGHM1T_BsPxqvV1XwNiAXDrLfRipUopXL6/exec"
 function sendToSheets(payload){
   console.log('[GAS] sending...', payload);
   return fetch(GAS_URL, {
@@ -1572,8 +1572,8 @@ ${groupHTML}
         ${celebHTML}
         <div class="card" style="margin-top:12px; text-align:center;">
   <h3>完全版レポート</h3>
-  <p class="muted small">“あなた専用”の詳しい提案・ブランド・相性・Q&Aなど全部盛り</p>
-  <button class="btn" id="buy-premium">完全版を購入（¥100）</button>
+  <p class="muted small">“あなた専用”の詳しい提案・さらに詳細なタイプ相性・スコアから算出したあなた専用のフィットチェック表など全部盛り！</p>
+  <button class="btn" id="buy-premium">完全版を購入（¥300）</button>
 </div>
         ${renderShareCardHTML(code)} 
           <p class="small">※ 提案は各軸（骨格/密度/重心/ライン）のスコアとタイプ固有情報から生成しています。</p>
@@ -1602,7 +1602,6 @@ ${groupHTML}
 
         <div class="controls">
           <button id="retry" class="secondary">もう一度</button>
-          <button id="export">結果をJSONで保存</button>
         </div>
       </div>
 
@@ -1666,38 +1665,9 @@ if (!state._sentOnce) {
 
 const buyBtn = el.querySelector('#buy-premium');
 if (buyBtn){
-  buyBtn.addEventListener('click', async () => {
-    // 1) メール
-    const email = prompt('完全版のURLを送るメールアドレスを入力してください📩');
-    if (!email) return;
-
-    // 2) ここで本来は Stripe/PayPay 決済へ遷移（まずは省略でOK）
-
-    // 3) データ準備（answersも含める）
-    const { code, scores } = buildCode();
-    const answers = state.answers || {};
-    const sessionId = localStorage.getItem('km_session') ||
-                      (localStorage.setItem('km_session',(crypto?.randomUUID?.()||Math.random().toString(36).slice(2))),
-                       localStorage.getItem('km_session'));
-
-    // 4) JSONP 保存＆メール送信（GAS側でメール送る）
-    const url = GAS_URL
-      + '?savePremium=1'
-      + '&email='   + encodeURIComponent(email)
-      + '&sessionId='+ encodeURIComponent(sessionId)
-      + '&code='    + encodeURIComponent(code)
-      + '&scores='  + encodeURIComponent(JSON.stringify(scores))
-      + '&answers=' + encodeURIComponent(JSON.stringify(answers));
-
-    try{
-      const res = await jsonp(url); // 既存のjsonpヘルパーを使用
-      if (!res || !res.ok) throw new Error(res?.error || '保存に失敗');
-
-      alert('購入ありがとうございます！\n完全版URLをメールで送りました📩\n（迷惑メールもご確認ください）');
-    }catch(e){
-      console.error(e);
-      alert('エラー：メール送信に失敗しました。時間を置いてお試しください。');
-    }
+  buyBtn.addEventListener('click', () => {
+    // あなたの Payment Link（テスト用）に飛ばす
+    location.href = "https://buy.stripe.com/test_eVq9AS3ab6tl961d2w6g800";
   }, { once:false });
 }
   // === 同意チェックの初期状態とイベント ===
