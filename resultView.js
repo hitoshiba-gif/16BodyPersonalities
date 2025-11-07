@@ -36,8 +36,146 @@
     window.sendToSheets = async ()=>({ok:true});
   }
 })();
+// ===== 320通りのパレット定義（タイプ×シーズン×5色） =====
+// 例：BNLSのみ本定義。他タイプは必要に応じて埋める。
+// 5色それぞれに "hex" と "name"（画面に出すラベル）を付けられる。
 
-// ==================================================
+
+// ===== 320通りのパレット定義（タイプ×シーズン×5色） =====
+// ==== (A) タイプ×シーズン（5色） ====
+// まずは BNLS だけ具体定義。他タイプは同じ形で追記していけばOK。
+window.PALETTE_BY_TYPE_SEASON = window.PALETTE_BY_TYPE_SEASON || {
+  BNLS: {
+    SU: [ // ブルベ夏
+      { hex:'#EDEBFF', name:'Lavender Mist' },
+      { hex:'#CFE3F8', name:'Baby Blue' },
+      { hex:'#F6D6E8', name:'Powder Pink' },
+      { hex:'#DDE8EA', name:'Soft Grey' },
+      { hex:'#C8D8CF', name:'Seafoam' },
+    ],
+    WI: [ // ブルベ冬
+      { hex:'#D9E2FF', name:'Icy Blue' },
+      { hex:'#F0D9FF', name:'Iris Ice' },
+      { hex:'#E8F6FF', name:'Crystal Aqua' },
+      { hex:'#D8E1E8', name:'Steel Fog' },
+      { hex:'#C5CCDB', name:'Blue Ash' },
+    ],
+    SP: [ // イエベ春
+      { hex:'#FFF0DA', name:'Apricot' },
+      { hex:'#FFE9EC', name:'Blush' },
+      { hex:'#EAF8E6', name:'Mint Cream' },
+      { hex:'#FFF7D6', name:'Vanilla' },
+      { hex:'#F5E6CF', name:'Cream Beige' },
+    ],
+    AU: [ // イエベ秋
+      { hex:'#F7EADF', name:'Sand Beige' },
+      { hex:'#EDE4CE', name:'Oat' },
+      { hex:'#EAE1D7', name:'Mushroom' },
+      { hex:'#E1E7DA', name:'Sage Fog' },
+      { hex:'#EFD9C5', name:'Peach Nude' },
+    ],
+  },
+  // 例：MNLC: { SU:[...], WI:[...], SP:[...], AU:[...] },
+  // 以降、必要に応じて足していく
+};
+// ---- プレフィックス別（先頭2文字: BN / BW / MN / MW）フォールバック ----
+// ※ 季節タブ未指定時や TYPE_META.palette が無い時に使う「最低限の色」。
+//   各配列は 5色 (hex) 固定。必要なら好きな色に差し替えてOK。
+window.PALETTE_BY_PREFIX = window.PALETTE_BY_PREFIX || {
+  BN: ['#F6D6E8','#EDEBFF','#CFE3F8','#DDE8EA','#C8D8CF'], // B骨格×N狭：柔らかい冷色寄り
+  BW: ['#EAF7EF','#D6F3FF','#E3F0EE','#E8EDF7','#E7F0FF'], // B骨格×W広：ニュートラル清潔感
+  MN: ['#FFF0DA','#FFE9EC','#FFF7D6','#F5E6CF','#EAF8E6'], // M肉×N狭：ライトで甘め
+  MW: ['#F7EADF','#EDE4CE','#EAE1D7','#E1E7DA','#EFD9C5'], // M肉×W広：オータム寄りの落ち着き
+};
+
+// ==== (B) 季節フォールバック（タイプ未定義でも5色出す） ====
+const BASE_SEASON_SETS = {
+  SU: ['#EDEBFF','#CFE3F8','#F6D6E8','#DDE8EA','#C8D8CF'], // 夏
+  WI: ['#D9E2FF','#F0D9FF','#E8F6FF','#D8E1E8','#C5CCDB'], // 冬
+  SP: ['#FFF0DA','#FFE9EC','#EAF8E6','#FFF7D6','#F5E6CF'], // 春
+  AU: ['#F7EADF','#EDE4CE','#EAE1D7','#E1E7DA','#EFD9C5'], // 秋
+};
+const BASE_COLOR_NAMES = {
+  SU: ['Lavender Mist','Baby Blue','Powder Pink','Soft Grey','Seafoam'],
+  WI: ['Icy Blue','Iris Ice','Crystal Aqua','Steel Fog','Blue Ash'],
+  SP: ['Apricot','Blush','Mint Cream','Vanilla','Cream Beige'],
+  AU: ['Sand Beige','Oat','Mushroom','Sage Fog','Peach Nude'],
+};
+function fallbackSeasonSet(season){
+  const arr = BASE_SEASON_SETS[season] || BASE_SEASON_SETS.SU;
+  const names = BASE_COLOR_NAMES[season] || [];
+  return arr.map((hex, i)=>({ hex, name: names[i] || hex }));
+}
+function getPalette5(code, season){
+  const entry = (window.PALETTE_BY_TYPE_SEASON?.[code]?.[season]);
+  if (Array.isArray(entry) && entry.length >= 5) return entry.slice(0,5);
+  return fallbackSeasonSet(season);
+}
+// Premiumヒーローの季節タブ配線（innerHTML挿入後に必ず呼ぶ）
+function wirePremiumHero(root=document){
+  const heroes = root.querySelectorAll('.prm-hero');
+  heroes.forEach(hero=>{
+    const code = (hero.id || '').replace(/^prm-/,'');
+    const grid = hero.querySelector('.prm-swatch-grid');
+    const tabs = hero.querySelectorAll('.prm-tabs .pill');
+    if (!code || !grid || !tabs.length) return;
+
+    function swatchHex(hex){
+      return '<div class="prm-swatch" title="'+hex+'">'
+           +   '<span style="background:'+hex+'"></span><i>'+hex+'</i>'
+           + '</div>';
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        tabs.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const season = btn.dataset.season || null; // 'summer'|'winter'|'spring'|'autumn'
+        let pal = (window.getPaletteByCode && getPaletteByCode(code, { season })) || [];
+        if (!Array.isArray(pal)) pal = [];
+        grid.innerHTML = pal.map(swatchHex).join('');
+      });
+    });
+  });
+}
+// ==== (C) ユーザー季節の保存/読込 ====
+function getUserSeason(){ return localStorage.getItem('km_season') || 'SU'; }
+function setUserSeason(season){ try{ localStorage.setItem('km_season', season); }catch(_){} }
+
+// ==== (D) 季節タブとスワッチ ====
+const swatch = (c)=>`
+  <div class="prm-swatch" title="${c.hex}">
+    <span style="background:${c.hex}"></span>
+    <i>${c.name || c.hex}</i>
+  </div>
+`;
+function seasonTabsHTML(active){
+  const tabs = [
+    {k:'SU', label:'ブルベ夏'}, {k:'WI', label:'ブルベ冬'},
+    {k:'SP', label:'イエベ春'}, {k:'AU', label:'イエベ秋'}
+  ];
+  return `
+    <div class="season-tabs">
+      ${tabs.map(t=>`
+        <button class="pill ${active===t.k?'active':''}" data-season="${t.k}">
+          ${t.label}
+        </button>`).join('')}
+    </div>
+  `;
+}
+function renderSeasonPaletteBlock(code){
+  const season = getUserSeason();
+  const list = getPalette5(code, season);
+  return `
+    <div class="prm-season" data-code="${code}">
+      ${seasonTabsHTML(season)}
+      <div class="prm-swatch-grid">
+        ${list.map(swatch).join('')}
+      </div>
+    </div>
+    
+  `;
+}
 // 小ユーティリティ
 // ==================================================
 function jsonp(url){
@@ -52,7 +190,74 @@ function jsonp(url){
   });
 }
 const clamp01 = (x)=> Math.max(0, Math.min(1, x));
+// ---- Personal Color 4-season palettes (5 colors each) ----
+const SEASON_PALETTES = {
+  summer: [ // ブルベ夏：やわらかい・明度高め・彩度ひかえめ・涼感
+    '#E8EDF7', '#D9E6F1', '#E8E0F3', '#F2E6EC', '#E3F0EE'
+  ],
+  winter: [ // ブルベ冬：高コントラスト・冷たい青み・クリア
+    '#DDE3FF', '#CDE3FF', '#E3DBFF', '#F2D9E6', '#D9FFF5'
+  ],
+  spring: [ // イエベ春：明るい・黄み・クリアで軽い
+    '#FFF1D9', '#FFE8C6', '#FFEFD6', '#FFF4E6', '#FFF7DE'
+  ],
+  autumn: [ // イエベ秋：深み・黄み・落ち着いたくすみ
+    '#F3E3D1', '#E9D8C9', '#E6DEC8', '#F0E2CD', '#E6D7C7'
+  ],
+};
+function wireSeasonTabsAll(root=document){
+  const blocks = root.querySelectorAll('.prm-season');
+  blocks.forEach(host=>{
+    const code = host.getAttribute('data-code') || '';
+    host.querySelectorAll('.season-tabs .pill').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const s = btn.dataset.season;
+        setUserSeason(s);
+        // 再描画
+        const html = renderSeasonPaletteBlock(code);
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        host.replaceWith(tmp.firstElementChild);
+        // 置き換えたので改めて配線
+        wireSeasonTabsAll(root);
+      });
+    });
+  });
+}
+// 明示指定があれば季節パレットを返す（なければnull）
+function getSeasonPalette(season){
+  const key = String(season||'').toLowerCase();
+  return SEASON_PALETTES[key] || null;
+}
+// 既存 getPaletteByCode をこの形に差し替え（先に貼った版がある前提）
+function getPaletteByCode(code, opts={}){
+  const { season } = opts;
 
+  // 1) 明示季節（ユーザー選択 or TYPE_META.season）最優先
+  const meta = (window.TYPE_META?.[code]) || {};
+  const chosenSeason = season || meta.season || window.USER_COLOR_SEASON; // どこかで上書き可
+  const seasonPal = getSeasonPalette(chosenSeason);
+  if (seasonPal) return seasonPal;
+
+  // 2) TYPE_META.palette があればそれ
+  if (Array.isArray(meta.palette) && meta.palette.length >= 5) return meta.palette;
+
+  // 3) 先頭2文字の既定マップ（あなたの既存版）
+  const pre = String(code||'').slice(0,2).toUpperCase();
+  if (PALETTE_BY_PREFIX[pre]) return PALETTE_BY_PREFIX[pre];
+
+  // 4) 基盤体型ごとベース
+  const base = (meta.base) || (typeof inferBase==='function'? inferBase(code) : 'NATURAL');
+  const BASE_PALLETS = {
+    WAVE:     ['#FFE7F3','#FFEFF7','#FFE3EE','#FFF4FA','#FFEAF3'],
+    STRAIGHT: ['#EAF1FF','#E3EAFF','#EDF2FF','#E7F0FF','#F1F6FF'],
+    NATURAL:  ['#EAF7EF','#E4F5EE','#F0FBF5','#E8F9F0','#F2FCF7'],
+  };
+  if (BASE_PALLETS[base]) return BASE_PALLETS[base];
+
+  // 5) 最後に自動生成
+  return _autoHslPalette(code || 'seed');
+}
 // ==================================================
 // 互換レイヤ（足りない関数を補う）
 // ==================================================
@@ -142,6 +347,22 @@ function buildCode(){
   const f=computeAxis('frame'), s=computeAxis('surface'), b=computeAxis('balance'), l=computeAxis('line');
   return { code:`${f.code}${s.code}${b.code}${l.code}`, scores:{ frame:f, surface:s, balance:b, line:l } };
 }
+function profileFromCode(code){
+  const [f,s,b,l] = String(code||'').trim().toUpperCase().split('');
+  const pf = (f === 'B') ? 70 : 30;
+  const ps = (s === 'W') ? 70 : 30;
+  const pb = (b === 'U') ? 60 : 40;
+  const pl = (l === 'S') ? 65 : 35;
+  return {
+    pf, ps, pb, pl,
+    isStraight : (f === 'B'),
+    isSoft     : (s === 'W'),
+    upperHeavy : (b === 'U'),
+    lowerHeavy : (b === 'L'),
+    strongLine : (l === 'S'),
+    softLine   : (l === 'C'),
+  };
+}
 // ====== プロファイル抽出（4軸＆相性からシンプル指標化） ======
 function _fitProfile(code){
   const pf = axisPercent('frame').pct;    // 骨格の直線（高い=直線強め）
@@ -177,6 +398,58 @@ function averageAllTypes(code, mode){
     return sum / all.length;
   }catch(_){ return 0; }
 }
+function buildTopsChecklist(code){
+  const P0 = profileFromCode(code);
+  const topsAvg    = averageAllTypes(code, 'tops');
+  const bottomsAvg = averageAllTypes(code, 'bottoms');
+  const P = { ...P0, prefer: (topsAvg >= bottomsAvg) ? 'tops' : 'bottoms' };
+  const T = (t,h)=>({text:t, hint:h});
+  const L = [];
+
+  if (P.isStraight) L.push(T("肩線が肩先どんぴしゃ","肩の縫い目が肩先。動いてもシワが寄らない"));
+  else              L.push(T("肩の丸みに沿って落ちる","ドロショル/ラグランが馴染みやすい"));
+
+  if (P.upperHeavy) L.push(T("首元に“抜け”があると整う","V/深U/ボートで重心UPしにくい"));
+  else              L.push(T("首元が詰まっても苦しく見えない","上を埋めても下が重くならない"));
+
+  if (P.strongLine) L.push(T("前立て/切替がまっすぐ落ちる","縦線が波打たない"));
+  else              L.push(T("ギャザー/ドレープは“1か所”","入れ過ぎると横に広がる"));
+
+  if (P.upperHeavy) L.push(T("丈はやや短めがバランス良い","前だけINも効く"));
+  else              L.push(T("丈は腰骨〜ヒップ中間が安定","面を残した方が整う"));
+
+  if (P.isSoft)     L.push(T("柔らか素材が“面の波”を整える","テンセル/サテンなど"));
+  else              L.push(T("ハリ素材で上半身の芯が立つ","ブロード/度詰めジャージー"));
+
+  if (P.softLine)   L.push(T("袖が二の腕に貼りつかない","指1〜2本のすき間"));
+  else              L.push(T("袖がストンと落ちる","肘上でたるまない"));
+  return L.slice(0,7);
+}
+function buildBottomsChecklist(code){
+  const P0 = profileFromCode(code);
+  const topsAvg    = averageAllTypes(code, 'tops');
+  const bottomsAvg = averageAllTypes(code, 'bottoms');
+  const P = { ...P0, prefer: (topsAvg >= bottomsAvg) ? 'tops' : 'bottoms' };
+  const T = (t,h)=>({text:t, hint:h});
+  const L = [];
+  if (P.lowerHeavy) L.push(T("ハイウエストで脚長＞脚幅","INが効く"));
+  else              L.push(T("ミッド〜ややローで上重心を中和","腰位置を下げるとバランス良い"));
+
+  if (P.isSoft)     L.push(T("太ももに貼りつかない落ち感素材","ストレート/ワイド◎"));
+  else              L.push(T("太ももがストンと落ちる","センタープレスで補強"));
+
+  if (P.strongLine) L.push(T("ピンタック/センタープレスがまっすぐ","横に広がらない"));
+  else              L.push(T("曲線は“1要素だけ”","マーメイド/バイアスは入れすぎない"));
+
+  L.push(T("腰まわりが浮かない＆食い込まない","座った時に痛くないのが基準"));
+
+  if (P.softLine)   L.push(T("裾はフル〜やや長めで線が伸びる","甲浅の靴が相性◎"));
+  else              L.push(T("裾は踝が少し見えると軽い","カッティングやスリットも良い"));
+
+  if (P.isSoft)     L.push(T("柔らか素材が馴染む","硬い生地は横に張りやすい"));
+  else              L.push(T("梳毛/デニムのハリが輪郭を作る","柔らかすぎるとボケやすい"));
+  return L.slice(0,7);
+}
 
 // ← これを丸ごと貼り付け
 function renderFit7Block(code){
@@ -198,40 +471,10 @@ function renderFit7Block(code){
     softLine   : pl <= 40,
     prefer
   };
-  const T = (t,h)=>({text:t, hint:h});
+  function T(text, hint){ return { text, hint }; }
 
-  function buildTops(){
-    const L=[];
-    if(P.isStraight) L.push(T("肩線が肩先どんぴしゃ","肩の縫い目が肩先。動いてもシワが寄らない"));
-    else             L.push(T("肩の丸みに沿って落ちる","ドロショル/ラグランが馴染みやすい"));
-    if(P.upperHeavy) L.push(T("首元に“抜け”があると整う","V/深U/ボートで重心UPしにくい"));
-    else             L.push(T("首元が詰まっても苦しく見えない","上を埋めても下が重くならない"));
-    if(P.strongLine) L.push(T("前立て/切替がまっすぐ落ちる","縦線が波打たない"));
-    else             L.push(T("ギャザー/ドレープは“1か所”","入れ過ぎると横に広がる"));
-    if(P.upperHeavy) L.push(T("丈はやや短めがバランス良い","前だけINも効く"));
-    else             L.push(T("丈は腰骨〜ヒップ中間が安定","面を残した方が整う"));
-    if(P.isSoft)     L.push(T("柔らか素材が“面の波”を整える","テンセル/サテンなど"));
-    else             L.push(T("ハリ素材で上半身の芯が立つ","ブロード/度詰めジャージー"));
-    if(P.softLine)   L.push(T("袖が二の腕に貼りつかない","指1〜2本のすき間"));
-    else             L.push(T("袖がストンと落ちる","肘上でたるまない"));
-    return L.slice(0,7);
-  }
 
-  function buildBottoms(){
-    const L=[];
-    if(P.lowerHeavy) L.push(T("ハイウエストで脚長＞脚幅","INが効く"));
-    else             L.push(T("ミッド〜ややローで上重心を中和","腰位置を下げるとバランス良い"));
-    if(P.isSoft)     L.push(T("太ももに貼りつかない落ち感素材","ストレート/ワイド◎"));
-    else             L.push(T("太ももがストンと落ちる","センタープレスで補強"));
-    if(P.strongLine) L.push(T("ピンタック/センタープレスがまっすぐ","横に広がらない"));
-    else             L.push(T("曲線は“1要素だけ”","マーメイド/バイアスは入れすぎない"));
-    L.push(T("腰まわりが浮かない＆食い込まない","座った時に痛くないのが基準"));
-    if(P.softLine)   L.push(T("裾はフル〜やや長めで線が伸びる","甲浅の靴が相性◎"));
-    else             L.push(T("裾は踝が少し見えると軽い","カッティングやスリットも良い"));
-    if(P.isSoft)     L.push(T("柔らか素材が馴染む","硬い生地は横に張りやすい"));
-    else             L.push(T("梳毛/デニムのハリが輪郭を作る","柔らかすぎるとボケやすい"));
-    return L.slice(0,7);
-  }
+
 
   const card = (kind, arr)=>`
     <section class="card premium-card fit7-card">
@@ -256,8 +499,8 @@ function renderFit7Block(code){
 
   const html = `
     <div class="fit7-grid">
-      ${card('tops', buildTops())}
-      ${card('bottoms', buildBottoms())}
+      ${card('tops', buildTopsChecklist(code))}
+      ${card('bottoms', buildBottomsChecklist(code))}
     </div>
     <script>
       (function(){
@@ -284,6 +527,29 @@ function renderFit7Block(code){
   return html;
 }
 
+function renderFitCard(kind, items){
+  return `
+    <section class="card premium-card fit7-card">
+      <h3 class="premium-title">${kind==='tops' ? '👕 TOPS フィットチェック（7）' : '👖 BOTTOMS フィットチェック（7）'}</h3>
+      <p class="muted small">5つ以上チェックが付いたら<strong>買い</strong>だよ。</p>
+      <div class="fit7-list">
+        ${items.map(it=>`
+          <div class="fit7-item">
+            <label class="fit7-label">
+              <input type="checkbox" class="fitcheck-${kind}">
+              <span>${it.text}</span>
+            </label>
+            ${it.hint ? `<div class="fit7-pop">${it.hint}</div>` : ``}
+          </div>
+        `).join('')}
+      </div>
+      <div class="fit7-result fit7-result-${kind}">
+        （あと <span class="need-${kind}">5</span> 個で「買い」ライン）
+      </div>
+    </section>
+  `;
+}
+
 function renderFit7HTML(code){
   const tops    = buildTopsChecklist(code);
   const bottoms = buildBottomsChecklist(code);
@@ -292,6 +558,27 @@ function renderFit7HTML(code){
       ${renderFitCard('tops', tops)}
       ${renderFitCard('bottoms', bottoms)}
     </section>
+    <script>
+      (function(){
+        function setup(kind){
+          const boxes  = document.querySelectorAll('.fitcheck-' + kind);
+          const result = document.querySelector('.fit7-result-' + kind);
+          const needEl = document.querySelector('.need-' + kind);
+          function update(){
+            const c = Array.from(boxes).filter(b=>b.checked).length;
+            if (c >= 5){
+              result.textContent = "✅ 5つ以上クリア！これは『買い』だよ";
+            } else {
+              needEl.textContent = 5 - c;
+              result.textContent = "（あと " + (5 - c) + " 個で「買い」ライン）";
+            }
+          }
+          boxes.forEach(b=>b.addEventListener('change', update));
+          update();
+        }
+        setup('tops'); setup('bottoms');
+      })();
+    </script>
   `;
 }
 
@@ -487,6 +774,248 @@ const TIP_RULES = {
     }},
   ],
 };
+// ========= Premium Cute Pack =========
+// 呼び出し：_renderResultCore の最後で root.insertAdjacentHTML('beforeend', renderPremiumCutePack(code)); するだけ
+function wireFit7(root = document){
+  ['tops','bottoms'].forEach(kind=>{
+    const boxes  = root.querySelectorAll('.fitcheck-' + kind);
+    const result = root.querySelector('.fit7-result-' + kind);
+    const needEl = root.querySelector('.need-' + kind);
+    if(!boxes.length || !result || !needEl) return;
+    const update = ()=>{
+      const c = Array.from(boxes).filter(b=>b.checked).length;
+      if (c >= 5) result.textContent = "✅ 5つ以上クリア！これは『買い』だよ";
+      else { needEl.textContent = 5 - c; result.textContent = `（あと ${5-c} 個で「買い」ライン）`; }
+    };
+    boxes.forEach(b=>b.addEventListener('change', update));
+    update();
+  });
+}
+function renderPremiumCutePack(code){
+  const meta = (window.TYPE_META?.[code]) || {};
+  const label = meta.name || code;
+  const animal = meta.animal || '✨';
+  const emoji  = meta.emoji || '💎';
+  const UID = `prm-${code}`;
+  let currentSeason = (window.USER_COLOR_SEASON || (window.TYPE_META?.[code]?.season)) || null;
+let palette = getPaletteByCode(code, { season: currentSeason });
+  
+  
+  const sw = (hex)=> `
+    <div class="prm-swatch" title="${hex}">
+      <span style="background:${hex}"></span><i>${hex}</i>
+    </div>
+  `;
+
+  const capCard = (title, items)=>`
+    <div class="prm-cap">
+      <h4>${title}</h4>
+      <ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul>
+    </div>
+  `;
+
+  // 1) ヒーロー（ラベル＋サブ）
+  const hero = `
+    <section class="premium-card prm-hero" id="${UID}">
+      <div class="prm-hero-left">
+        <div class="prm-badge">${emoji} Premium Report</div>
+        <h2 class="prm-ttl"><span>${animal}</span>${label}</h2>
+        <p class="prm-lead">あなたに最適化したカラー・シルエット・コーデ指針を1ページで。</p>
+        <div class="prm-actions">
+          <button class="btn primary" onclick="window.print()">PDF/印刷</button>
+          <button class="btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">タイプ概要へ戻る</button>
+        </div>
+
+        <!-- ← “Default” は出さない。季節だけ -->
+        <div class="prm-tabs">
+          <button class="pill ${currentSeason==='summer'?'active':''}" data-season="summer">ブルベ夏</button>
+          <button class="pill ${currentSeason==='winter'?'active':''}" data-season="winter">ブルベ冬</button>
+          <button class="pill ${currentSeason==='spring'?'active':''}" data-season="spring">イエベ春</button>
+          <button class="pill ${currentSeason==='autumn'?'active':''}" data-season="autumn">イエベ秋</button>
+        </div>
+      </div>
+
+      <div class="prm-hero-right">
+        <div class="prm-swatch-grid" id="${UID}-grid">
+          ${palette.map(sw).join('')}
+        </div>
+      </div>
+    </section>
+
+    <script>
+      (function(){
+        // DOM取得（nullガード付き）
+        var host = document.getElementById('${UID}');
+        if(!host) return;
+        var grid = document.getElementById('${UID}-grid');
+        if(!grid) return;
+
+        var tabs = host.querySelectorAll('.prm-tabs .pill');
+        tabs.forEach(function(btn){
+          btn.addEventListener('click', function(){
+            tabs.forEach(function(b){ b.classList.remove('active'); });
+            btn.classList.add('active');
+            var season = btn.dataset.season || null;
+            // ユーザー選択を覚えたいなら以下を有効化
+            // window.USER_COLOR_SEASON = season;
+
+            var pal = (window.getPaletteByCode && getPaletteByCode('${code}', { season: season })) || [];
+            if(!Array.isArray(pal)) pal = [];
+            if(!grid) return; // 念のため
+
+            grid.innerHTML = pal.map(function(hex){
+              return '<div class="prm-swatch" title="'+hex+'">'
+                   +   '<span style="background:'+hex+'"></span><i>'+hex+'</i>'
+                   + '</div>';
+            }).join('');
+          });
+        });
+      })();
+    </script>
+  `;
+// 季節タブの配線（Premium Packの返すHTMLの後に置く）
+
+
+  // 2) TOPS / 3) BOTTOMS のフィットチェック（すでに気に入ってた7チェックの分割版）
+  const fitBlock = (kind)=> {
+    const items = (kind==='tops'
+      ? buildPersonalFitChecklistV2(code) // 既存7項目（上で定義済を流用）
+      : buildPersonalFitChecklistV2_bottoms(code) // 下で定義するボトムス版
+    ).map((it,i)=>`
+      <div class="fit7-item">
+        <label class="fit7-label">
+          <input type="checkbox" data-fitcheck-${kind} />
+          <span>${it.text}</span>
+        </label>
+        ${it.hint ? `<button class="fit7-hint" aria-label="ヒント" title="ヒント" data-${kind}-h="${i}">？</button>` : ``}
+        ${it.hint ? `<div class="fit7-pop" data-${kind}-pop="${i}" role="note">${it.hint}</div>` : ``}
+      </div>
+    `).join('');
+    return `
+      <section class="premium-card fit7 prm-fit prm-${kind}">
+        <div class="prm-sec-head">
+          <h3 class="premium-title">${kind==='tops'?'👕 TOPS フィットチェック':'👖 BOTTOMS フィットチェック'}</h3>
+          <p class="muted small">5つ以上チェックで<strong>「買い」</strong>の目安</p>
+        </div>
+        <div class="fit7-list">${items}</div>
+        <div class="fit7-result muted small" id="fit7-result-${kind}">まだ判定できないよ</div>
+      </section>
+    `;
+  };
+
+  // 4) カプセル・クローゼット（春夏/秋冬の最小ワードローブ）
+  const capsule = `
+    <section class="premium-card prm-capsule">
+      <div class="prm-sec-head">
+        <h3 class="premium-title">🧳 Capsule Closet（季節別ミニマム）</h3>
+        <p class="muted small">まずはここから揃えれば、毎日迷わない。</p>
+      </div>
+      <div class="prm-capsule-grid">
+        ${capCard('Spring/Summer', [
+          'とろみシャツ（白/生成）',
+          'Iラインスカート or センタープレスパンツ',
+          '薄手ロングカーデ or リネンブレザー',
+          '甲浅フラット/ローファー',
+          '繊細ネックレス（45cm前後）'
+        ])}
+        ${capCard('Autumn/Winter', [
+          '襟元に逃げのあるニット（V/ボート）',
+          'ウール調ストレートパンツ',
+          'ミドル丈コート（比翼/直線多め）',
+          'ショートブーツ（つま先ややシャープ）',
+          'メタル系ピアス（小粒）'
+        ])}
+      </div>
+    </section>
+  `;
+
+  // 5) DO / DON’T（超具体）
+  const doDont = `
+    <section class="premium-card prm-dodont">
+      <div class="prm-sec-head">
+        <h3 class="premium-title">✅ DO / ❌ DON’T（迷ったらここ）</h3>
+      </div>
+      <div class="prm-dodont-grid">
+        <div class="prm-do">
+          <h4>DO</h4>
+          <ul>
+            <li>上：前だけINで脚長演出（もたつかないか横から確認）</li>
+            <li>縦線：前立て/センタープレスなど「1本の線」を入れる</li>
+            <li>素材：光沢より“落ち感”優先（ハリは1点だけ）</li>
+            <li>丈：アウターはヒップ中間〜下で迷ったら“下”</li>
+            <li>靴：甲浅＆少し尖りで足の線を長く</li>
+          </ul>
+        </div>
+        <div class="prm-dont">
+          <h4>DON’T</h4>
+          <ul>
+            <li>上も下もふくらませる（ボリューム×ボリューム）</li>
+            <li>ギャザー/フリルを多箇所に分散（1箇所だけに）</li>
+            <li>襟元を詰めたままネックレスなし</li>
+            <li>ヒップハンガーで腰回りの段差を強調</li>
+            <li>大きい柄を上下で重ねる（面が割れ過ぎ）</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  `;
+
+  // 6) お買い物チェックリスト（店頭でそのまま使える）
+  const shopList = `
+    <section class="premium-card prm-shop">
+      <div class="prm-sec-head">
+        <h3 class="premium-title">🛒 お買い物チェックリスト</h3>
+        <p class="muted small">鏡の前で“はい/いいえ”だけで判断できるカード。</p>
+      </div>
+      <div class="prm-shop-grid">
+        <label><input type="checkbox"> 肩線は肩先ジャスト（前後につっぱらない）</label>
+        <label><input type="checkbox"> 前だけINにしてもお腹が段差にならない</label>
+        <label><input type="checkbox"> 縦の線がうねらずにまっすぐ落ちる</label>
+        <label><input type="checkbox"> 生地は落ち感＞光沢（1点だけ光沢OK）</label>
+        <label><input type="checkbox"> 靴を履くと脚長＞脚幅に“見える”</label>
+        <label><input type="checkbox"> 座っても腰回りが食い込まない</label>
+      </div>
+    </section>
+  `;
+
+  // 7) 共有/QR（保存・共有）
+  const share = `
+    <section class="premium-card prm-share">
+      <div class="prm-sec-head">
+        <h3 class="premium-title">🔗 保存と共有</h3>
+      </div>
+      <div class="prm-share-row">
+        <button class="btn" onclick="window.print()">PDFに保存</button>
+        <button class="btn" onclick="navigator.share ? navigator.share({title:'16BodyPersonalities', url:location.href}) : alert('共有APIが使えない端末です')">リンクを共有</button>
+      </div>
+    </section>
+  `;
+
+  // まとめて返す
+  return hero + fitBlock('tops') + fitBlock('bottoms') + capsule + doDont + shopList + share;
+}
+
+// ===== bottoms版 7チェック（具体）
+function buildPersonalFitChecklistV2_bottoms(code){
+  const p = _fitProfile(code); // 既存のプロフィール関数を活用
+  const L = [];
+  if (p.lowerHeavy){
+    L.push({text:'ヒップ〜太ももで生地が貼りつかない（横から段差が出ない）', hint:'ストンと落ちる直線寄り。張るなら素材orサイズを見直し'});
+    L.push({text:'ハイウエスト寄りで「脚長＞脚幅」に見える', hint:'IN無しでも縦比率が作れればOK'});
+  } else {
+    L.push({text:'ウエスト位置が浮かず、座っても食い込みにくい', hint:'ヒップハンガー回避。ベルト位置で面の分節を'});
+    L.push({text:'センタープレスが膝下でまっすぐ落ちる', hint:'S字に曲がるならサイズ/裾幅の調整'});
+  }
+  if (p.strongLine){
+    L.push({text:'裾は暴れず、歩いてもシワが散らない', hint:'ストレート/セミワイドが安全'});
+  } else {
+    L.push({text:'歩くと生地が“ゆっくり揺れる”。広がり過ぎない', hint:'落ち感重視、ギャザーは1箇所だけ'});
+  }
+  L.push({text:'靴を合わせると足の甲〜つま先がスッとつながる', hint:'甲浅/先細でラインを中断させない'});
+  L.push({text:'後ろ姿でポケット位置が高過ぎ/低過ぎない', hint:'ヒップ中心にくる見え方'});
+  L.push({text:'丈はくるぶし〜甲手前。床に触れない', hint:'引きずる丈は重心が下がって見える'});
+  return L.slice(0,7);
+}
 
 // BODY_TIPS（ベース）＋ 追加Tips（スコア別）を合成
 function buildPersonalizedTips(code){
@@ -653,6 +1182,10 @@ function renderCuteCard16Combined(baseCode, otherCode){
       </div>
     </div>
   </div>`;
+}
+// どこからでも見える位置（buildTopsChecklistの定義“後”が安全）
+function buildPersonalFitChecklistV2(code){
+  return buildTopsChecklist(code); // そのまま流用
 }
 
 // ========== 16タイプ一覧（1グリッド統合＋検索・並替） ==========
@@ -848,9 +1381,14 @@ function _renderResultCore(){
   const root = document.getElementById(mountId) || document.body;
   const { code, scores } = buildCode();
   const meta = window.TYPE_META?.[code] || { name:'未定義タイプ', base:'NATURAL', emoji:'', animal:'', image:'', concept:'', brandHints:[], styleNotes:[] };
+  const mount = document.getElementById(window.__RESULT_MOUNT__ || 'app');
+// 例2: premiumなら
+// const mount = document.querySelector('#premium-root');
+
+
 
   document.body.dataset.theme = meta.base || 'NATURAL';
-root.innerHTML += renderFit7Block(code);
+
   // 一度だけ計測送信
   if (!state._sentOnce && window.GAS_URL){
     state._sentOnce = true;
@@ -971,6 +1509,10 @@ root.innerHTML += renderFit7Block(code);
           ${renderBodyTipsHTML(code)}
 　　　　　　${celebHTML}
           ${renderShareCardHTML(code)}
+          ${renderPremiumCutePack(code)}
+
+<!-- ✅ Fit チェック（TOPS / BOTTOMS） -->
+　　　　　　${renderFit7HTML(code)}
           
           <p class="small">※ 提案は各軸のスコアとタイプ固有情報から生成しています。</p>
         </div>
@@ -995,8 +1537,13 @@ root.innerHTML += renderFit7Block(code);
       </div>
     </div>`;
 
-  root.innerHTML=''; root.appendChild(el);
-  root.insertAdjacentHTML('beforeend', renderFit7Block(code));
+  root.innerHTML=''; 
+  root.appendChild(el);
+  root.insertAdjacentHTML('beforeend', renderFit7HTML(code));   // ← ここで1回だけ
+  root.insertAdjacentHTML('beforeend', renderPremiumCutePack(code));
+wireSeasonTabsAll(root); // ← これを追加.  
+  wireFit7(root);
+  wirePremiumHero(root);   
   // 共有ボタン
   (function(){
     const meta = window.TYPE_META?.[code] || { name:'', emoji:'' };

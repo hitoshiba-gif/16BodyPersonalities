@@ -14,7 +14,7 @@ body[data-page="premium"] {
   max-width: 960px;
   margin: 32px auto 72px;
   padding: 0 16px;
-  display: grid;
+  display: block;
   gap: 24px;
 }
 
@@ -584,4 +584,325 @@ body[data-page="premium"] {
 @media (max-width: 480px){
   .fit7 .fit7-item{ grid-template-columns: 1fr auto; padding:10px; }
   .fit7 .fit7-label span{ font-size:14px; }
+}
+/* ===== Premium Cute Pack (Ivory Luxe) ===== */
+:root{
+  --ivory:#f6f1ea; --ink:#222; --muted:#666; --line:#e8e3dc;
+  --gold:#c7aa6a; --rose:#f4b6c6; --sky:#a9c8ff; --leaf:#a8d9c3;
+}
+
+body[data-page="premium"]{ background:#fafafa; color:var(--ink); }
+
+/* カード骨格 */
+.premium-card{
+  background:#fff; border:1px solid var(--line);
+  border-radius:16px; padding:20px; box-shadow:0 6px 24px rgba(0,0,0,.04);
+}
+
+/* ヒーロー */
+.prm-hero{ display:grid; gap:18px; grid-template-columns:1.2fr .8fr; align-items:center; }
+.prm-badge{
+  display:inline-block; padding:6px 10px; border-radius:999px;
+  background:linear-gradient(135deg,#fff4f8,#f1f6ff);
+  border:1px solid #eee; font-weight:700; font-size:13px;
+}
+.prm-ttl{ font-size:28px; letter-spacing:.2px; margin:8px 0 10px; font-weight:800; }
+.prm-ttl span{ font-size:24px; margin-right:8px; opacity:.7; }
+.prm-lead{ color:var(--muted); }
+.prm-actions{ display:flex; gap:8px; margin-top:8px; }
+.prm-actions .btn{ padding:8px 12px; border-radius:10px; border:1px solid #ddd; background:#fff; cursor:pointer; }
+.prm-actions .btn.primary{ background:#111; color:#fff; border-color:#111; }
+
+/* スウォッチ */
+.prm-swatch-grid{ display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; }
+.prm-swatch{ text-align:center; }
+.prm-swatch span{ display:block; width:100%; aspect-ratio:1/1; border-radius:10px; border:1px solid #eee; }
+.prm-swatch i{ display:block; font-style:normal; margin-top:6px; font-size:11px; color:#888; }
+
+/* セクションヘッダ */
+.prm-sec-head{ display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
+.premium-title{ font-weight:800; letter-spacing:.2px; }
+
+/* フィット（tops/bottoms） */
+.prm-fit.prm-tops .fit7-item{ border-color:#f1dfe7; background:#fff; }
+.prm-fit.prm-bottoms .fit7-item{ border-color:#dfe8fa; background:#fff; }
+.prm-fit .fit7-hint{ border-color:#ddd; }
+
+/* カプセル */
+.prm-capsule .prm-capsule-grid{ display:grid; gap:12px; grid-template-columns:1fr 1fr; }
+.prm-cap{ border:1px solid var(--line); border-radius:12px; padding:12px; background:#fff; }
+.prm-cap h4{ font-weight:800; margin-bottom:6px; }
+.prm-cap ul{ padding-left:18px; line-height:1.7; }
+
+/* DO/DON'T */
+.prm-dodont-grid{ display:grid; gap:12px; grid-template-columns:1fr 1fr; }
+.prm-do, .prm-dont{ border:1px solid var(--line); border-radius:12px; padding:12px; }
+.prm-do h4{ color:#176b3b; }
+.prm-dont h4{ color:#a33a3a; }
+.prm-do ul, .prm-dont ul{ padding-left:18px; line-height:1.7; }
+
+/* お買い物チェック */
+.prm-shop .prm-shop-grid{ display:grid; gap:8px; }
+.prm-shop label{ display:flex; gap:8px; align-items:flex-start; border:1px solid var(--line); border-radius:10px; padding:10px; background:#fff; }
+
+/* 共有 */
+.prm-share .prm-share-row{ display:flex; gap:8px; }
+
+/* 既存 fit7 の“縦書き化け”を無効に */
+.fit7, .fit7 *{ writing-mode:horizontal-tb !important; text-orientation: mixed !important; }
+
+/* メーター既定（底上げ） */
+.cute-meter .cm-track{ width:100%; max-width:260px; }
+.cute-meter .cm-fill{ transition:width .3s ease; }
+
+/* bottomsの数値色を青寄せ（既存のblue指定があればスルー） */
+.prm-bottoms .cute-meter .cm-fill{ background:#7aa8ff; }
+
+/* 印刷 */
+@media print{
+  body{ background:#fff; }
+  .premium-card{ break-inside: avoid; box-shadow:none; }
+  .prm-share{ display:none; }
+}
+
+/* モバイル */
+@media (max-width: 680px){
+  .prm-hero{ grid-template-columns:1fr; }
+  .prm-capsule .prm-capsule-grid,
+  .prm-dodont-grid{ grid-template-columns:1fr; }
+  .prm-swatch-grid{ grid-template-columns:repeat(5, 1fr); }
+}
+/* ===== Premium Cute Pack (Ivory Luxe) ===== */
+:root{
+  --ivory:#f6f1ea; --ink:#222; --muted:#666; --line:#e8e3dc;
+  --gold:#c7aa6a; --rose:#f4b6c6; --sky:#a9c8ff; --leaf:#a8d9c3;
+}
+
+body[data-page="premium"]{ background:#fafafa; color:var(--ink); }
+
+/* カード骨格 */
+.premium-card{
+  background:#fff; border:1px solid var(--line);
+  border-radius:16px; padding:20px; box-shadow:0 6px 24px rgba(0,0,0,.04);
+}
+
+/* ヒーロー */
+.prm-hero{ display:grid; gap:18px; grid-template-columns:1.2fr .8fr; align-items:center; }
+.prm-badge{
+  display:inline-block; padding:6px 10px; border-radius:999px;
+  background:linear-gradient(135deg,#fff4f8,#f1f6ff);
+  border:1px solid #eee; font-weight:700; font-size:13px;
+}
+.prm-ttl{ font-size:28px; letter-spacing:.2px; margin:8px 0 10px; font-weight:800; }
+.prm-ttl span{ font-size:24px; margin-right:8px; opacity:.7; }
+.prm-lead{ color:var(--muted); }
+.prm-actions{ display:flex; gap:8px; margin-top:8px; }
+.prm-actions .btn{ padding:8px 12px; border-radius:10px; border:1px solid #ddd; background:#fff; cursor:pointer; }
+.prm-actions .btn.primary{ background:#111; color:#fff; border-color:#111; }
+
+/* スウォッチ */
+.prm-swatch-grid{ display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; }
+.prm-swatch{ text-align:center; }
+.prm-swatch span{ display:block; width:100%; aspect-ratio:1/1; border-radius:10px; border:1px solid #eee; }
+.prm-swatch i{ display:block; font-style:normal; margin-top:6px; font-size:11px; color:#888; }
+
+/* セクションヘッダ */
+.prm-sec-head{ display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
+.premium-title{ font-weight:800; letter-spacing:.2px; }
+
+/* フィット（tops/bottoms） */
+.prm-fit.prm-tops .fit7-item{ border-color:#f1dfe7; background:#fff; }
+.prm-fit.prm-bottoms .fit7-item{ border-color:#dfe8fa; background:#fff; }
+.prm-fit .fit7-hint{ border-color:#ddd; }
+
+/* カプセル */
+.prm-capsule .prm-capsule-grid{ display:grid; gap:12px; grid-template-columns:1fr 1fr; }
+.prm-cap{ border:1px solid var(--line); border-radius:12px; padding:12px; background:#fff; }
+.prm-cap h4{ font-weight:800; margin-bottom:6px; }
+.prm-cap ul{ padding-left:18px; line-height:1.7; }
+
+/* DO/DON'T */
+.prm-dodont-grid{ display:grid; gap:12px; grid-template-columns:1fr 1fr; }
+.prm-do, .prm-dont{ border:1px solid var(--line); border-radius:12px; padding:12px; }
+.prm-do h4{ color:#176b3b; }
+.prm-dont h4{ color:#a33a3a; }
+.prm-do ul, .prm-dont ul{ padding-left:18px; line-height:1.7; }
+
+/* お買い物チェック */
+.prm-shop .prm-shop-grid{ display:grid; gap:8px; }
+.prm-shop label{ display:flex; gap:8px; align-items:flex-start; border:1px solid var(--line); border-radius:10px; padding:10px; background:#fff; }
+
+/* 共有 */
+.prm-share .prm-share-row{ display:flex; gap:8px; }
+
+/* 既存 fit7 の“縦書き化け”を無効に */
+.fit7, .fit7 *{ writing-mode:horizontal-tb !important; text-orientation: mixed !important; }
+
+/* メーター既定（底上げ） */
+.cute-meter .cm-track{ width:100%; max-width:260px; }
+.cute-meter .cm-fill{ transition:width .3s ease; }
+
+/* bottomsの数値色を青寄せ（既存のblue指定があればスルー） */
+.prm-bottoms .cute-meter .cm-fill{ background:#7aa8ff; }
+
+/* 印刷 */
+@media print{
+  body{ background:#fff; }
+  .premium-card{ break-inside: avoid; box-shadow:none; }
+  .prm-share{ display:none; }
+}
+
+/* モバイル */
+@media (max-width: 680px){
+  .prm-hero{ grid-template-columns:1fr; }
+  .prm-capsule .prm-capsule-grid,
+  .prm-dodont-grid{ grid-template-columns:1fr; }
+  .prm-swatch-grid{ grid-template-columns:repeat(5, 1fr); }
+}
+/* ---- 古いパレットの上のボタンを完全に非表示 ---- */
+.palette-switcher,
+.palette-header-buttons,
+.palette-controls,
+.palette-mode-buttons {
+  display: none !important;
+}
+
+/* 上の“反応しない”旧タブだけを消す */
+header .palette-tabs,
+.result-head .palette-tabs,
+.premium-header .palette-tabs {
+  display: none !important;
+}
+
+/* 下の“働く”タブは必ず表示 */
+.prm-hero .prm-tabs {
+  display: flex !important;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+/* =======================================
+   PremiumPack（季節カラー）スマホ修正
+   ======================================= */
+.premium-pack {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.premium-pack-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.premium-pack-colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(64px,1fr));
+  gap: 8px;
+}
+
+@media (max-width: 480px){
+  .premium-pack {
+    padding: 12px;
+  }
+  .premium-pack-colors {
+    grid-template-columns: repeat(5, 1fr); /* 5色なら5列 */
+  }
+}
+
+
+
+/* =======================================
+   Fit7（TOPS/BOTTOMS）スマホ修正
+   ======================================= */
+.fit7-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 768px){
+  .fit7-grid {
+    grid-template-columns: 1fr; /* スマホは1カラム */
+  }
+}
+
+.fit7-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+/* ==== Color Palette overflow hotfix ==== */
+
+/* コンテナ側：はみ出し禁止＆子要素の最小幅リセット */
+.premium-pack,
+.prm-swatch-grid,
+.premium-pack-colors {
+  overflow-x: hidden !important;
+}
+.premium-pack *,
+.prm-swatch-grid *,
+.premium-pack-colors * {
+  min-width: 0 !important; /* flex/grid 子のはみ出し抑制 */
+}
+
+/* グリッド：列幅を小さめに & ボーダー込みで収める */
+.prm-swatch-grid,
+.premium-pack-colors {
+  box-sizing: border-box;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)) !important; /* 64→56 */
+}
+
+/* 各セル：境界線・パディングで列幅を食わないように */
+.prm-swatch,
+.premium-pack-colors .swatch {
+  min-width: 0;
+}
+
+/* 正方形タイル：border 分も含めて100%に収める */
+.prm-swatch span,
+.premium-pack-colors .swatch span {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  box-sizing: border-box;       /* ← これが決め手 */
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* ラベルは改行可 */
+.prm-swatch i,
+.premium-pack-colors .swatch i {
+  display: block;
+  margin-top: 6px;
+  font-style: normal;
+  font-size: 11px;
+  color: #888;
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* スマホ時は列幅さらに絞る＆ギャップ縮小で安全側へ */
+@media (max-width: 480px){
+  .prm-swatch-grid,
+  .premium-pack-colors {
+    gap: 6px !important;
+    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)) !important;
+  }
+}
+
+/* 念のため：画像・SVGがはみ出さないよう統一 */
+.premium-pack img,
+.premium-pack svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
