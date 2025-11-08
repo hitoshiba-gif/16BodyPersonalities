@@ -1670,6 +1670,20 @@ const buyBtn = el.querySelector('#buy-premium');
 if (buyBtn){
   buyBtn.addEventListener('click', () => {
     // あなたの Payment Link（テスト用）に飛ばす
+    // 購入前にローカルに診断結果を保存（thanksページで再利用するため）
+if (result && result.code) {
+  localStorage.setItem('bp_code', result.code);
+  localStorage.setItem('bp_scores', JSON.stringify(result.scores || {}));
+  localStorage.setItem('bp_answers', JSON.stringify(result.answers || {}));
+
+  // 互換形式（旧thanks用）
+  localStorage.setItem('km_pending_payload', JSON.stringify({
+    code: result.code,
+    scores: result.scores || {},
+    answers: result.answers || {},
+    sessionId: crypto.randomUUID()
+  }));
+}
     location.href = "https://buy.stripe.com/test_eVq9AS3ab6tl961d2w6g800";
   }, { once:false });
 }
