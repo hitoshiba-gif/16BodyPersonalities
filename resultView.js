@@ -3,7 +3,7 @@
 // 依存が足りなくても落ちないようにフォールバックを同梱
 // ==================================================
 // === [PATCH-1] Premium判定 & 取得 ===
-window.GAS_URL = window.GAS_URL || "https://script.google.com/macros/s/AKfycbwj4K733-7PVxf0ZadsMN5OwoUGsKWPMJR449PhG7M3n7836DLHqdltB6hMDFVGsKBP/exec";
+window.GAS_URL = window.GAS_URL || "https://script.google.com/macros/s/AKfycbxP91T15LcRb4YKAg4ZICFYIPd9f5M7vSOsYMuL8TKD_LR9SytnVLHbUcwTNpwT1gXR/exec";
 const isPremium = () =>
   (document.body?.dataset?.page === 'premium') ||
   /premium\.html/.test(location.pathname);
