@@ -1669,71 +1669,31 @@ if (!state._sentOnce) {
 const buyBtn = el.querySelector('#buy-premium');
 if (buyBtn){
   buyBtn.addEventListener('click', () => {
-    // あなたの Payment Link（テスト用）に飛ばす
-    // 購入前にローカルに診断結果を保存（thanksページで再利用するため）
-if (result && result.code) {
-  localStorage.setItem('bp_code', result.code);
-  localStorage.setItem('bp_scores', JSON.stringify(result.scores || {}));
-  localStorage.setItem('bp_answers', JSON.stringify(result.answers || {}));
+    // ここで都度、最新の結果を取得
+    const { code, scores } = buildCode();
+    const answers = state?.answers || {};
 
-  // 互換形式（旧thanks用）
-  localStorage.setItem('km_pending_payload', JSON.stringify({
-    code: result.code,
-    scores: result.scores || {},
-    answers: result.answers || {},
-    sessionId: crypto.randomUUID()
-  }));
-}
+    if (!code) {
+      alert('診断結果が見つかりません。診断を完了してください。');
+      return;
+    }
+
+    // thanks用のローカル保存（両系統を保存）
+    localStorage.setItem('bp_code', code);
+    localStorage.setItem('bp_scores', JSON.stringify(scores || {}));
+    localStorage.setItem('bp_answers', JSON.stringify(answers || {}));
+
+    localStorage.setItem('km_pending_payload', JSON.stringify({
+      code,
+      scores: scores || {},
+      answers: answers || {},
+      sessionId: (crypto?.randomUUID?.() ?? String(Math.random()))
+    }));
+
+    // Stripeへ
     location.href = "https://buy.stripe.com/test_eVq9AS3ab6tl961d2w6g800";
   }, { once:false });
 }
-  // === 同意チェックの初期状態とイベント ===
-const cb = document.getElementById('consentBox');
-if (cb) {
-  // 既存の同意状態で初期化
-  cb.checked = (getConsent() === 'yes');
-
-  cb.onchange = () => {
-    setConsent(cb.checked);
-    // チェックONに切り替えた直後、まだ送っていなければ送る（1回だけ）
-    if (cb.checked && !state._sentOnce) {
-      state._sentOnce = true;
-
-      const sid = localStorage.getItem('km_session')
-        || (localStorage.setItem('km_session', (crypto?.randomUUID?.() ?? String(Math.random()))),
-            localStorage.getItem('km_session'));
-
-      const { code, scores } = buildCode(); // 念のため最新を取得
-      sendToSheets({ code, scores, userAgent:navigator.userAgent, sessionId:sid, t:Date.now() });
-    }
-  };
-}
-
-
-  // イベント
-  $('#retry', el).onclick = () => {
-  state = makeInitialState();          // ぜんぶリセット
-  state.step = 0;                      // すぐ最初の軸から再開したいなら1に
-  render();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-
-  $('#export',el).onclick=()=>{ 
-  // JSON保存
-  const payload={code,meta,scores,answers:state.answers};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download=`kokkaku-mbti-${code}.json`; a.click();
-  URL.revokeObjectURL(url);
-
-  // ボタンでも送るが、一度送っていれば送らない
-  if (!state._sentOnce) {
-    state._sentOnce = true;
-    sendToSheets({ code, scores, userAgent:navigator.userAgent, t:Date.now() });
-  }
-}
-
 }
 
 
