@@ -23,7 +23,6 @@
     .pill{ display:inline-block; padding:4px 8px; border:1px solid var(--line); border-radius:999px; background:#f7f7f7; font-size:12px; color:#333; }
     .status{ padding:10px 12px; border:1px dashed var(--line); border-radius:10px; background:#fcfcfc; }
     .mt{ margin-top:12px; }
-    .hide{ display:none; }
   </style>
 </head>
 <body>
@@ -63,136 +62,120 @@
   </div>
 
   <script>
-  // ====== 設定（既存があれば流用） ======
-  // 既に global に GAS_URL / jsonp があるなら下の定義は自動で無効化されます。
-  window.GAS_URL = window.GAS_URL || "https://script.google.com/macros/s/AKfycbyXSAsD_pwYc8EqN50hKo5birhs5EHSSZlO1XEwtD362zm9Pt0lVIeg79-x8ZLgkJ03/exec"; // ←差し替え
+  // ===== 設定 =====
+  window.GAS_URL = "https://script.google.com/macros/s/AKfycbyXSAsD_pwYc8EqN50hKo5birhs5EHSSZlO1XEwtD362zm9Pt0lVIeg79-x8ZLgkJ03/exec";
 
-  // 簡易 JSONP（未定義なら注入）
-  if (typeof window.jsonp !== 'function') {
-    window.jsonp = function(url, timeoutMs = 15000){
-      return new Promise((resolve, reject)=>{
-        const cb = 'jsonp_cb_' + Math.random().toString(36).slice(2);
-        const t = setTimeout(()=>{ cleanup(); reject(new Error('JSONP timeout')); }, timeoutMs);
-        function cleanup(){
-          clearTimeout(t);
-          try{ delete window[cb]; }catch(_){}
-          if (script && script.parentNode) script.parentNode.removeChild(script);
-        }
-        window[cb] = (data)=>{ cleanup(); resolve(data); };
-        const delim = url.includes('?') ? '&' : '?';
-        const script = document.createElement('script');
-        script.src = url + delim + 'callback=' + cb;
-        script.onerror = ()=>{ cleanup(); reject(new Error('JSONP network error')); };
-        document.head.appendChild(script);
-      });
-    };
+  // ===== JSONP =====
+  window.jsonp = window.jsonp || function(url, timeoutMs=15000){
+    return new Promise((resolve,reject)=>{
+      const cb='jsonp_cb_'+Math.random().toString(36).slice(2);
+      const t=setTimeout(()=>{cleanup();reject(new Error('timeout'));},timeoutMs);
+      function cleanup(){clearTimeout(t);delete window[cb];script.remove();}
+      window[cb]=(d)=>{cleanup();resolve(d);};
+      const script=document.createElement('script');
+      script.src=url+(url.includes('?')?'&':'?')+'callback='+cb;
+      script.onerror=()=>{cleanup();reject(new Error('neterr'));};
+      document.head.appendChild(script);
+    });
+  };
+
+  // ===== util =====
+  const qs=new URLSearchParams(location.search);
+  const sessionIdLS=localStorage.getItem('km_session')||
+    (localStorage.setItem('km_session',crypto.randomUUID()),localStorage.getItem('km_session'));
+  const stripeSessionId=qs.get('session_id')||'';
+
+  const $=(s)=>document.querySelector(s);
+  const elStatus=$('#status');
+  const elEmail=$('#email');
+  const elSend=$('#send');
+  const elRetry=$('#retry');
+  const elSid=$('#sid');
+  const elLs=$('#ls');
+  const elHome=$('#toHome');
+
+  elSid.textContent=stripeSessionId||'（なし）';
+  elLs.textContent=sessionIdLS||'—';
+
+  function setStatus(msg,kind){
+    elStatus.textContent=msg;
+    elStatus.classList.toggle('ok',kind==='ok');
+    elStatus.classList.toggle('err',kind==='err');
   }
 
-  // ====== ユーティリティ ======
-  const qs = new URLSearchParams(location.search);
-  const sessionIdLS = localStorage.getItem('km_session') ||
-                      (localStorage.setItem('km_session', (crypto?.randomUUID?.()||Math.random().toString(36).slice(2))),
-                       localStorage.getItem('km_session'));
-
-  // Stripe Checkout / Payment Link が付ける可能性あり
-  const stripeSessionId = qs.get('session_id') || '';
-
-  // 購入前に保存したデータ
-  const pendingEmail   = localStorage.getItem('km_email_pending') || '';
-  const pendingPayload = (()=>{ try{ return JSON.parse(localStorage.getItem('km_pending_payload')||'{}'); }catch(_){ return {}; }})();
-
-  // UI要素
-  const $ = (sel)=>document.querySelector(sel);
-  const elStatus = $('#status');
-  const elEmail  = $('#email');
-  const elSend   = $('#send');
-  const elRetry  = $('#retry');
-  const elSid    = $('#sid');
-  const elLs     = $('#ls');
-  const elHome   = $('#toHome');
-
-  // 初期表示
-  elSid.textContent = stripeSessionId || '（なし）';
-  elLs.textContent  = sessionIdLS || '—';
-  if (pendingEmail) elEmail.value = pendingEmail;
-
-  // ステータス表示補助
-  function setStatus(msg, kind){
-    elStatus.textContent = msg;
-    elStatus.classList.toggle('ok', kind==='ok');
-    elStatus.classList.toggle('err', kind==='err');
+  // ===== payload 復元 =====
+  function safeJson(s){try{return JSON.parse(s);}catch(_){return null;}}
+  function buildPayload(){
+    const p1=safeJson(localStorage.getItem('km_pending_payload'));
+    const code2=localStorage.getItem('bp_code');
+    const scores2=safeJson(localStorage.getItem('bp_scores'));
+    const answers2=safeJson(localStorage.getItem('bp_answers'));
+    if(p1&&p1.code)return p1;
+    if(code2)return{code:code2,scores:scores2||{},answers:answers2||{},sessionId:sessionIdLS};
+    return {code:'',scores:{},answers:{},sessionId:sessionIdLS};
   }
+  const pendingPayload=buildPayload();
+  const pendingEmail=localStorage.getItem('km_email_pending')||'';
+  if(pendingEmail) elEmail.value=pendingEmail;
 
-  // GAS に送る本体
-  async function sendToGAS(email, payload, {isRetry=false}={}){
-    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
-      setStatus('有効なメールアドレスを入力してください。', 'err');
-      elEmail.focus();
-      return;
+  const dbg=document.createElement('div');
+  dbg.className='small';
+  elStatus.insertAdjacentElement('afterend',dbg);
+  function showDetected(p){dbg.textContent='検出した診断コード: '+(p?.code||'(なし)');}
+  showDetected(pendingPayload);
+
+  // ===== 送信 =====
+  async function sendToGAS(email,payload,{isRetry=false}={}){
+    if(!email||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+      setStatus('有効なメールアドレスを入力してください','err');return;
     }
-    setStatus('送信中…少しお待ちください。');
+    if(!payload||!payload.code)payload=buildPayload();
+    showDetected(payload);
+    const codeOk=/^[BM][NW][LU][CS]$/.test(payload.code||'');
+    if(!codeOk){setStatus('診断コードが見つかりません','err');return;}
+    setStatus('送信中…');
 
-    // payload 準備（不足項目のフォールバック）
-    const code    = payload?.code    || 'UNKNOWN';
-    const scores  = payload?.scores  || {};
-    const answers = payload?.answers || {};
-    const sess    = payload?.sessionId || sessionIdLS;
-
-    // JSONP URL（既存ロジックに揃える）
-    const url = window.GAS_URL
+    const url=window.GAS_URL
       + '?savePremium=1'
       + '&email='     + encodeURIComponent(email)
-      + '&sessionId=' + encodeURIComponent(sess)
-      + '&code='      + encodeURIComponent(code)
-      + '&scores='    + encodeURIComponent(JSON.stringify(scores))
-      + '&answers='   + encodeURIComponent(JSON.stringify(answers))
-      + (stripeSessionId ? '&stripe_session=' + encodeURIComponent(stripeSessionId) : '')
-      + (isRetry ? '&retry=1' : '');
-
+      + '&sessionId=' + encodeURIComponent(payload.sessionId||sessionIdLS)
+      + '&code='      + encodeURIComponent(payload.code)
+      + '&scores='    + encodeURIComponent(JSON.stringify(payload.scores||{}))
+      + '&answers='   + encodeURIComponent(JSON.stringify(payload.answers||{}))
+      + (stripeSessionId ? '&stripe_session='+encodeURIComponent(stripeSessionId) : '')
+      + (isRetry ? '&retry=1':'');
     try{
-      const res = await window.jsonp(url);
-      if (!res || !res.ok){
-        throw new Error(res?.error || '送信に失敗しました');
-      }
-
-      // 送信成功：ローカル掃除
+      const res=await window.jsonp(url);
+      if(!res?.ok)throw new Error(res?.error||'failed');
       localStorage.removeItem('km_email_pending');
       localStorage.removeItem('km_pending_payload');
-
-      setStatus('✅ 完了しました！ 完全版のURLをメールでお送りしました。迷惑メールもご確認ください。', 'ok');
+      setStatus('✅ 完了しました！メールを確認してください。','ok');
     }catch(err){
       console.error(err);
-      setStatus('エラー：送信に失敗しました。メールを確認して再度お試しください。', 'err');
+      setStatus('エラーが発生しました。再試行してください。','err');
     }
   }
 
-  // 自動送信（データがある場合のみ一度だけ）
+  // ===== 自動送信 =====
   (function autoKick(){
-    if (pendingPayload && Object.keys(pendingPayload).length && (pendingEmail || elEmail.value)){
+    if(pendingPayload&&pendingPayload.code&&(pendingEmail||elEmail.value)){
       setStatus('自動で送信を試行しています…');
-      sendToGAS(elEmail.value || pendingEmail, pendingPayload).catch(()=>{});
+      sendToGAS(elEmail.value||pendingEmail,pendingPayload).catch(()=>{});
     }else{
-      setStatus('メールアドレスを確認して「メール送信」を押してください。');
+      setStatus('メールを入力して「メール送信」を押してください');
     }
   })();
 
-  // ボタン動作
-  elSend.addEventListener('click', ()=>{
-    const email = elEmail.value.trim();
-    // thanks ページで打ち直す可能性があるので、最新メールを保存（次回再訪時に復元）
-    localStorage.setItem('km_email_pending', email);
-    sendToGAS(email, pendingPayload);
+  elSend.addEventListener('click',()=>{
+    const email=elEmail.value.trim();
+    localStorage.setItem('km_email_pending',email);
+    sendToGAS(email,pendingPayload);
   });
-
-  elRetry.addEventListener('click', ()=>{
-    const email = elEmail.value.trim() || pendingEmail;
-    sendToGAS(email, pendingPayload, {isRetry:true});
+  elRetry.addEventListener('click',()=>{
+    const email=elEmail.value.trim()||pendingEmail;
+    sendToGAS(email,pendingPayload,{isRetry:true});
   });
-
-  elHome.addEventListener('click', ()=>{
-    // 必要に応じてトップへのパスに変更
-    location.href = './index.html';
-  });
+  elHome.addEventListener('click',()=>location.href='./index.html');
   </script>
 </body>
 </html>
