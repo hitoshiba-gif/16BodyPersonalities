@@ -105,56 +105,163 @@
 
   // ===== payload 復元 =====
   function safeJson(s){try{return JSON.parse(s);}catch(_){return null;}}
-  function buildPayload(){
-    const p1=safeJson(localStorage.getItem('km_pending_payload'));
-    const code2=localStorage.getItem('bp_code');
-    const scores2=safeJson(localStorage.getItem('bp_scores'));
-    const answers2=safeJson(localStorage.getItem('bp_answers'));
-    if(p1&&p1.code)return p1;
-    if(code2)return{code:code2,scores:scores2||{},answers:answers2||{},sessionId:sessionIdLS};
-    return {code:'',scores:{},answers:{},sessionId:sessionIdLS};
-  }
-  const pendingPayload=buildPayload();
-  const pendingEmail=localStorage.getItem('km_email_pending')||'';
-  if(pendingEmail) elEmail.value=pendingEmail;
 
-  const dbg=document.createElement('div');
-  dbg.className='small';
-  elStatus.insertAdjacentElement('afterend',dbg);
-  function showDetected(p){dbg.textContent='検出した診断コード: '+(p?.code||'(なし)');}
-  showDetected(pendingPayload);
+// === ここから差し替え ===
 
-  // ===== 送信 =====
-  async function sendToGAS(email,payload,{isRetry=false}={}){
-    if(!email||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
-      setStatus('有効なメールアドレスを入力してください','err');return;
+// 4文字コード検証（前後空白・小文字も許可）
+function normalizeCode(raw){
+  if (!raw) return '';
+  const c = String(raw).trim().toUpperCase();
+  return /^[BM][NW][LU][CS]$/.test(c) ? c : '';
+}
+
+// localStorage 全走査して 4文字コードを探す
+function sniffCodeFromLocalStorage(){
+  const candidates = [];
+  for (let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    const v = localStorage.getItem(k);
+    // 値が短い文字列ならそのままチェック
+    if (v && v.length <= 16) {
+      const code = normalizeCode(v);
+      if (code) candidates.push({k, code, where:'value'});
     }
-    if(!payload||!payload.code)payload=buildPayload();
-    showDetected(payload);
-    const codeOk=/^[BM][NW][LU][CS]$/.test(payload.code||'');
-    if(!codeOk){setStatus('診断コードが見つかりません','err');return;}
-    setStatus('送信中…');
-
-    const url=window.GAS_URL
-      + '?savePremium=1'
-      + '&email='     + encodeURIComponent(email)
-      + '&sessionId=' + encodeURIComponent(payload.sessionId||sessionIdLS)
-      + '&code='      + encodeURIComponent(payload.code)
-      + '&scores='    + encodeURIComponent(JSON.stringify(payload.scores||{}))
-      + '&answers='   + encodeURIComponent(JSON.stringify(payload.answers||{}))
-      + (stripeSessionId ? '&stripe_session='+encodeURIComponent(stripeSessionId) : '')
-      + (isRetry ? '&retry=1':'');
+    // JSONっぽければ深掘り
     try{
-      const res=await window.jsonp(url);
-      if(!res?.ok)throw new Error(res?.error||'failed');
-      localStorage.removeItem('km_email_pending');
-      localStorage.removeItem('km_pending_payload');
-      setStatus('✅ 完了しました！メールを確認してください。','ok');
-    }catch(err){
-      console.error(err);
-      setStatus('エラーが発生しました。再試行してください。','err');
-    }
+      const obj = JSON.parse(v);
+      // よくあるパターンを総当たり
+      const paths = [
+        ['code'],
+        ['type'],
+        ['result','code'],
+        ['result','type'],
+        ['data','code'],
+        ['payload','code'],
+        ['km','code'],
+      ];
+      for (const p of paths){
+        let cur = obj;
+        for (const seg of p){ cur = (cur && typeof cur==='object') ? cur[seg] : undefined; }
+        const code = normalizeCode(cur);
+        if (code) candidates.push({k, code, where:'json:'+p.join('.')});
+      }
+      // 配列の中にも入ってるケース
+      if (Array.isArray(obj)) {
+        for (const item of obj){
+          const code = normalizeCode(item?.code || item?.type);
+          if (code) candidates.push({k, code, where:'jsonArray'});
+        }
+      }
+    }catch(_){}
   }
+  // もっとも“それっぽい”キーを優先
+  const prefer = ['km_pending_payload','bp_code','bp','result','answers','scores'];
+  candidates.sort((a,b)=>{
+    const ai = prefer.findIndex(x=>a.k.includes(x)); const bi = prefer.findIndex(x=>b.k.includes(x));
+    return (ai<0?999:ai) - (bi<0?999:bi);
+  });
+  return candidates[0]?.code || '';
+}
+
+// スコア等も総当たり復元
+function sniffJson(nameList){
+  for (const name of nameList){
+    try{
+      const v = localStorage.getItem(name);
+      if (!v) continue;
+      const obj = JSON.parse(v);
+      if (obj && typeof obj==='object') return obj;
+    }catch(_){}
+  }
+  return null;
+}
+
+function buildPayload(){
+  // 1) 旧実装互換
+  const pending = (()=>{ try{return JSON.parse(localStorage.getItem('km_pending_payload')||'{}')}catch(_){return {}}})();
+  if (normalizeCode(pending?.code)) {
+    return {
+      code: normalizeCode(pending.code),
+      scores: pending.scores || {},
+      answers: pending.answers || {},
+      sessionId: pending.sessionId || sessionIdLS
+    };
+  }
+
+  // 2) 単体キー保存パターン
+  const code2 = normalizeCode(localStorage.getItem('bp_code') || localStorage.getItem('code') || '');
+  const scores2 = sniffJson(['bp_scores','scores','km_scores','result_scores']);
+  const answers2= sniffJson(['bp_answers','answers','km_answers','result_answers']);
+  if (code2) {
+    return {
+      code: code2,
+      scores: scores2 || {},
+      answers: answers2 || {},
+      sessionId: sessionIdLS
+    };
+  }
+
+  // 3) 汎用スニファ（全キー走査）
+  const code3 = sniffCodeFromLocalStorage();
+  if (code3) {
+    // スコア類はそれっぽいキーから拾う
+    const sc = scores2 || sniffJson(Object.keys(localStorage).filter(k=>/score/i.test(k)));
+    const an = answers2|| sniffJson(Object.keys(localStorage).filter(k=>/answer/i.test(k)));
+    return { code: code3, scores: sc||{}, answers: an||{}, sessionId: sessionIdLS };
+  }
+
+  // 4) 見つからない
+  return { code:'', scores:{}, answers:{}, sessionId: sessionIdLS };
+}
+
+// 検出したコードを画面に出してデバッグしやすく
+(function(){
+  const p = buildPayload();
+  const dbg = document.createElement('div');
+  dbg.className = 'small';
+  dbg.style.marginTop = '6px';
+  dbg.textContent = '検出した診断コード: ' + (p.code || '（未検出）');
+  document.getElementById('status').insertAdjacentElement('afterend', dbg);
+})();
+
+// 送信前バリデーションも normalize 済みコードで判定
+async function sendToGAS(email,payload,{isRetry=false}={}){
+  if(!email||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+    setStatus('有効なメールアドレスを入力してください','err'); return;
+  }
+  if(!payload||!payload.code) payload = buildPayload();
+
+  // ← ここを normalize で再チェック
+  const code = normalizeCode(payload.code);
+  if(!code){
+    setStatus('診断コードが見つかりません。購入前のページで一度診断→購入を実行し直してください。','err'); 
+    return;
+  }
+  payload.code = code;
+
+  setStatus('送信中…');
+
+  const url=window.GAS_URL
+    + '?savePremium=1'
+    + '&email='     + encodeURIComponent(email)
+    + '&sessionId=' + encodeURIComponent(payload.sessionId||sessionIdLS)
+    + '&code='      + encodeURIComponent(payload.code)
+    + '&scores='    + encodeURIComponent(JSON.stringify(payload.scores||{}))
+    + '&answers='   + encodeURIComponent(JSON.stringify(payload.answers||{}))
+    + (stripeSessionId ? '&stripe_session='+encodeURIComponent(stripeSessionId) : '')
+    + (isRetry ? '&retry=1':'');
+  try{
+    const res=await window.jsonp(url);
+    if(!res?.ok) throw new Error(res?.error||'failed');
+    localStorage.removeItem('km_email_pending');
+    localStorage.removeItem('km_pending_payload');
+    setStatus('✅ 完了しました！メールを確認してください。','ok');
+  }catch(err){
+    console.error(err);
+    setStatus('エラーが発生しました。再試行してください。','err');
+  }
+}
+// === ここまで差し替え ===
 
   // ===== 自動送信 =====
   (function autoKick(){
