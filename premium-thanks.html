@@ -85,204 +85,196 @@
     (localStorage.setItem('km_session',crypto.randomUUID()),localStorage.getItem('km_session'));
   const stripeSessionId=qs.get('session_id')||'';
 
-  const $=(s)=>document.querySelector(s);
-  const elStatus=$('#status');
-  const elEmail=$('#email');
-  const elSend=$('#send');
-  const elRetry=$('#retry');
-  const elSid=$('#sid');
-  const elLs=$('#ls');
-  const elHome=$('#toHome');
-
-  elSid.textContent=stripeSessionId||'（なし）';
-  elLs.textContent=sessionIdLS||'—';
-
-  function setStatus(msg,kind){
-    elStatus.textContent=msg;
-    elStatus.classList.toggle('ok',kind==='ok');
-    elStatus.classList.toggle('err',kind==='err');
-  }
-
-  // ===== payload 復元 =====
-  function safeJson(s){try{return JSON.parse(s);}catch(_){return null;}}
-
-// === ここから差し替え ===
-
-// 4文字コード検証（前後空白・小文字も許可）
-function normalizeCode(raw){
-  if (!raw) return '';
-  const c = String(raw).trim().toUpperCase();
-  return /^[BM][NW][LU][CS]$/.test(c) ? c : '';
-}
-
-// localStorage 全走査して 4文字コードを探す
-function sniffCodeFromLocalStorage(){
-  const candidates = [];
-  for (let i=0;i<localStorage.length;i++){
-    const k = localStorage.key(i);
-    const v = localStorage.getItem(k);
-    // 値が短い文字列ならそのままチェック
-    if (v && v.length <= 16) {
-      const code = normalizeCode(v);
-      if (code) candidates.push({k, code, where:'value'});
-    }
-    // JSONっぽければ深掘り
-    try{
-      const obj = JSON.parse(v);
-      // よくあるパターンを総当たり
-      const paths = [
-        ['code'],
-        ['type'],
-        ['result','code'],
-        ['result','type'],
-        ['data','code'],
-        ['payload','code'],
-        ['km','code'],
-      ];
-      for (const p of paths){
-        let cur = obj;
-        for (const seg of p){ cur = (cur && typeof cur==='object') ? cur[seg] : undefined; }
-        const code = normalizeCode(cur);
-        if (code) candidates.push({k, code, where:'json:'+p.join('.')});
-      }
-      // 配列の中にも入ってるケース
-      if (Array.isArray(obj)) {
-        for (const item of obj){
-          const code = normalizeCode(item?.code || item?.type);
-          if (code) candidates.push({k, code, where:'jsonArray'});
-        }
-      }
-    }catch(_){}
-  }
-  // もっとも“それっぽい”キーを優先
-  const prefer = ['km_pending_payload','bp_code','bp','result','answers','scores'];
-  candidates.sort((a,b)=>{
-    const ai = prefer.findIndex(x=>a.k.includes(x)); const bi = prefer.findIndex(x=>b.k.includes(x));
-    return (ai<0?999:ai) - (bi<0?999:bi);
-  });
-  return candidates[0]?.code || '';
-}
-
-// スコア等も総当たり復元
-function sniffJson(nameList){
-  for (const name of nameList){
-    try{
-      const v = localStorage.getItem(name);
-      if (!v) continue;
-      const obj = JSON.parse(v);
-      if (obj && typeof obj==='object') return obj;
-    }catch(_){}
-  }
-  return null;
-}
-
-function buildPayload(){
-  // 1) 旧実装互換
-  const pending = (()=>{ try{return JSON.parse(localStorage.getItem('km_pending_payload')||'{}')}catch(_){return {}}})();
-  if (normalizeCode(pending?.code)) {
-    return {
-      code: normalizeCode(pending.code),
-      scores: pending.scores || {},
-      answers: pending.answers || {},
-      sessionId: pending.sessionId || sessionIdLS
-    };
-  }
-
-  // 2) 単体キー保存パターン
-  const code2 = normalizeCode(localStorage.getItem('bp_code') || localStorage.getItem('code') || '');
-  const scores2 = sniffJson(['bp_scores','scores','km_scores','result_scores']);
-  const answers2= sniffJson(['bp_answers','answers','km_answers','result_answers']);
-  if (code2) {
-    return {
-      code: code2,
-      scores: scores2 || {},
-      answers: answers2 || {},
-      sessionId: sessionIdLS
-    };
-  }
-
-  // 3) 汎用スニファ（全キー走査）
-  const code3 = sniffCodeFromLocalStorage();
-  if (code3) {
-    // スコア類はそれっぽいキーから拾う
-    const sc = scores2 || sniffJson(Object.keys(localStorage).filter(k=>/score/i.test(k)));
-    const an = answers2|| sniffJson(Object.keys(localStorage).filter(k=>/answer/i.test(k)));
-    return { code: code3, scores: sc||{}, answers: an||{}, sessionId: sessionIdLS };
-  }
-
-  // 4) 見つからない
-  return { code:'', scores:{}, answers:{}, sessionId: sessionIdLS };
-}
-
-// 検出したコードを画面に出してデバッグしやすく
+ 
+/* ========= robust thanks boot ========= */
 (function(){
-  const p = buildPayload();
-  const dbg = document.createElement('div');
-  dbg.className = 'small';
-  dbg.style.marginTop = '6px';
-  dbg.textContent = '検出した診断コード: ' + (p.code || '（未検出）');
-  document.getElementById('status').insertAdjacentElement('afterend', dbg);
-})();
+  const $ = s => document.querySelector(s);
+  const elStatus = $('#status');
+  const elEmail  = $('#email');
+  const elSend   = $('#send');
+  const elRetry  = $('#retry');
+  const elSid    = $('#sid');
+  const elLs     = $('#ls');
 
-// 送信前バリデーションも normalize 済みコードで判定
-async function sendToGAS(email,payload,{isRetry=false}={}){
-  if(!email||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
-    setStatus('有効なメールアドレスを入力してください','err'); return;
+  // 安全な setStatus
+  function setStatus(msg, kind){
+    try{
+      if (!elStatus) return;
+      elStatus.textContent = msg;
+      elStatus.classList.toggle('ok', kind==='ok');
+      elStatus.classList.toggle('err', kind==='err');
+    }catch(_){}
   }
-  if(!payload||!payload.code) payload = buildPayload();
 
-  // ← ここを normalize で再チェック
-  const code = normalizeCode(payload.code);
-  if(!code){
-    setStatus('診断コードが見つかりません。購入前のページで一度診断→購入を実行し直してください。','err'); 
-    return;
+  // 1) まず「生存テスト」
+  setStatus('初期化中…', null);
+
+  // 2) 依存の最低限（GAS_URL / jsonp）を用意
+  window.GAS_URL = window.GAS_URL || "【あなたのGASデプロイURL】"; // ←必ず差し替え（/exec で終わる）
+  if (!window.jsonp) {
+    window.jsonp = function(url, timeoutMs=15000){
+      return new Promise((resolve,reject)=>{
+        const cb = 'jp_' + Math.random().toString(36).slice(2);
+        const timer = setTimeout(()=>{cleanup(); reject(new Error('JSONP timeout'));}, timeoutMs);
+        function cleanup(){
+          clearTimeout(timer);
+          try{ delete window[cb]; }catch(_){}
+          if (script && script.parentNode) script.parentNode.removeChild(script);
+        }
+        window[cb] = (data)=>{ cleanup(); resolve(data); };
+        const delim = url.includes('?') ? '&' : '?';
+        const script = document.createElement('script');
+        script.src = url + delim + 'callback=' + cb;
+        script.onerror = ()=>{ cleanup(); reject(new Error('JSONP network error')); };
+        document.head.appendChild(script);
+      });
+    };
   }
-  payload.code = code;
 
-  setStatus('送信中…');
+  // 3) 表示用の ID など
+  const qs = new URLSearchParams(location.search);
+  const stripeSessionId = qs.get('session_id') || '';
+  elSid && (elSid.textContent = stripeSessionId || '（なし）');
 
-  const url=window.GAS_URL
-    + '?savePremium=1'
-    + '&email='     + encodeURIComponent(email)
-    + '&sessionId=' + encodeURIComponent(payload.sessionId||sessionIdLS)
-    + '&code='      + encodeURIComponent(payload.code)
-    + '&scores='    + encodeURIComponent(JSON.stringify(payload.scores||{}))
-    + '&answers='   + encodeURIComponent(JSON.stringify(payload.answers||{}))
-    + (stripeSessionId ? '&stripe_session='+encodeURIComponent(stripeSessionId) : '')
-    + (isRetry ? '&retry=1':'');
+  const sessionIdLS = (()=>{
+    try{
+      const k='km_session';
+      let v = localStorage.getItem(k);
+      if (!v) { v = (crypto?.randomUUID?.() || Math.random().toString(36).slice(2)); localStorage.setItem(k, v); }
+      return v;
+    }catch(_){ return '—'; }
+  })();
+  elLs && (elLs.textContent = sessionIdLS);
+
+  // 4) 診断コード検出（どのキーでも拾う）
+  function normalizeCode(raw){
+    if (!raw) return '';
+    const c = String(raw).trim().toUpperCase();
+    return /^[BM][NW][LU][CS]$/.test(c) ? c : '';
+  }
+  function sniffJson(keys){
+    for (const k of keys){
+      try{ const v = localStorage.getItem(k); if (!v) continue;
+        const o = JSON.parse(v); if (o && typeof o==='object') return o;
+      }catch(_){}
+    }
+    return null;
+  }
+  function sniffCodeFromLocalStorage(){
+    const hits = [];
+    for (let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i); const v = localStorage.getItem(k);
+      const c1 = normalizeCode(v); if (c1) hits.push({k, code:c1});
+      try{
+        const o = JSON.parse(v);
+        const paths = [['code'],['type'],['result','code'],['result','type'],['data','code'],['payload','code']];
+        for (const p of paths){
+          let cur=o; for (const seg of p){ cur = (cur && typeof cur==='object') ? cur[seg] : undefined; }
+          const c2 = normalizeCode(cur); if (c2) hits.push({k, code:c2});
+        }
+        if (Array.isArray(o)){
+          for (const it of o){ const c3 = normalizeCode(it?.code || it?.type); if (c3) hits.push({k, code:c3}); }
+        }
+      }catch(_){}
+    }
+    const prefer = ['km_pending_payload','bp_code','bp','result','answers','scores'];
+    hits.sort((a,b)=>{
+      const ai = prefer.findIndex(x=>a.k.includes(x)); const bi = prefer.findIndex(x=>b.k.includes(x));
+      return (ai<0?999:ai) - (bi<0?999:bi);
+    });
+    return hits[0]?.code || '';
+  }
+  function buildPayload(){
+    // 旧キーの総当たり
+    const pending = (()=>{try{return JSON.parse(localStorage.getItem('km_pending_payload')||'{}')}catch(_){return {}}})();
+    if (normalizeCode(pending?.code)){
+      return { code: normalizeCode(pending.code), scores: pending.scores||{}, answers: pending.answers||{}, sessionId: pending.sessionId||sessionIdLS };
+    }
+    const code2 = normalizeCode(localStorage.getItem('bp_code')||localStorage.getItem('code'));
+    const scores2 = sniffJson(['bp_scores','scores','km_scores','result_scores']) || {};
+    const answers2= sniffJson(['bp_answers','answers','km_answers','result_answers']) || {};
+    if (code2) return { code: code2, scores: scores2, answers: answers2, sessionId: sessionIdLS };
+
+    const code3 = sniffCodeFromLocalStorage();
+    if (code3){
+      // スコア/回答はパターンから拾う
+      const sc = scores2 || sniffJson(Object.keys(localStorage).filter(k=>/score/i.test(k))) || {};
+      const an = answers2|| sniffJson(Object.keys(localStorage).filter(k=>/answer/i.test(k)))|| {};
+      return { code: code3, scores: sc, answers: an, sessionId: sessionIdLS };
+    }
+    return { code:'', scores:{}, answers:{}, sessionId: sessionIdLS };
+  }
+
+  // 5) GAS 送信
+  async function sendToGAS(email, payload, {isRetry=false}={}){
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+      setStatus('有効なメールアドレスを入力してください。','err'); return;
+    }
+    if (!payload || !payload.code){ payload = buildPayload(); }
+    const code = normalizeCode(payload.code);
+    if (!code){ setStatus('診断コードが見つかりません。購入前に診断を完了してください。','err'); return; }
+    payload.code = code;
+
+    setStatus('送信中…');
+
+    const url = window.GAS_URL
+      + '?savePremium=1'
+      + '&email='     + encodeURIComponent(email)
+      + '&sessionId=' + encodeURIComponent(payload.sessionId || sessionIdLS)
+      + '&code='      + encodeURIComponent(payload.code)
+      + '&scores='    + encodeURIComponent(JSON.stringify(payload.scores||{}))
+      + '&answers='   + encodeURIComponent(JSON.stringify(payload.answers||{}))
+      + (stripeSessionId ? '&stripe_session='+encodeURIComponent(stripeSessionId) : '')
+      + (isRetry ? '&retry=1' : '');
+
+    try{
+      const res = await window.jsonp(url);
+      if (!res?.ok) throw new Error(res?.error || '送信失敗');
+      // ローカル掃除
+      localStorage.removeItem('km_email_pending');
+      localStorage.removeItem('km_pending_payload');
+      setStatus('✅ 完了しました！メールをご確認ください（迷惑メールも）。','ok');
+    }catch(err){
+      console.error(err);
+      setStatus('エラー：送信に失敗しました。時間をおいて再試行してください。','err');
+    }
+  }
+
+  // 6) 自動キック（安全版）
   try{
-    const res=await window.jsonp(url);
-    if(!res?.ok) throw new Error(res?.error||'failed');
-    localStorage.removeItem('km_email_pending');
-    localStorage.removeItem('km_pending_payload');
-    setStatus('✅ 完了しました！メールを確認してください。','ok');
+    const pendingEmail = localStorage.getItem('km_email_pending') || '';
+    if (pendingEmail) elEmail && (elEmail.value = pendingEmail);
+
+    const payload = buildPayload();
+    const codeDbg = payload.code ? payload.code : '（未検出）';
+    const dbg = document.createElement('div');
+    dbg.className='small'; dbg.style.marginTop='6px';
+    dbg.textContent = '検出した診断コード：' + codeDbg;
+    elStatus && elStatus.insertAdjacentElement('afterend', dbg);
+
+    if (payload.code && (elEmail?.value || pendingEmail)){
+      setStatus('自動送信を試行しています…');
+      sendToGAS(elEmail.value || pendingEmail, payload).catch(()=>{});
+    }else{
+      setStatus('メールアドレスを入力して「メール送信」を押してください。');
+    }
   }catch(err){
     console.error(err);
-    setStatus('エラーが発生しました。再試行してください。','err');
+    setStatus('初期化エラー：' + (err?.message||err), 'err');
   }
-}
-// === ここまで差し替え ===
 
-  // ===== 自動送信 =====
-  (function autoKick(){
-    if(pendingPayload&&pendingPayload.code&&(pendingEmail||elEmail.value)){
-      setStatus('自動で送信を試行しています…');
-      sendToGAS(elEmail.value||pendingEmail,pendingPayload).catch(()=>{});
-    }else{
-      setStatus('メールを入力して「メール送信」を押してください');
-    }
-  })();
+  // 7) ボタン
+  elSend?.addEventListener('click', ()=>{
+    const email = elEmail.value.trim();
+    localStorage.setItem('km_email_pending', email);
+    sendToGAS(email, buildPayload());
+  });
+  elRetry?.addEventListener('click', ()=>{
+    const email = (elEmail.value.trim() || localStorage.getItem('km_email_pending') || '').trim();
+    sendToGAS(email, buildPayload(), {isRetry:true});
+  });
+})();
 
-  elSend.addEventListener('click',()=>{
-    const email=elEmail.value.trim();
-    localStorage.setItem('km_email_pending',email);
-    sendToGAS(email,pendingPayload);
-  });
-  elRetry.addEventListener('click',()=>{
-    const email=elEmail.value.trim()||pendingEmail;
-    sendToGAS(email,pendingPayload,{isRetry:true});
-  });
-  elHome.addEventListener('click',()=>location.href='./index.html');
   </script>
 </body>
 </html>
