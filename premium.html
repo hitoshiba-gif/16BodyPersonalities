@@ -421,6 +421,43 @@
       if (res.data.answers) state.answers = res.data.answers;
       window.__PREMIUM_CODE__   = res.data.code   || '';
       window.__PREMIUM_SCORES__ = res.data.scores || {};
+      // ===== Premium: 保存結果ロック（再計算させない） =====
+(function lockPremiumResult(){
+  if (!window.__PREMIUM_CODE__) return;
+
+  const snap = {
+    code:    window.__PREMIUM_CODE__,
+    scores:  window.__PREMIUM_SCORES__ || {},
+    answers: (window.state && state.answers) || {}
+  };
+
+  window.__LOCK_RESULT__ = true;
+  window.__PREMIUM_ANSWERS__ = snap.answers;
+
+  // buildCode を差し替え（保存済みをそのまま返す）
+  const _origBuild = window.buildCode;
+  window.buildCode = function(){
+    if (window.__LOCK_RESULT__) {
+      return { code: snap.code, scores: snap.scores, answers: snap.answers };
+    }
+    return _origBuild ? _origBuild() : { code:'', scores:{}, answers:{} };
+  };
+
+  // axisPercent も差し替え（保存された mean → %）
+  const _origAxis = window.axisPercent;
+  window.axisPercent = function(axisKey){
+    const mean = snap.scores?.[axisKey]?.mean;
+    if (window.__LOCK_RESULT__ && typeof mean === 'number') {
+      const pct = Math.max(0, Math.min(100, Math.round((mean - 1) / 4 * 100)));
+      const ax  = (window.AXES || []).find(a => a.key === axisKey);
+      const sideLabel = ax ? (pct > 50 ? ax.posLabel : ax.negLabel) : '';
+      return { pct, sideLabel, posSide: pct > 50 };
+    }
+    return _origAxis ? _origAxis(axisKey) : { pct:50, sideLabel:'', posSide:false };
+  };
+
+  console.log('[premium-lock] locked to snapshot:', snap.code, snap.scores);
+})();
 
       // app と同じレンダラで描画（renderResult or _renderResultCore）
       if (typeof renderResult === 'function') {
