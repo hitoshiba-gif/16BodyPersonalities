@@ -94,53 +94,102 @@
 </style>
 </head>
 
-<body data-page="premium" data-theme="WAVE"></body>
-    <header class="site">
-  <a class="brand" href="./" aria-label="16BodyPersonalities">
-    16Body<span>Personalities</span>Premium
-  </a>
-</header>
- <div class="wrap" id="app"></div>
-    <!-- 結果を差し込む先。絶対にこのIDを残す -->
-    <main id="premium-root" class="grid" style="margin-top:10px">
-      <div class="card">
-        <h2>読み込み中…</h2>
-        <p class="muted">専用リンク（token）から完全版レポートを復元しています。</p>
-      </div>
-    </main>
+<body data-page="premium" data-theme="WAVE">
+  <!-- ===== Global Header ===== -->
+  <header class="site-header">
+    <a class="brand" href="index.html">16Body<span>Personalities</span></a>
 
-    <footer class="footer">
-      <span>© 2025 16BodyPersonalities Project</span>
-      <span class="muted">This report is personalized for you.</span>
-    </footer>
-  </div>
+    <!-- PC -->
+    <nav class="nav-links">
+      <a href="index.html" class="chip-btn">トップ</a>
+      <a href="gallery.html" class="chip-btn">タイプギャラリー</a>
+      <a href="contact.html" class="chip-btn">お問い合わせ</a>
+    </nav>
 
-  <!-- 画像/PDF 出力用ライブラリ -->
+    <!-- SP -->
+    <button class="hamburger" id="navOpen" aria-label="メニュー" aria-controls="drawer" aria-expanded="false">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- Drawer -->
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="drawer-brand">16BodyPersonalities</span>
+      <button class="drawer-close" id="navClose" aria-label="閉じる">
+        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="drawer-links">
+      <a href="index.html" class="drawer-item">トップ</a>
+      <a href="app.html" class="drawer-item">診断をはじめる</a>
+      <a href="gallery.html" class="drawer-item">タイプギャラリー</a>
+      <a href="privacy.html" class="drawer-item">プライバシー</a>
+      <a href="terms.html" class="drawer-item">利用規約</a>
+      <a href="contact.html" class="drawer-item">お問い合わせ</a>
+    </nav>
+  </aside>
+
+  <!-- overlay + spacer -->
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="topbar-spacer"></div>
+
+  <!-- ===== Premium main ===== -->
+  <header class="site" style="display:none"><!-- 旧プレミアム見出しは非表示にしておく（重複回避） --></header>
+
+  <div class="wrap" id="app"></div>
+
+  <main id="premium-root" class="grid" style="margin-top:10px">
+    <div class="card">
+      <h2>読み込み中…</h2>
+      <p class="muted">専用リンク（token）から完全版レポートを復元しています。</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>© 2025 16BodyPersonalities Project</span>
+    <span class="muted">This report is personalized for you.</span>
+  </footer>
+
+  <!-- libs -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
-  <!-- ====== 設定（GAS 稼働URL：変更不可のまま固定） ====== -->
-  <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxVTRr8ju0FPCi7rDiY6lXI4c3oGUOGhmEv8zttNf8yS_1sO01ssg5yWfvgPilcxzvj/exec";
-  </script>
-  <script>
-    // resultView.js に「ここへ描け」と伝える
-    window.__RESULT_MOUNT__ = 'premium-root';
-  </script>
-<script src="./meta.js?v=1"></script>
-<script src="./resultView.js?v=2"></script>
-<!-- ←この最後に “個別Tips上書きJS” を追加する -->
-<script src="./tips.personalized.js?v=1"></script>
-  <!-- ====== 共通データ（TYPE_META / BODY_TIPS / BRAND_BY_TYPE / TYPE_NICK 等） ====== -->
-  <!-- app で types.js を使っているならファイル名を合わせてOK。ここでは meta.js を想定 -->
-  
+  <!-- GAS -->
+  <script>const GAS_URL="https://script.google.com/macros/s/AKfycbxVTRr8ju0FPCi7rDiY6lXI4c3oGUOGhmEv8zttNf8yS_1sO01ssg5yWfvgPilcxzvj/exec";</script>
+  <script>window.__RESULT_MOUNT__='premium-root';</script>
 
-  <!-- ====== ユーティリティ & 起動スクリプト ====== -->
-  <script>
-    // DOMショートカット
-    const $ = (sel, root=document)=>root.querySelector(sel);
+  <!-- data & renderer -->
+  <script src="./meta.js?v=1"></script>
+  <script src="./resultView.js?v=2"></script>
+  <script src="./tips.personalized.js?v=1"></script>
 
-    // JSONP（GAS get系で使用）
+  <!-- drawer JS (index と同じ) -->
+  <script>
+    window.addEventListener('DOMContentLoaded', function(){
+      const openBtn  = document.getElementById('navOpen');
+      const closeBtn = document.getElementById('navClose');
+      const drawer   = document.getElementById('drawer');
+      const scrim    = document.getElementById('scrim');
+      if(!openBtn||!closeBtn||!drawer||!scrim) return;
+      function open(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); openBtn.setAttribute('aria-expanded','true'); scrim.hidden=false; document.documentElement.style.overflow='hidden'; }
+      function close(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); openBtn.setAttribute('aria-expanded','false'); scrim.hidden=true; document.documentElement.style.overflow=''; }
+      openBtn.addEventListener('click', open, {passive:true});
+      closeBtn.addEventListener('click', close, {passive:true});
+      scrim.addEventListener('click', close, {passive:true});
+      window.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+    });
+  </script>
+    <!-- ===== premium utilities / tips / boot ===== -->
+  <script>
+    // --- DOM ショートカット
+    const $ = (sel, root=document) => root.querySelector(sel);
+
+    // --- JSONP（GASのGETで使用）
     function jsonp(url){
       return new Promise((resolve, reject)=>{
         const cb = '__jp' + Math.random().toString(36).slice(2);
@@ -151,26 +200,22 @@
         s.src = url + q;
         s.async = true;
         document.head.appendChild(s);
-        function cleanup(){ delete window[cb]; s.remove(); }
+        function cleanup(){ try{ delete window[cb]; }catch(_){} s.remove(); }
       });
     }
 
-    // 同意（必要なら本体と揃える）
+    // --- 同意（必要なら本体と揃える）
     const getConsent = () => localStorage.getItem('km_consent') || 'yes';
 
-    // 初期state（answersは後でtoken復元で上書き）
+    // --- 初期 state（answers は token 復元時に上書き）
     function makeInitialState(){
       const n = (window.QUESTIONS?.frame?.length || 12);
       const init = ()=> Array.from({length:n}, ()=>3);
-      return {
-        step: 4,
-        answers: { frame: init(), surface: init(), balance: init(), line: init() }
-      };
+      return { step:4, answers:{ frame:init(), surface:init(), balance:init(), line:init() } };
     }
-    // グローバルstate（renderResult が参照）
     let state = makeInitialState();
 
-    // 画像保存
+    // --- 画像保存
     async function saveAsImage(){
       const root = document.getElementById('premium-root') || document.getElementById('app') || document.body;
       const canvas = await html2canvas(root, {useCORS:true, scale:2});
@@ -180,7 +225,7 @@
       a.click();
     }
 
-    // PDF保存（A4縦）
+    // --- PDF保存（A4縦）
     async function saveAsPDF(){
       const { jsPDF } = window.jspdf;
       const root = document.getElementById('premium-root') || document.getElementById('app') || document.body;
@@ -194,11 +239,10 @@
       pdf.save('16BP-premium.pdf');
     }
 
-    // 自分に再送（GAS: sendMail=1）
+    // --- 自分に再送（メール）
     async function resendMail(){
       const email = prompt('完全版URLを再送するメールアドレスを入力してください');
       if (!email) return;
-      // resultView.js に buildCode() がある想定。無いときは token だけでもOK。
       let code = '';
       try { code = (typeof buildCode==='function') ? buildCode().code : (window.__PREMIUM_CODE__||''); } catch(_){}
       try{
@@ -209,149 +253,134 @@
         alert('メール送信エラー：' + (e?.message || e));
       }
     }
-  
-// ===== Premium 専用：スコア連動 Tips 上書き（metaのBODY_TIPSを合成） =====
-(function(){
-  // resultView.js の axisPercent が無い場合の保険
-  function _axisPercent(axisKey){
-    if (typeof window.axisPercent === 'function') return window.axisPercent(axisKey);
-    return { pct: 50 };
-  }
+  </script>
 
-  const TIP_RULES = {
-    frame: [
-      { when: p => p >= 70, add: {
-        diet_do:    ["高たんぱく＋低脂質を中心に、食事は面で摂る（汁物＋副菜で満腹度）"],
-        train_cardio:["LSD（30–45分）を週2〜3。関節に優しい負荷で継続"],
-        care:       ["肩甲骨まわりの可動域UP（Y字ストレッチ/壁天使）を毎日3分"],
-        quick:      "夜の炭水化物は低GIに寄せるだけで翌朝のむくみが軽くなる"
-      }},
-      { when: p => p <= 30, add: {
-        diet_do:    ["Mg/K を意識。海藻/豆/ナッツを毎日少量"],
-        train_strength:["自重＋PNFストレッチで“骨”の可動域を広げる→姿勢を整える"],
-        mobility:   ["胸郭の呼吸（4-4-8）で体幹の安定感UP"],
-        quick:      "“噛む回数”を増やして咀嚼由来の体幹活性を誘発"
-      }},
-    ],
-    surface: [
-      { when: p => p >= 70, add: {
-        lines:      ["縦に1本“強い線”（センタープレス/前立て/ロングネックレス）を置く"],
-        care:       ["ヒップハンガー回避。ベルト位置で“面の分節”を作る"],
-        quick:      "アウターは“丈で支配”。ヒップ中間〜下で迷ったら下を選ぶ"
-      }},
-      { when: p => p <= 30, add: {
-        lines:      ["サイドへ逃すドレープ/比翼の軽さでフレームを狭く見せる"],
-        train_strength:["外転筋/中殿筋（クラムシェル20回×2）で腰幅の見えを補正"],
-        quick:      "上は短く・下は落ち感で“Y字”を意識（視覚重心↓）"
-      }},
-    ],
-    balance: [
-      { when: p => p >= 70, add: {
-        lines:      ["V/ボート/深めのUで鎖骨〜胸元に“逃げ”を作る"],
-        train_strength:["広背筋/僧帽中部（ラットプル/フェイスプル）で厚みを整える"],
-        quick:      "トップスは前だけINで脚長に、腹部の厚みは見せない"
-      }},
-      { when: p => p <= 30, add: {
-        lines:      ["ハイウエスト＋落ち感で“脚長＞脚幅”の印象を最優先"],
-        care:       ["腸腰筋ストレッチで骨盤前傾を微修正→下重心のダルさ解消"],
-        quick:      "靴は甲浅/やや尖りで“足の線を長く”見せる"
-      }},
-    ],
-    line: [
-      { when: p => p >= 70, add: {
-        lines:      ["センタープレス/直線切替/比翼：曲線を“相殺”する直線を1つ"],
-        accessories:["角のある金属/シャープな矩形で線を強調"],
-        quick:      "柄はピンスト/ウィンドウペンなど“細い直線”を選ぶ"
-      }},
-      { when: p => p <= 30, add: {
-        lines:      ["バイアス/ギャザーは“1箇所だけ”に限定して広がり過ぎを防ぐ"],
-        accessories:["丸み/小粒/透け素材で硬さを緩和"],
-        quick:      "襟はラウンド/ハート/スカーフタイの“1つ”で十分"
-      }},
-    ],
-  };
-
-  function buildPersonalizedTips(code){
-    const base = (window.BODY_TIPS && window.BODY_TIPS[code]) || {};
-    const add  = { diet_do:[], diet_avoid:[], train_strength:[], train_cardio:[], mobility:[], care:[], lines:[], accessories:[], quick:[] };
-
-    const pf = _axisPercent('frame').pct;
-    const ps = _axisPercent('surface').pct;
-    const pb = _axisPercent('balance').pct;
-    const pl = _axisPercent('line').pct;
-
-    const apply = (list, pct)=>{
-      if (!list) return;
-      for (const rule of list){
-        try{
-          if (rule.when(pct)) {
-            for (const k in rule.add) {
-              const v = rule.add[k];
-              if (Array.isArray(v)) add[k].push(...v);
-              else if (typeof v === 'string') add[k].push(v);
-            }
-          }
-        }catch(_){}
+  <!-- ===== personalized tips override ===== -->
+  <script>
+    (function(){
+      // resultView.js の axisPercent が無い場合の保険
+      function _axisPercent(axisKey){
+        if (typeof window.axisPercent === 'function') return window.axisPercent(axisKey);
+        return { pct: 50 };
       }
-    };
-    apply(TIP_RULES.frame,   pf);
-    apply(TIP_RULES.surface, ps);
-    apply(TIP_RULES.balance, pb);
-    apply(TIP_RULES.line,    pl);
 
-    const uniq = arr => Array.from(new Set((arr||[]).filter(Boolean)));
-    return {
-      goal:          base.goal || "",
-      diet_do:       uniq([...(base.diet_do||[]),       ...add.diet_do]),
-      diet_avoid:    uniq([...(base.diet_avoid||[]),    ...add.diet_avoid]),
-      train_strength:uniq([...(base.train_strength||[]),...add.train_strength]),
-      train_cardio:  uniq([...(base.train_cardio||[]),  ...add.train_cardio]),
-      mobility:      uniq([...(base.mobility||[]),      ...add.mobility]),
-      care:          uniq([...(base.care||[]),          ...add.care]),
-      lines:         uniq([...(base.lines||[]),         ...add.lines]),
-      accessories:   uniq([...(base.accessories||[]),   ...add.accessories]),
-      quick:         (base.quick || add.quick[0] || "")
-    };
-  }
+      const TIP_RULES = {
+        frame: [
+          { when:p=>p>=70, add:{
+            diet_do:["高たんぱく＋低脂質を中心に、食事は面で摂る（汁物＋副菜で満腹度）"],
+            train_cardio:["LSD（30–45分）を週2〜3。関節に優しい負荷で継続"],
+            care:["肩甲骨まわりの可動域UP（Y字ストレッチ/壁天使）を毎日3分"],
+            quick:"夜の炭水化物は低GIに寄せるだけで翌朝のむくみが軽くなる"
+          }},
+          { when:p=>p<=30, add:{
+            diet_do:["Mg/K を意識。海藻/豆/ナッツを毎日少量"],
+            train_strength:["自重＋PNFストレッチで“骨”の可動域を広げる→姿勢を整える"],
+            mobility:["胸郭の呼吸（4-4-8）で体幹の安定感UP"],
+            quick:"“噛む回数”を増やして咀嚼由来の体幹活性を誘発"
+          }},
+        ],
+        surface: [
+          { when:p=>p>=70, add:{
+            lines:["縦に1本“強い線”（センタープレス/前立て/ロングネックレス）を置く"],
+            care:["ヒップハンガー回避。ベルト位置で“面の分節”を作る"],
+            quick:"アウターは“丈で支配”。ヒップ中間〜下で迷ったら下を選ぶ"
+          }},
+          { when:p=>p<=30, add:{
+            lines:["サイドへ逃すドレープ/比翼の軽さでフレームを狭く見せる"],
+            train_strength:["外転筋/中殿筋（クラムシェル20回×2）で腰幅の見えを補正"],
+            quick:"上は短く・下は落ち感で“Y字”を意識（視覚重心↓）"
+          }},
+        ],
+        balance: [
+          { when:p=>p>=70, add:{
+            lines:["V/ボート/深めのUで鎖骨〜胸元に“逃げ”を作る"],
+            train_strength:["広背筋/僧帽中部（ラットプル/フェイスプル）で厚みを整える"],
+            quick:"トップスは前だけINで脚長に、腹部の厚みは見せない"
+          }},
+          { when:p=>p<=30, add:{
+            lines:["ハイウエスト＋落ち感で“脚長＞脚幅”の印象を最優先"],
+            care:["腸腰筋ストレッチで骨盤前傾を微修正→下重心のダルさ解消"],
+            quick:"靴は甲浅/やや尖りで“足の線を長く”見せる"
+          }},
+        ],
+        line: [
+          { when:p=>p>=70, add:{
+            lines:["センタープレス/直線切替/比翼：曲線を“相殺”する直線を1つ"],
+            accessories:["角のある金属/シャープな矩形で線を強調"],
+            quick:"柄はピンスト/ウィンドウペンなど“細い直線”を選ぶ"
+          }},
+          { when:p=>p<=30, add:{
+            lines:["バイアス/ギャザーは“1箇所だけ”に限定して広がり過ぎを防ぐ"],
+            accessories:["丸み/小粒/透け素材で硬さを緩和"],
+            quick:"襟はラウンド/ハート/スカーフタイの“1つ”で十分"
+          }},
+        ],
+      };
 
-  // ←← ここが“最終的に呼ばれる”ように上書きする
-  window.renderBodyTipsHTML = function(code) {
-    const t = buildPersonalizedTips(code);
-    const li = arr => (arr || []).map(x => `<li>• ${x}</li>`).join('');
-    const pastel = { BN:"#ffd6e8", BW:"#ffe8d6", MN:"#e8ffd6", MW:"#d6f3ff", B:"#f8e1ff", M:"#fff5d6" }[code.slice(0,2)] || "#f0f0f0";
-    return `
-    <div class="card cute-tips" style="--tone:${pastel}">
-      <h3>💖 Body Balance Tips（あなた向け）</h3>
-      ${t.goal ? `<p class="goal">🎯 ${t.goal}</p>` : ""}
-      <div class="tips-row">
-        <div class="tips-col">
-          <h4>🍎 食事</h4>
-          ${t.diet_do?.length ? `<p class="label">食べるべき！</p><ul>${li(t.diet_do)}</ul>` : ""}
-          ${t.diet_avoid?.length ? `<p class="label">避けるべき！</p><ul>${li(t.diet_avoid)}</ul>` : ""}
-          ${t.accessories?.length ? `<p class="label">アクセ/小物</p><ul>${li(t.accessories)}</ul>` : ""}
-        </div>
-        <div class="tips-col">
-          <h4>🏃‍♀️ 運動・ライン設計</h4>
-          ${t.train_strength?.length ? `<p class="label">筋トレ</p><ul>${li(t.train_strength)}</ul>` : ""}
-          ${t.train_cardio?.length ? `<p class="label">有酸素</p><ul>${li(t.train_cardio)}</ul>` : ""}
-          ${t.lines?.length ? `<p class="label">ライン設計</p><ul>${li(t.lines)}</ul>` : ""}
-        </div>
-      </div>
-      ${(t.mobility?.length || t.care?.length) ? `
-        <div class="tips-extra">
-          <h4>🧘‍♀️ ケア・姿勢</h4>
-          <ul>${li(t.mobility)}${li(t.care)}</ul>
-        </div>` : ``}
-      ${t.quick ? `<p class="quick"><b>✨Quick Win：</b>${t.quick}</p>` : ""}
-    </div>`;
-  };
+      function buildPersonalizedTips(code){
+        const base = (window.BODY_TIPS && window.BODY_TIPS[code]) || {};
+        const add  = { diet_do:[], diet_avoid:[], train_strength:[], train_cardio:[], mobility:[], care:[], lines:[], accessories:[], quick:[] };
 
-  // コンソール確認用フラグ
-  window.__personalizedTipsApplied = true;
-})();
+        const pf=_axisPercent('frame').pct, ps=_axisPercent('surface').pct, pb=_axisPercent('balance').pct, pl=_axisPercent('line').pct;
+        const apply=(list,pct)=>{ if(!list) return; for(const r of list){ try{ if(r.when(pct)){ for(const k in r.add){ const v=r.add[k]; Array.isArray(v)?add[k].push(...v):add[k].push(v); } } }catch(_){} } };
 
+        apply(TIP_RULES.frame,pf); apply(TIP_RULES.surface,ps); apply(TIP_RULES.balance,pb); apply(TIP_RULES.line,pl);
 
-    // ====== 起動：token→GASから answers を復元し、app と同じ描画を実行 ======
+        const uniq = arr => Array.from(new Set((arr||[]).filter(Boolean)));
+        return {
+          goal: base.goal||"",
+          diet_do: uniq([...(base.diet_do||[]), ...add.diet_do]),
+          diet_avoid: uniq([...(base.diet_avoid||[]), ...add.diet_avoid]),
+          train_strength: uniq([...(base.train_strength||[]), ...add.train_strength]),
+          train_cardio: uniq([...(base.train_cardio||[]), ...add.train_cardio]),
+          mobility: uniq([...(base.mobility||[]), ...add.mobility]),
+          care: uniq([...(base.care||[]), ...add.care]),
+          lines: uniq([...(base.lines||[]), ...add.lines]),
+          accessories: uniq([...(base.accessories||[]), ...add.accessories]),
+          quick: (base.quick || add.quick[0] || "")
+        };
+      }
+
+      // resultView.js から呼ばれる HTML 生成を差し替え
+      window.renderBodyTipsHTML = function(code){
+        const t = buildPersonalizedTips(code);
+        const li = arr => (arr||[]).map(x=>`<li>• ${x}</li>`).join('');
+        const pastel = { BN:"#ffd6e8", BW:"#ffe8d6", MN:"#e8ffd6", MW:"#d6f3ff", B:"#f8e1ff", M:"#fff5d6" }[code.slice(0,2)] || "#f0f0f0";
+        return `
+        <div class="card cute-tips" style="--tone:${pastel}">
+          <h3>💖 Body Balance Tips（あなた向け）</h3>
+          ${t.goal ? `<p class="goal">🎯 ${t.goal}</p>` : ""}
+          <div class="tips-row">
+            <div class="tips-col">
+              <h4>🍎 食事</h4>
+              ${t.diet_do?.length ? `<p class="label">食べるべき！</p><ul>${li(t.diet_do)}</ul>` : ""}
+              ${t.diet_avoid?.length ? `<p class="label">避けるべき！</p><ul>${li(t.diet_avoid)}</ul>` : ""}
+              ${t.accessories?.length ? `<p class="label">アクセ/小物</p><ul>${li(t.accessories)}</ul>` : ""}
+            </div>
+            <div class="tips-col">
+              <h4>🏃‍♀️ 運動・ライン設計</h4>
+              ${t.train_strength?.length ? `<p class="label">筋トレ</p><ul>${li(t.train_strength)}</ul>` : ""}
+              ${t.train_cardio?.length ? `<p class="label">有酸素</p><ul>${li(t.train_cardio)}</ul>` : ""}
+              ${t.lines?.length ? `<p class="label">ライン設計</p><ul>${li(t.lines)}</ul>` : ""}
+            </div>
+          </div>
+          ${(t.mobility?.length || t.care?.length) ? `
+            <div class="tips-extra">
+              <h4>🧘‍♀️ ケア・姿勢</h4>
+              <ul>${li(t.mobility)}${li(t.care)}</ul>
+            </div>` : ``}
+          ${t.quick ? `<p class="quick"><b>✨Quick Win：</b>${t.quick}</p>` : ""}
+        </div>`;
+      };
+
+      window.__personalizedTipsApplied = true;
+    })();
+  </script>
+
+  <!-- ===== boot: token 復元 → resultView で描画 ===== -->
+  <script>
+    // 結果差し込み先は上で指定済み： window.__RESULT_MOUNT__ = 'premium-root'
+
     async function boot(){
       const root = document.getElementById('premium-root') || document.getElementById('app') || document.body;
 
@@ -393,7 +422,7 @@
       window.__PREMIUM_CODE__   = res.data.code   || '';
       window.__PREMIUM_SCORES__ = res.data.scores || {};
 
-      // app と同じレンダラで描画（画像→4軸→ブランド→指針→Tips→芸能人→相性 まで全部）
+      // app と同じレンダラで描画（renderResult or _renderResultCore）
       if (typeof renderResult === 'function') {
         renderResult();
       } else if (typeof _renderResultCore === 'function') {
@@ -407,13 +436,16 @@
         return;
       }
 
-      // ツールボタン紐付け
+      // ツールボタン（存在すれば）
       document.getElementById('btn-save-img') ?.addEventListener('click', saveAsImage, {passive:true});
       document.getElementById('btn-save-pdf') ?.addEventListener('click', saveAsPDF,   {passive:true});
       document.getElementById('btn-send-mail')?.addEventListener('click', resendMail,  {passive:true});
     }
 
-    boot();
+    // 起動
+    window.addEventListener('DOMContentLoaded', boot);
   </script>
+
+  <!-- 以降：あなたの premium 用スクリプト（boot(), jsonp など）そのまま -->
+  <!-- ★既存の boot() ブロックはこの下に置いてOK（変更不要） -->
 </body>
-</html>

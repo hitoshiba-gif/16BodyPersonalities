@@ -906,3 +906,180 @@ header .palette-tabs,
   height: auto;
   display: block;
 }
+.prm-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 8px;
+  opacity: 1;
+  transition: opacity 0.4s ease; /* フェード時間 */
+}
+
+/* 切り替え時のフェードアウト */
+.prm-swatch-grid.fade-out {
+  opacity: 0;
+}
+.prm-badge {
+  display: block;
+  text-align: center;
+  margin: 0 auto 16px;
+}
+
+@keyframes fadeInBadge {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ドーナツ統一デザイン */
+.prm-stats {
+  background: var(--card,#fff);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+/* ドーナツ3つ横並び */
+.prm-donut-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.prm-donut-card {
+  background: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+  transition: transform .2s;
+}
+.prm-donut-card:hover { transform: translateY(-2px); }
+
+.prm-ring .prm-track { stroke:#eee; stroke-width:16; fill:none; }
+.prm-ring .prm-prog { stroke:var(--accent,#72e0ff); fill:none; stroke-width:16; stroke-linecap:round; }
+
+.prm-donut-title { font-weight:700; font-size:14px; color:#333; }
+.prm-donut-num { font-weight:700; font-size:18px; color:#111; }
+
+/* タイプグリッドを見やすく */
+.prm-type-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+.prm-type-cell {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  background:#fafafa;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.04);
+}
+.prm-type-ico { font-size:22px; }
+.prm-type-bar { height:8px; background:#e4e4e4; border-radius:6px; overflow:hidden; }
+.prm-type-bar i { display:block; height:100%; background:var(--accent,#72e0ff); }
+
+/* ==== Premium Stats (donut + lists) ==== */
+.prm-stats { margin-top:18px; }
+.prm-stats h3 { margin:0 0 4px; color:var(--text,#333); font-weight:800; }
+.prm-stats .muted { color:var(--muted,#777); margin-bottom:14px; }
+
+.prm-stats-row {
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  gap:18px;
+}
+@media (max-width:900px){ .prm-stats-row { grid-template-columns:1fr; } }
+
+.prm-stats-card{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,.06);
+  padding:16px;
+}
+
+.prm-donut{
+  width:140px; height:140px; margin:4px auto 12px; position:relative;
+}
+.prm-donut svg{ width:100%; height:100%; display:block; }
+.prm-track{ fill:none; stroke:#eee; stroke-width:16; }
+.prm-prog{  fill:none; stroke-width:16; stroke-linecap:round;
+            transform:rotate(-90deg); transform-origin:50% 50%;
+            stroke-dasharray:0 999; opacity:.8; }
+
+.prm-donut-center{
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.prm-donut-title{ font-size:12px; letter-spacing:.12em; opacity:.65; }
+.prm-donut-num{ font-size:28px; font-weight:800; margin-top:2px; }
+
+.prm-type-pills{ display:flex; flex-direction:column; gap:8px; }
+.prm-pill{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; padding:8px 10px; border-radius:999px; background:#f7f4f6;
+  color:#664d57;
+}
+.prm-pill .l{ display:flex; align-items:center; gap:8px; }
+.prm-pill .code{ font-weight:700; letter-spacing:.02em; }
+/* ===== cute donut upgrade ===== */
+.donut-card {
+  --bg: var(--card, #fff);
+  --accent: var(--accent, #e08bbd);
+  background: radial-gradient(120% 120% at 50% -10%, #fff6 0%, transparent 60%) , var(--bg);
+  border: 1px solid color-mix(in oklab, var(--accent) 22%, #0000);
+  border-radius: 18px;
+  box-shadow:
+    0 12px 24px rgba(0,0,0,.06),
+    inset 0 1px 0 rgba(255,255,255,.6);
+  padding: 14px 12px 16px;
+  position: relative;
+}
+
+.donut {
+  width: 160px; height:160px; margin:6px auto 8px; position:relative;
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,.08));
+}
+.donut .ring .track { stroke: #f1eef4; }
+.donut .ring .prog {
+  stroke-linecap: round;
+  /* グラデ＋光沢 */
+  stroke: url(#grad-donut);
+  filter: drop-shadow(0 0 10px color-mix(in oklab, var(--accent) 45%, #fff 0%));
+  transition: stroke-dasharray .8s cubic-bezier(.2,.9,.2,1);
+}
+
+/* 中央の表示を読みやすく */
+.donut-center { gap: 2px; }
+.donut-title {
+  font-size: 12px; letter-spacing:.08em; opacity:.7;
+}
+.donut-num {
+  font-weight: 800; font-size: 26px;
+  text-shadow: 0 1px 0 #fff;
+}
+
+/* 👑クラウン */
+.crown {
+  position: absolute; left: 50%; top: -6px; transform: translateX(-50%) rotate(-6deg);
+  width: 44px; height: 44px; display: none; /* デフォ非表示（1位のみ表示） */
+}
+.crown.is-show { display: block; }
+
+/* 右の品種リストをかわいく */
+.type-pill {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 10px; margin:6px 0;
+  border-radius: 999px; background:#fff;
+  border:1px solid #eee;
+  box-shadow: 0 2px 10px rgba(0,0,0,.04);
+  font-weight: 600; 
+}
+.type-pill .pct { margin-left:auto; font-weight:700; opacity:.7; }
+
+/* 1位ハイライト */
+.type-pill.is-top {
+  background: linear-gradient(180deg, #fff, #fff7fb);
+  border-color: color-mix(in oklab, var(--accent) 40%, #eee);
+  box-shadow: 0 6px 16px rgba(224,139,189,.15);
+}

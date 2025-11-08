@@ -2,6 +2,27 @@
 // ==================================================
 // 依存が足りなくても落ちないようにフォールバックを同梱
 // ==================================================
+// === [PATCH-1] Premium判定 & 取得 ===
+window.GAS_URL = window.GAS_URL || "https://script.google.com/macros/s/AKfycbxVTRr8ju0FPCi7rDiY6lXI4c3oGUOGhmEv8zttNf8yS_1sO01ssg5yWfvgPilcxzvj/exec";
+const isPremium = () =>
+  (document.body?.dataset?.page === 'premium') ||
+  /premium\.html/.test(location.pathname);
+
+async function fetchStatsForDonut(GAS){
+  try{
+    const r = await fetch(GAS + '?stats=1', { cache:'no-store' });
+    if(!r.ok) throw 0;
+    const d = await r.json();
+    return {
+      total: d.total || 0,
+      byType: d.byType || {},
+      byBase: d.byBase || { WAVE:0, NATURAL:0, STRAIGHT:0 }
+    };
+  }catch(_){
+    return { total:0, byType:{}, byBase:{ WAVE:0, NATURAL:0, STRAIGHT:0 } };
+  }
+}
+
 (function bootstrapSafeGlobals(){
   // ---- AXES（4軸） ----
   const DEFAULT_AXES = [
@@ -44,39 +65,626 @@
 // ===== 320通りのパレット定義（タイプ×シーズン×5色） =====
 // ==== (A) タイプ×シーズン（5色） ====
 // まずは BNLS だけ具体定義。他タイプは同じ形で追記していけばOK。
-window.PALETTE_BY_TYPE_SEASON = window.PALETTE_BY_TYPE_SEASON || {
-  BNLS: {
-    SU: [ // ブルベ夏
-      { hex:'#EDEBFF', name:'Lavender Mist' },
-      { hex:'#CFE3F8', name:'Baby Blue' },
-      { hex:'#F6D6E8', name:'Powder Pink' },
-      { hex:'#DDE8EA', name:'Soft Grey' },
-      { hex:'#C8D8CF', name:'Seafoam' },
+// ===== 16タイプ × 4シーズン × 5色（Q1：厳選5色） =====
+// 既存があればマージされる
+window.PALETTE_BY_TYPE_SEASON = Object.assign({}, window.PALETTE_BY_TYPE_SEASON, {
+
+  /* ============= WAVE 系（軽やか・やわらか・下重心） ============= */
+  BNLS: { // Romantic Wave 🐨
+    SU: [
+      {hex:'#EDEBFF', name:'Lavender Mist'},
+      {hex:'#D7E4FF', name:'Powder Sky'},
+      {hex:'#F6D6E8', name:'Powder Pink'},
+      {hex:'#E9EEF2', name:'Soft Veil'},
+      {hex:'#CBD7E0', name:'Cool Porcelain'},
     ],
-    WI: [ // ブルベ冬
-      { hex:'#D9E2FF', name:'Icy Blue' },
-      { hex:'#F0D9FF', name:'Iris Ice' },
-      { hex:'#E8F6FF', name:'Crystal Aqua' },
-      { hex:'#D8E1E8', name:'Steel Fog' },
-      { hex:'#C5CCDB', name:'Blue Ash' },
+    WI: [
+      {hex:'#E6F0FF', name:'Icy Blue'},
+      {hex:'#EED9FF', name:'Iris Ice'},
+      {hex:'#E8F6FF', name:'Crystal Aqua'},
+      {hex:'#D8E1E8', name:'Steel Fog'},
+      {hex:'#C5CCDB', name:'Blue Ash'},
     ],
-    SP: [ // イエベ春
-      { hex:'#FFF0DA', name:'Apricot' },
-      { hex:'#FFE9EC', name:'Blush' },
-      { hex:'#EAF8E6', name:'Mint Cream' },
-      { hex:'#FFF7D6', name:'Vanilla' },
-      { hex:'#F5E6CF', name:'Cream Beige' },
+    SP: [
+      {hex:'#FFE9F1', name:'Blush Petal'},
+      {hex:'#FFF3E0', name:'Vanilla Cream'},
+      {hex:'#EAF8E6', name:'Mint Cream'},
+      {hex:'#FFF7D6', name:'Soft Butter'},
+      {hex:'#F5E6CF', name:'Cream Beige'},
     ],
-    AU: [ // イエベ秋
-      { hex:'#F7EADF', name:'Sand Beige' },
-      { hex:'#EDE4CE', name:'Oat' },
-      { hex:'#EAE1D7', name:'Mushroom' },
-      { hex:'#E1E7DA', name:'Sage Fog' },
-      { hex:'#EFD9C5', name:'Peach Nude' },
+    AU: [
+      {hex:'#F7EADF', name:'Sand Beige'},
+      {hex:'#EDE4CE', name:'Oat'},
+      {hex:'#EAE1D7', name:'Mushroom'},
+      {hex:'#E1E7DA', name:'Sage Fog'},
+      {hex:'#EFD9C5', name:'Peach Nude'},
     ],
   },
-  // 例：MNLC: { SU:[...], WI:[...], SP:[...], AU:[...] },
-  // 以降、必要に応じて足していく
+
+  MNLC: { // Urban Elegance 🐺
+    SU: [
+      {hex:'#E9ECF2', name:'Fog Grey'},
+      {hex:'#DADDE8', name:'Dove Blue'},
+      {hex:'#F0E6EB', name:'Dusty Rose'},
+      {hex:'#EAE6E0', name:'Greige'},
+      {hex:'#D1D3D6', name:'Stone Mist'},
+    ],
+    WI: [
+      {hex:'#E3ECFF', name:'Cool Haze'},
+      {hex:'#D6DDEB', name:'Slate Veil'},
+      {hex:'#F0DCF0', name:'Muted Mauve'},
+      {hex:'#C9D2E1', name:'Pale Steel'},
+      {hex:'#BFC6D4', name:'Blue Flint'},
+    ],
+    SP: [
+      {hex:'#FFF0E0', name:'Apricot Milk'},
+      {hex:'#FFE6EE', name:'Dusty Blush'},
+      {hex:'#F2F5E8', name:'Pistachio Mist'},
+      {hex:'#FFF6DC', name:'Light Chamomile'},
+      {hex:'#EFE6D7', name:'Almond Beige'},
+    ],
+    AU: [
+      {hex:'#ECE3D6', name:'Oatmeal'},
+      {hex:'#E6DBC8', name:'Wheat'},
+      {hex:'#DADFD5', name:'Sage Grey'},
+      {hex:'#E2D8C7', name:'Sesame'},
+      {hex:'#D2C8BA', name:'Malt'},
+    ],
+  },
+
+  MWLC: { // Light Wave 🦋
+    SU: [
+      {hex:'#E8F0FF', name:'Air Blue'},
+      {hex:'#EDF6FA', name:'Cloud'},
+      {hex:'#F6E9F2', name:'Sheer Pink'},
+      {hex:'#EAF2ED', name:'Light Mint'},
+      {hex:'#E7EAEF', name:'Feather Grey'},
+    ],
+    WI: [
+      {hex:'#E1EDFF', name:'Icy Sky'},
+      {hex:'#E9E1FF', name:'Cool Lilac'},
+      {hex:'#DAE8F7', name:'Glacier'},
+      {hex:'#D8E3EA', name:'Pale Steel'},
+      {hex:'#C9D5DF', name:'Frost Cloud'},
+    ],
+    SP: [
+      {hex:'#FFEFE2', name:'Apricot Air'},
+      {hex:'#FFE7F0', name:'Rose Meringue'},
+      {hex:'#EAF7EE', name:'Mint Foam'},
+      {hex:'#FFF8E1', name:'Vanilla Air'},
+      {hex:'#F2E7D8', name:'Light Nougat'},
+    ],
+    AU: [
+      {hex:'#F1E6DA', name:'Sand Air'},
+      {hex:'#EAE1CF', name:'Oat Foam'},
+      {hex:'#E6E8DE', name:'Soft Sage'},
+      {hex:'#E9DCCD', name:'Peach Oat'},
+      {hex:'#DCD2C6', name:'Bone'},
+    ],
+  },
+
+  MWLS: { // Natural Girly 🐹
+    SU: [
+      {hex:'#F9EAF2', name:'Petal Cream'},
+      {hex:'#FDEFE6', name:'Milk Peach'},
+      {hex:'#EEF3F6', name:'Misty Blue'},
+      {hex:'#F3EEE8', name:'Porcelain'},
+      {hex:'#EADFE1', name:'Dusty Shell'},
+    ],
+    WI: [
+      {hex:'#E8EFFF', name:'Ice Bell'},
+      {hex:'#F0E3F7', name:'Powder Plum'},
+      {hex:'#E6F5FF', name:'Clear Aqua'},
+      {hex:'#DFE5EF', name:'Fog Steel'},
+      {hex:'#CCD3E0', name:'Blue Pearl'},
+    ],
+    SP: [
+      {hex:'#FFE8EE', name:'Strawberry Milk'},
+      {hex:'#FFF3E2', name:'Butter Sugar'},
+      {hex:'#EAF8EC', name:'Mint Jelly'},
+      {hex:'#FFF6D8', name:'Lemon Soufflé'},
+      {hex:'#F2E6D5', name:'Cookie Beige'},
+    ],
+    AU: [
+      {hex:'#F3E4D7', name:'Warm Sand'},
+      {hex:'#EAD9C8', name:'Biscuit'},
+      {hex:'#E6E2D6', name:'Sesame Milk'},
+      {hex:'#E1E6DC', name:'Herb Mist'},
+      {hex:'#EBD5C6', name:'Peach Oat'},
+    ],
+  },
+
+  MNLS: { // Classic Feminine 🕊
+    SU: [
+      {hex:'#F3EAF0', name:'Ballet Pink'},
+      {hex:'#E9EDF7', name:'Blue Veil'},
+      {hex:'#F5F1EA', name:'Ivory Silk'},
+      {hex:'#E8ECF0', name:'Pearl Grey'},
+      {hex:'#E2E6EE', name:'Swan Mist'},
+    ],
+    WI: [
+      {hex:'#E8EEFF', name:'Crystal Blue'},
+      {hex:'#F0E2F8', name:'Icy Orchid'},
+      {hex:'#E6F4FA', name:'Snow Aqua'},
+      {hex:'#DCE3EE', name:'Silver Fog'},
+      {hex:'#C8D1E1', name:'Frost Steel'},
+    ],
+    SP: [
+      {hex:'#FFEBF0', name:'Blossom'},
+      {hex:'#FFF3E6', name:'Vanilla Rose'},
+      {hex:'#ECF7EE', name:'Mint Lace'},
+      {hex:'#FFF8E3', name:'Cream Scone'},
+      {hex:'#EFE6D9', name:'Porcelain Beige'},
+    ],
+    AU: [
+      {hex:'#EFE3D6', name:'Cafe au Lait'},
+      {hex:'#E6DAC9', name:'Oat Latte'},
+      {hex:'#E2E5DA', name:'Sage Cream'},
+      {hex:'#E9DDD0', name:'Peach Beige'},
+      {hex:'#DCD2C6', name:'Pumice'},
+    ],
+  },
+
+  BNLC: { // Earth Wave 🐻
+    SU: [
+      {hex:'#EBE4DA', name:'Warm Porcelain'},
+      {hex:'#E0E6E3', name:'Fog Sage'},
+      {hex:'#E9DCD0', name:'Soft Taupe'},
+      {hex:'#ECE6DE', name:'Pale Linen'},
+      {hex:'#D5DBD3', name:'Moss Veil'},
+    ],
+    WI: [
+      {hex:'#E2E8EF', name:'Steel Cloud'},
+      {hex:'#D6DEE7', name:'Ash Blue'},
+      {hex:'#E7E0EC', name:'Muted Orchid'},
+      {hex:'#D5E1E1', name:'Glacier Sage'},
+      {hex:'#C7D0D6', name:'Blue Flint'},
+    ],
+    SP: [
+      {hex:'#FFEEDA', name:'Honey Cream'},
+      {hex:'#FFE6E0', name:'Peach Milk'},
+      {hex:'#EEF6EA', name:'Leaf Mist'},
+      {hex:'#FFF5DF', name:'Butter Biscuit'},
+      {hex:'#F1E4D2', name:'Oat Cream'},
+    ],
+    AU: [
+      {hex:'#EADCC9', name:'Sandstone'},
+      {hex:'#E4D3BD', name:'Wheat Husk'},
+      {hex:'#D9E0D5', name:'Sage Leaf'},
+      {hex:'#DACFC2', name:'Clay'},
+      {hex:'#CFC6B9', name:'Shore Pebble'},
+    ],
+  },
+
+  /* ============= NATURAL 系（広フレーム・余白・直線～曲線ミックス） ============= */
+  BWUC: { // Urban Natural 🦄
+    SU: [
+      {hex:'#F0F2F5', name:'Paper White'},
+      {hex:'#E7EBEF', name:'Cool Mist'},
+      {hex:'#DFE3E6', name:'Soft Concrete'},
+      {hex:'#EEF2F1', name:'Glass Grey'},
+      {hex:'#EDEFF3', name:'Porcelain Blue'},
+    ],
+    WI: [
+      {hex:'#E6ECF5', name:'Icy Steel'},
+      {hex:'#DDE5EF', name:'Blue Slate'},
+      {hex:'#EDE6F2', name:'Pale Iris'},
+      {hex:'#DCE3E6', name:'Graphite Mist'},
+      {hex:'#C9D2DB', name:'Cloud Iron'},
+    ],
+    SP: [
+      {hex:'#F7F3EC', name:'Almond Milk'},
+      {hex:'#F0F5F2', name:'Glass Mint'},
+      {hex:'#F6EFEF', name:'Blush Porcelain'},
+      {hex:'#FFF7EA', name:'Light Honey'},
+      {hex:'#EEE8DE', name:'Feather Sand'},
+    ],
+    AU: [
+      {hex:'#EDE5D8', name:'Light Canvas'},
+      {hex:'#E6DED2', name:'Putty'},
+      {hex:'#E1E6E0', name:'Stone Sage'},
+      {hex:'#DCD4C8', name:'Pale Clay'},
+      {hex:'#D4CCC0', name:'Bone Grey'},
+    ],
+  },
+
+  BWUS: { // Fairy Natural 🦅
+    SU: [
+      {hex:'#EDF2F6', name:'Sky Veil'},
+      {hex:'#EDEFF2', name:'Soft Chrome'},
+      {hex:'#E7F1F6', name:'Silver Mist'},
+      {hex:'#EEF3F8', name:'Sheer Ice'},
+      {hex:'#E5E9ED', name:'Steel Powder'},
+    ],
+    WI: [
+      {hex:'#E3EBF6', name:'Arctic Blue'},
+      {hex:'#E9EEF5', name:'Frost Glass'},
+      {hex:'#EDE7F3', name:'Icy Violet'},
+      {hex:'#DDE4EA', name:'Zinc'},
+      {hex:'#C9D3DD', name:'Alloy Blue'},
+    ],
+    SP: [
+      {hex:'#F6F4EF', name:'Dust White'},
+      {hex:'#F2F7F6', name:'Cloud Mint'},
+      {hex:'#F9F0F0', name:'Rose Veil'},
+      {hex:'#FFF7EC', name:'Pale Nectar'},
+      {hex:'#ECE7DE', name:'Chalk Sand'},
+    ],
+    AU: [
+      {hex:'#ECE5DB', name:'Sand Chrome'},
+      {hex:'#E4DED5', name:'Feather Taupe'},
+      {hex:'#E1E6E2', name:'Fog Sage'},
+      {hex:'#DBD4CB', name:'Greige Clay'},
+      {hex:'#D0C9C0', name:'Ash Oat'},
+    ],
+  },
+
+  BWLC: { // Classic Natural 🦊
+    SU: [
+      {hex:'#E9EEF2', name:'Shell Grey'},
+      {hex:'#EAF4F1', name:'Linen Mint'},
+      {hex:'#EEF2F6', name:'Blue Cotton'},
+      {hex:'#F3F1ED', name:'Chalk'},
+      {hex:'#E3E7EA', name:'Pebble Blue'},
+    ],
+    WI: [
+      {hex:'#DEE6F0', name:'Polar Steel'},
+      {hex:'#E6E9F2', name:'Cloud Navy'},
+      {hex:'#EDE6F0', name:'Mauve Fog'},
+      {hex:'#D8E0E7', name:'Stone Blue'},
+      {hex:'#C9D3DB', name:'Cold Flint'},
+    ],
+    SP: [
+      {hex:'#F4EFE7', name:'Oat Milk'},
+      {hex:'#ECF5F0', name:'Leaf Water'},
+      {hex:'#F7F0F0', name:'Soft Rose'},
+      {hex:'#FFF6E9', name:'Light Honey'},
+      {hex:'#EDE6DA', name:'Sand Cream'},
+    ],
+    AU: [
+      {hex:'#E8E0D4', name:'Warm Clay'},
+      {hex:'#E1D8CA', name:'Linen Beige'},
+      {hex:'#DEE4DB', name:'Sage Linen'},
+      {hex:'#D9D0C5', name:'Driftwood'},
+      {hex:'#CDC5BA', name:'Field Stone'},
+    ],
+  },
+
+  BWLS: { // Pure Natural 🦌
+    SU: [
+      {hex:'#EDF3F0', name:'Moss Mist'},
+      {hex:'#EAF0ED', name:'Leaf Veil'},
+      {hex:'#F1F4F6', name:'Pale Fog'},
+      {hex:'#F2EFEA', name:'Chalk Sand'},
+      {hex:'#E3EBE6', name:'Soft Fern'},
+    ],
+    WI: [
+      {hex:'#E1EAF0', name:'Frost Moss'},
+      {hex:'#DFE8EE', name:'Glacier Grey'},
+      {hex:'#E6EFEF', name:'Pale Teal'},
+      {hex:'#DCE4E1', name:'Silver Sage'},
+      {hex:'#C9D3D1', name:'Cold Lichen'},
+    ],
+    SP: [
+      {hex:'#F2F6EF', name:'Young Leaf'},
+      {hex:'#EAF5F0', name:'Water Mint'},
+      {hex:'#F7F2EC', name:'Oat Foam'},
+      {hex:'#FFF4E6', name:'Soft Nectar'},
+      {hex:'#EDE6DC', name:'Shell Sand'},
+    ],
+    AU: [
+      {hex:'#E7E0D3', name:'Field Oat'},
+      {hex:'#DEE3DA', name:'Sage Dust'},
+      {hex:'#E6DED0', name:'Canvas'},
+      {hex:'#D7D0C6', name:'Boulder'},
+      {hex:'#CFC7BB', name:'Dry Reed'},
+    ],
+  },
+
+  /* ============= STRAIGHT 系（直線・厚み・上重心・コントラスト） ============= */
+  BNUS: { // Sporty Cool 🐆
+    SU: [
+      {hex:'#EDEFF4', name:'Cool Chalk'},
+      {hex:'#DDE3EE', name:'Steel Blue'},
+      {hex:'#E9E9EA', name:'Chrome'},
+      {hex:'#F3EDF0', name:'Platinum Rose'},
+      {hex:'#D5DBE7', name:'Blue Graphite'},
+    ],
+    WI: [
+      {hex:'#E2E7F2', name:'Icy Steel'},
+      {hex:'#D6DBE7', name:'Cold Slate'},
+      {hex:'#F0E6ED', name:'Muted Mauve'},
+      {hex:'#D0D7E4', name:'Storm Blue'},
+      {hex:'#B6BFD0', name:'Gunmetal Blue'},
+    ],
+    SP: [
+      {hex:'#F5F2ED', name:'Ivory Chalk'},
+      {hex:'#F0F7F4', name:'Glass Mint'},
+      {hex:'#FAEEF1', name:'Blush Chrome'},
+      {hex:'#FFF5E8', name:'Nectar'},
+      {hex:'#EAE4DA', name:'Birch'},
+    ],
+    AU: [
+      {hex:'#E6DED2', name:'Fawn'},
+      {hex:'#DDD3C6', name:'Clay Stone'},
+      {hex:'#D8DED8', name:'Sage Alloy'},
+      {hex:'#D1C8BC', name:'Drift Clay'},
+      {hex:'#C6BDB1', name:'Pewter Sand'},
+    ],
+  },
+
+  MWUC: { // Elegant Straight 🦈
+    SU: [
+      {hex:'#EEF0F7', name:'Blue Porcelain'},
+      {hex:'#E9EDF3', name:'Soft Chrome'},
+      {hex:'#F1EAF0', name:'Powder Lilac'},
+      {hex:'#E6F1F4', name:'Aqua Glass'},
+      {hex:'#DCE2EB', name:'Cold Mist'},
+    ],
+    WI: [
+      {hex:'#DEE6F3', name:'Glacier Steel'},
+      {hex:'#E8E1F0', name:'Icy Iris'},
+      {hex:'#DDEBF1', name:'Crystal Teal'},
+      {hex:'#D5DCE6', name:'Iron Blue'},
+      {hex:'#C3CBD8', name:'Blue Graphite'},
+    ],
+    SP: [
+      {hex:'#F7F1F4', name:'Rose Porcelain'},
+      {hex:'#EFF7F4', name:'Light Aqua'},
+      {hex:'#FFF4E8', name:'Pearl Nectar'},
+      {hex:'#F2ECE4', name:'Silk Beige'},
+      {hex:'#E7E1DA', name:'Shell'},
+    ],
+    AU: [
+      {hex:'#E7DED2', name:'Camel Milk'},
+      {hex:'#DED5C8', name:'Clay Beige'},
+      {hex:'#D8E0DB', name:'Slate Sage'},
+      {hex:'#D5CCC0', name:'Warm Pebble'},
+      {hex:'#CBC3B8', name:'Ash Taupe'},
+    ],
+  },
+
+  MNUC: { // Glamorous Cool 🐅
+    SU: [
+      {hex:'#ECEFF6', name:'Ice Cloud'},
+      {hex:'#E6EAF2', name:'Blue Smoke'},
+      {hex:'#F1E9EF', name:'Bare Mauve'},
+      {hex:'#EDE8E1', name:'Pale Truffle'},
+      {hex:'#D8DDE8', name:'Storm Grey'},
+    ],
+    WI: [
+      {hex:'#E1E6F2', name:'Polar Blue'},
+      {hex:'#DADFEB', name:'Iron Slate'},
+      {hex:'#EDE4EE', name:'Frost Plum'},
+      {hex:'#D3DAE6', name:'Steel Mist'},
+      {hex:'#C1C8D6', name:'Blue Stone'},
+    ],
+    SP: [
+      {hex:'#F6EFEA', name:'Ivory Truffle'},
+      {hex:'#F3F7F4', name:'Sea Glass'},
+      {hex:'#FAEEF2', name:'Rose Ash'},
+      {hex:'#FFF3E6', name:'Apricot Silk'},
+      {hex:'#E9E1D7', name:'Almond'},
+    ],
+    AU: [
+      {hex:'#E6DBCD', name:'Biscotti'},
+      {hex:'#DDD2C3', name:'Warm Clay'},
+      {hex:'#D6DED6', name:'Green Alloy'},
+      {hex:'#D1C7BA', name:'Stone Beige'},
+      {hex:'#C6BCB0', name:'Taupe Rock'},
+    ],
+  },
+
+  MNUS: { // Romantic Mode 🦚
+    SU: [
+      {hex:'#F0EAF2', name:'Powder Orchid'},
+      {hex:'#E7EDF6', name:'Blue Veil'},
+      {hex:'#EFE7EC', name:'Pale Rose'},
+      {hex:'#ECEFF2', name:'Pearl Chrome'},
+      {hex:'#D9DEE9', name:'Slate Blue'},
+    ],
+    WI: [
+      {hex:'#E7ECF7', name:'Crystal Steel'},
+      {hex:'#EDE4F1', name:'Icy Violet'},
+      {hex:'#E3EDF2', name:'Cool Aqua'},
+      {hex:'#D7DEE9', name:'Blue Quartz'},
+      {hex:'#C5CDDB', name:'Shadow Blue'},
+    ],
+    SP: [
+      {hex:'#F7EEF2', name:'Silk Rose'},
+      {hex:'#EFF7F6', name:'Mist Mint'},
+      {hex:'#FFF2E7', name:'Peach Pearl'},
+      {hex:'#F1EAE2', name:'Ivory Taupe'},
+      {hex:'#E8E1DA', name:'Shell Beige'},
+    ],
+    AU: [
+      {hex:'#E7DDD0', name:'Canvas Beige'},
+      {hex:'#DED4C6', name:'Oat Clay'},
+      {hex:'#DCE2DC', name:'Sage Veil'},
+      {hex:'#D7CEC2', name:'Warm Stone'},
+      {hex:'#CBC3B7', name:'Dust Taupe'},
+    ],
+  },
+
+  MWUS: { // Soft Active 🐬
+    SU: [
+      {hex:'#E9EFF4', name:'Flow Blue'},
+      {hex:'#E6F2F3', name:'Aqua Mist'},
+      {hex:'#EEF1F6', name:'Ice Wave'},
+      {hex:'#F1ECE9', name:'Pale Shell'},
+      {hex:'#DBE2EA', name:'Spray Grey'},
+    ],
+    WI: [
+      {hex:'#DEE9F2', name:'Glacier Aqua'},
+      {hex:'#D7E2EC', name:'Stream Steel'},
+      {hex:'#E7E1EE', name:'Cool Lilac'},
+      {hex:'#D0DAE6', name:'River Blue'},
+      {hex:'#BCC7D6', name:'Deep Spray'},
+    ],
+    SP: [
+      {hex:'#F1F7F6', name:'Mint Foam'},
+      {hex:'#EFF3FA', name:'Blue Vapor'},
+      {hex:'#FAF0F0', name:'Rose Breeze'},
+      {hex:'#FFF4E9', name:'Apricot Air'},
+      {hex:'#EAE5DC', name:'Light Drift'},
+    ],
+    AU: [
+      {hex:'#E5DCCE', name:'Sand Drift'},
+      {hex:'#DDD3C5', name:'Clay Mist'},
+      {hex:'#D7E0DB', name:'Sage Surf'},
+      {hex:'#D2C9BC', name:'Shore Taupe'},
+      {hex:'#C8BFB3', name:'Pebble'},
+    ],
+  },
+
+  BNUC: { // Structural Mode 🦉
+    SU: [
+      {hex:'#ECEFF3', name:'Architect White'},
+      {hex:'#E0E5EF', name:'Blueprint Blue'},
+      {hex:'#F0E8EE', name:'Quartz Mauve'},
+      {hex:'#E8ECEF', name:'Concrete Mist'},
+      {hex:'#D5DCE8', name:'Steel Beam'},
+    ],
+    WI: [
+      {hex:'#DDE3EF', name:'Polar Steel'},
+      {hex:'#D3DAE9', name:'Cold Slate'},
+      {hex:'#E8E1EC', name:'Violet Fog'},
+      {hex:'#CCD4E1', name:'Graphite Blue'},
+      {hex:'#B9C3D2', name:'Carbon Blue'},
+    ],
+    SP: [
+      {hex:'#F4F2EE', name:'Porcelain'},
+      {hex:'#EEF5F4', name:'Glass Mint'},
+      {hex:'#F8EEF2', name:'Soft Rose'},
+      {hex:'#FFF4E7', name:'Ivory Nectar'},
+      {hex:'#E8E2DA', name:'Limestone'},
+    ],
+    AU: [
+      {hex:'#E4DACD', name:'Pale Clay'},
+      {hex:'#DACFBE', name:'Sandstone'},
+      {hex:'#D6DDD8', name:'Alloy Sage'},
+      {hex:'#CDC3B6', name:'Ash Taupe'},
+      {hex:'#C2B9AD', name:'Cement'},
+    ],
+  },
+});
+
+
+/* =========================
+   1) ベース×シーズンの基準5色（Light / Soft / Accent / Neutral / Dark）
+   ここを好みで微調整すれば、全320色が自動で追従します
+========================= */
+const BASE = {
+  WAVE: {
+    SU: [
+      {hex:'#F2F3FF', name:'Icy Lavender'},
+      {hex:'#DCE7FF', name:'Powder Sky'},
+      {hex:'#FF9BC9', name:'Rose Accent'},
+      {hex:'#E6E9F0', name:'Porcelain'},
+      {hex:'#52627A', name:'Ink Blue'},
+    ],
+    WI: [
+      {hex:'#EAF2FF', name:'Crystal Blue'},
+      {hex:'#EEDCFF', name:'Frost Lilac'},
+      {hex:'#00B8D9', name:'Cool Aqua'},
+      {hex:'#DDE2EA', name:'Chrome Veil'},
+      {hex:'#2C3A58', name:'Carbon Navy'},
+    ],
+    SP: [
+      {hex:'#FFF4EC', name:'Milk Apricot'},
+      {hex:'#FFE6F0', name:'Sheer Rose'},
+      {hex:'#00C781', name:'Fresh Mint'},
+      {hex:'#EEE7DC', name:'Canvas Beige'},
+      {hex:'#6C5E4E', name:'Soft Cocoa'},
+    ],
+    AU: [
+      {hex:'#F4E9DA', name:'Sand Mist'},
+      {hex:'#E8E1D2', name:'Oat Foam'},
+      {hex:'#D98D3E', name:'Spice Orange'},
+      {hex:'#E2D9CC', name:'Clay Greige'},
+      {hex:'#5B5046', name:'Deep Umber'},
+    ],
+  },
+  NATURAL: {
+    SU: [
+      {hex:'#F3F5F7', name:'Paper White'},
+      {hex:'#E4EAF0', name:'Fog Grey'},
+      {hex:'#6BA8FF', name:'Blue Accent'},
+      {hex:'#E9E6DF', name:'Stone Canvas'},
+      {hex:'#4A5968', name:'Slate'},
+    ],
+    WI: [
+      {hex:'#ECF0F6', name:'Frost Mist'},
+      {hex:'#E6E7F1', name:'Icy Mauve'},
+      {hex:'#3BC0BF', name:'Teal Accent'},
+      {hex:'#E0E4EA', name:'Steel Veil'},
+      {hex:'#2E3B47', name:'Graphite'},
+    ],
+    SP: [
+      {hex:'#F7F3EC', name:'Almond Milk'},
+      {hex:'#EEF6F1', name:'Leaf Water'},
+      {hex:'#FF8E6E', name:'Coral Accent'},
+      {hex:'#EFE7DA', name:'Warm Canvas'},
+      {hex:'#5E5A50', name:'Field Taupe'},
+    ],
+    AU: [
+      {hex:'#EFE6D6', name:'Pale Clay'},
+      {hex:'#E2D8C8', name:'Linen Beige'},
+      {hex:'#7FA37A', name:'Sage Accent'},
+      {hex:'#E1DDD3', name:'Bone Grey'},
+      {hex:'#51483F', name:'Bark'},
+    ],
+  },
+  STRAIGHT: {
+    SU: [
+      {hex:'#F4F6FA', name:'Cool Chalk'},
+      {hex:'#E1E6F0', name:'Steel Mist'},
+      {hex:'#2979FF', name:'Royal Blue'},
+      {hex:'#E8EAEF', name:'Chrome Neutral'},
+      {hex:'#273244', name:'Navy Ink'},
+    ],
+    WI: [
+      {hex:'#EEF2F8', name:'Polar White'},
+      {hex:'#E6E9F5', name:'Icy Iris'},
+      {hex:'#E5006E', name:'Fuchsia'},
+      {hex:'#DDE2EB', name:'Cold Porcelain'},
+      {hex:'#1D2938', name:'Carbon'},
+    ],
+    SP: [
+      {hex:'#F9F4EE', name:'Ivory'},
+      {hex:'#EAF6F2', name:'Sea Glass'},
+      {hex:'#FF9C2B', name:'Marigold'},
+      {hex:'#EDE5DB', name:'Shell Beige'},
+      {hex:'#3E3A33', name:'Cocoa Ink'},
+    ],
+    AU: [
+      {hex:'#EFE5D8', name:'Fawn'},
+      {hex:'#E2D7C5', name:'Clay'},
+      {hex:'#C2562E', name:'Terracotta'},
+      {hex:'#DAD4C9', name:'Pewter'},
+      {hex:'#3A312A', name:'Earth Brown'},
+    ],
+  }
+};
+
+
+/* =========================
+   2) タイプ→ベース
+========================= */
+
+// ===== 取得ヘルパ（欠損時にも安全に5色返す） =====
+window.getPaletteByTypeSeason = function getPaletteByTypeSeason(code, season){
+  const fallback = [
+    {hex:'#F2F2F2', name:'Neutral-1'},
+    {hex:'#E6E6E6', name:'Neutral-2'},
+    {hex:'#DADADA', name:'Neutral-3'},
+    {hex:'#CECECE', name:'Neutral-4'},
+    {hex:'#C2C2C2', name:'Neutral-5'},
+  ];
+  const store = window.PALETTE_BY_TYPE_SEASON || {};
+  const pack = store[code] && store[code][season];
+  if (Array.isArray(pack) && pack.length >= 5) return pack.slice(0,5);
+  return fallback;
 };
 // ---- プレフィックス別（先頭2文字: BN / BW / MN / MW）フォールバック ----
 // ※ 季節タブ未指定時や TYPE_META.palette が無い時に使う「最低限の色」。
@@ -87,6 +695,51 @@ window.PALETTE_BY_PREFIX = window.PALETTE_BY_PREFIX || {
   MN: ['#FFF0DA','#FFE9EC','#FFF7D6','#F5E6CF','#EAF8E6'], // M肉×N狭：ライトで甘め
   MW: ['#F7EADF','#EDE4CE','#EAE1D7','#E1E7DA','#EFD9C5'], // M肉×W広：オータム寄りの落ち着き
 };
+
+// どこか共通jsに追加
+function normalizeSeason(x){
+  const s = String(x||'SU').trim().toLowerCase();
+  if (s==='su' || s==='summer' || s==='sum' || s==='ブルベ夏') return 'SU';
+  if (s==='wi' || s==='winter' || s==='win' || s==='ブルベ冬') return 'WI';
+  if (s==='sp' || s==='spring' || s==='spr' || s==='イエベ春') return 'SP';
+  if (s==='au' || s==='autumn' || s==='fall' || s==='イエベ秋') return 'AU';
+  return 'SU';
+}
+
+function coerceColor(c){
+  // もし {colors:[...]} みたいな入れ子なら先頭を採る
+  if (c && typeof c==='object' && Array.isArray(c.colors) && c.colors.length){
+    c = c.colors[0];
+  }
+  if (typeof c==='string'){
+    let h = c.trim();
+    if (!h.startsWith('#') && /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(h)) h = '#'+h;
+    return {hex:h, name:h};
+  }
+  if (c && typeof c==='object'){
+    // hex候補を総当たり
+    let h = c.hex || c.color || c.value || (c.hex && typeof c.hex==='object' ? c.hex.value : null)
+          || (c.color && typeof c.color==='object' ? (c.color.hex||c.color.value) : null);
+    h = String(h||'#CCCCCC').trim();
+    if (!h.startsWith('#') && /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(h)) h = '#'+h;
+
+    // 表示名は ja > en > label > name > hex
+    let n = (c.names && (c.names.ja||c.names.en))
+         || (c.i18n && (c.i18n.ja||c.i18n.en))
+         || c.label || c.name || h;
+    return {hex:h, name:String(n)};
+  }
+  return {hex:'#CCCCCC', name:'#CCCCCC'};
+}
+
+function pickFromTypeSeason(code, season){
+  const S = normalizeSeason(season);
+  if (!code || !S) return null;
+  const entry = window.PALETTE_BY_TYPE_SEASON?.[code]?.[S];
+  if (!Array.isArray(entry) || entry.length < 1) return null;
+  // 返り値を「{hex,name}」の配列に揃える
+  return entry.map(v => typeof v === 'string' ? ({ hex:v, name:v }) : v);
+}
 
 // ==== (B) 季節フォールバック（タイプ未定義でも5色出す） ====
 const BASE_SEASON_SETS = {
@@ -101,9 +754,10 @@ const BASE_COLOR_NAMES = {
   SP: ['Apricot','Blush','Mint Cream','Vanilla','Cream Beige'],
   AU: ['Sand Beige','Oat','Mushroom','Sage Fog','Peach Nude'],
 };
-function fallbackSeasonSet(season){
-  const arr = BASE_SEASON_SETS[season] || BASE_SEASON_SETS.SU;
-  const names = BASE_COLOR_NAMES[season] || [];
+function fallbackSeasonSetObj(season){
+  const S = normalizeSeason(season) || 'SU';
+  const arr = BASE_SEASON_SETS[S] || BASE_SEASON_SETS.SU;
+  const names = BASE_COLOR_NAMES[S] || [];
   return arr.map((hex, i)=>({ hex, name: names[i] || hex }));
 }
 function getPalette5(code, season){
@@ -111,6 +765,18 @@ function getPalette5(code, season){
   if (Array.isArray(entry) && entry.length >= 5) return entry.slice(0,5);
   return fallbackSeasonSet(season);
 }
+function swatchNode(c){
+  const hex  = (typeof c === 'string') ? c : (c?.hex || '#CCCCCC');
+  const name = (typeof c === 'string') ? hex : (c?.name || hex);
+  return `
+    <div class="prm-swatch" title="${name}">
+      <span style="background:${hex}"></span>
+      <i>${name}</i>
+    </div>
+  `;
+}
+// 既存 swatchNode 定義のすぐ下に追記
+window.swatchNode = window.swatchNode || swatchNode;
 // Premiumヒーローの季節タブ配線（innerHTML挿入後に必ず呼ぶ）
 function wirePremiumHero(root=document){
   const heroes = root.querySelectorAll('.prm-hero');
@@ -120,10 +786,10 @@ function wirePremiumHero(root=document){
     const tabs = hero.querySelectorAll('.prm-tabs .pill');
     if (!code || !grid || !tabs.length) return;
 
-    function swatchHex(hex){
-      return '<div class="prm-swatch" title="'+hex+'">'
-           +   '<span style="background:'+hex+'"></span><i>'+hex+'</i>'
-           + '</div>';
+    function renderSeason(season){
+      const pal = (window.getPaletteByCode && getPaletteByCode(code, { season })) || [];
+      const norm = Array.isArray(pal) ? pal.map(coerceColor) : [];
+      grid.innerHTML = norm.map(window.swatchNode).join('');
     }
 
     tabs.forEach(btn=>{
@@ -133,7 +799,7 @@ function wirePremiumHero(root=document){
         const season = btn.dataset.season || null; // 'summer'|'winter'|'spring'|'autumn'
         let pal = (window.getPaletteByCode && getPaletteByCode(code, { season })) || [];
         if (!Array.isArray(pal)) pal = [];
-        grid.innerHTML = pal.map(swatchHex).join('');
+        grid.innerHTML = pal.map(coerceColor).map(window.swatchNode).join('');
       });
     });
   });
@@ -143,12 +809,6 @@ function getUserSeason(){ return localStorage.getItem('km_season') || 'SU'; }
 function setUserSeason(season){ try{ localStorage.setItem('km_season', season); }catch(_){} }
 
 // ==== (D) 季節タブとスワッチ ====
-const swatch = (c)=>`
-  <div class="prm-swatch" title="${c.hex}">
-    <span style="background:${c.hex}"></span>
-    <i>${c.name || c.hex}</i>
-  </div>
-`;
 function seasonTabsHTML(active){
   const tabs = [
     {k:'SU', label:'ブルベ夏'}, {k:'WI', label:'ブルベ冬'},
@@ -160,22 +820,38 @@ function seasonTabsHTML(active){
         <button class="pill ${active===t.k?'active':''}" data-season="${t.k}">
           ${t.label}
         </button>`).join('')}
-    </div>
-  `;
+    </div>`;
 }
+
 function renderSeasonPaletteBlock(code){
-  const season = getUserSeason();
-  const list = getPalette5(code, season);
+  const season = normalizeSeason(getUserSeason()) || 'SU';
+  const list = getPaletteByCode(code, { season });
   return `
     <div class="prm-season" data-code="${code}">
       ${seasonTabsHTML(season)}
       <div class="prm-swatch-grid">
-        ${list.map(swatch).join('')}
+        ${list.map(swatchNode).join('')}
       </div>
-    </div>
-    
-  `;
+    </div>`;
 }
+
+function wireSeasonTabsAll(root=document){
+  root.querySelectorAll('.prm-season').forEach(host=>{
+    const code = host.getAttribute('data-code') || '';
+    host.querySelectorAll('.season-tabs .pill').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const s = btn.dataset.season;
+        setUserSeason(s);
+        const html = renderSeasonPaletteBlock(code);
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        host.replaceWith(temp.firstElementChild);
+        wireSeasonTabsAll(root);
+      });
+    });
+  });
+}
+
 // 小ユーティリティ
 // ==================================================
 function jsonp(url){
@@ -231,32 +907,44 @@ function getSeasonPalette(season){
 }
 // 既存 getPaletteByCode をこの形に差し替え（先に貼った版がある前提）
 function getPaletteByCode(code, opts={}){
-  const { season } = opts;
+  const raw = opts.season || window.TYPE_META?.[code]?.season || window.USER_COLOR_SEASON || 'SU';
+  const S   = normalizeSeason(raw); // SU/WI/SP/AU
 
-  // 1) 明示季節（ユーザー選択 or TYPE_META.season）最優先
-  const meta = (window.TYPE_META?.[code]) || {};
-  const chosenSeason = season || meta.season || window.USER_COLOR_SEASON; // どこかで上書き可
-  const seasonPal = getSeasonPalette(chosenSeason);
-  if (seasonPal) return seasonPal;
+  // 受け皿: どの形式でも最終的に [{hex,name},...] で返す
+  const coerceList = (arr)=> (Array.isArray(arr) ? arr.flatMap(x=>{
+    // 入れ子 [{colors:[...]}, ...] も吸収
+    if (x && typeof x==='object' && Array.isArray(x.colors)) return x.colors.map(coerceColor);
+    return [coerceColor(x)];
+  }) : []);
 
-  // 2) TYPE_META.palette があればそれ
-  if (Array.isArray(meta.palette) && meta.palette.length >= 5) return meta.palette;
+  // ① 明示登録（16タイプ×4季節）
+  const t = window.PALETTE_BY_TYPE_SEASON?.[code];
+  if (t){
+    // キーが 'SU' でも 'summer' でも拾う
+    const bySU = t[S];
+    const byWord = t[{SU:'summer',WI:'winter',SP:'spring',AU:'autumn'}[S]];
+    const pal = coerceList(bySU||byWord);
+    if (pal.length) return pal;
+  }
 
-  // 3) 先頭2文字の既定マップ（あなたの既存版）
-  const pre = String(code||'').slice(0,2).toUpperCase();
-  if (PALETTE_BY_PREFIX[pre]) return PALETTE_BY_PREFIX[pre];
+  // ② 季節汎用（4シーズン定義）
+  const seasonMap = {
+    SU: ['#E8EDF7','#D9E6F1','#E8E0F3','#F2E6EC','#E3F0EE'],
+    WI: ['#DDE3FF','#CDE3FF','#E3DBFF','#F2D9E6','#D9FFF5'],
+    SP: ['#FFF1D9','#FFE8C6','#FFEFD6','#FFF4E6','#FFF7DE'],
+    AU: ['#F3E3D1','#E9D8C9','#E6DEC8','#F0E2CD','#E6D7C7'],
+  };
+  const seasonPal = coerceList(seasonMap[S]);
+  if (seasonPal.length) return seasonPal;
 
-  // 4) 基盤体型ごとベース
-  const base = (meta.base) || (typeof inferBase==='function'? inferBase(code) : 'NATURAL');
-  const BASE_PALLETS = {
+  // ③ 最終フォールバック（タイプ基調）
+  const base = window.TYPE_META?.[code]?.base || 'NATURAL';
+  const baseMap = {
     WAVE:     ['#FFE7F3','#FFEFF7','#FFE3EE','#FFF4FA','#FFEAF3'],
     STRAIGHT: ['#EAF1FF','#E3EAFF','#EDF2FF','#E7F0FF','#F1F6FF'],
     NATURAL:  ['#EAF7EF','#E4F5EE','#F0FBF5','#E8F9F0','#F2FCF7'],
-  };
-  if (BASE_PALLETS[base]) return BASE_PALLETS[base];
-
-  // 5) 最後に自動生成
-  return _autoHslPalette(code || 'seed');
+  }[base] || ['#EEE','#DDD','#CCC','#BBB','#AAA'];
+  return coerceList(baseMap);
 }
 // ==================================================
 // 互換レイヤ（足りない関数を補う）
@@ -325,6 +1013,27 @@ function getPaletteByCode(code, opts={}){
     };
   }
 })();
+
+// === Color normalizer: 文字列/入れ子オブジェクトを {hex,name} に揃える ===
+function coerceColor(c){
+  if (typeof c === 'string'){
+    let h = c.trim();
+    if (!h.startsWith('#') && /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(h)) h = '#'+h;
+    return { hex: h, name: h };
+  }
+  if (c && typeof c === 'object'){
+    // hex候補を総当りで拾う（入れ子にも対応）
+    let h = c.hex || c.color || c.value || (typeof c.hex === 'object' ? c.hex.value : null);
+    if (h == null && typeof c.color === 'object') h = c.color.hex || c.color.value;
+    h = String(h || '#CCCCCC').trim();
+    if (!h.startsWith('#') && /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(h)) h = '#'+h;
+
+    // 表示名は ja > en > label > name > hex の優先
+    let n = c.name || c.label || (c.names?.ja || c.names?.en) || (c.i18n?.ja || c.i18n?.en) || h;
+    return { hex: h, name: String(n) };
+  }
+  return { hex:'#CCCCCC', name:'#CCCCCC' };
+}
 
 // ==================================================
 // スコア計算
@@ -406,24 +1115,24 @@ function buildTopsChecklist(code){
   const T = (t,h)=>({text:t, hint:h});
   const L = [];
 
-  if (P.isStraight) L.push(T("肩線が肩先どんぴしゃ","肩の縫い目が肩先。動いてもシワが寄らない"));
+  if (P.isStraight) L.push(T("肩線が肩先どんぴしゃ！","肩の縫い目が肩先。動いてもシワが寄らない"));
   else              L.push(T("肩の丸みに沿って落ちる","ドロショル/ラグランが馴染みやすい"));
 
-  if (P.upperHeavy) L.push(T("首元に“抜け”があると整う","V/深U/ボートで重心UPしにくい"));
-  else              L.push(T("首元が詰まっても苦しく見えない","上を埋めても下が重くならない"));
+  if (P.upperHeavy) L.push(T("首元にゆとりがある","V/深U/ボートで重心UPしにくい"));
+  else              L.push(T("首元が詰まってる","上を埋めても下が重くならない"));
 
-  if (P.strongLine) L.push(T("前立て/切替がまっすぐ落ちる","縦線が波打たない"));
-  else              L.push(T("ギャザー/ドレープは“1か所”","入れ過ぎると横に広がる"));
+  if (P.strongLine) L.push(T("前立て/切替がまっすぐ！","縦線が波打たない"));
+  else              L.push(T("ギャザー/ドレープが“1か所”のみ","入れ過ぎると横に広がる"));
 
-  if (P.upperHeavy) L.push(T("丈はやや短めがバランス良い","前だけINも効く"));
-  else              L.push(T("丈は腰骨〜ヒップ中間が安定","面を残した方が整う"));
+  if (P.upperHeavy) L.push(T("丈がやや短め！","前だけINも効く"));
+  else              L.push(T("丈が長いか","あなたは丈が長い方が整う！"));
 
-  if (P.isSoft)     L.push(T("柔らか素材が“面の波”を整える","テンセル/サテンなど"));
-  else              L.push(T("ハリ素材で上半身の芯が立つ","ブロード/度詰めジャージー"));
+  if (P.isSoft)     L.push(T("柔らかい素材か","テンセル/サテンなど"));
+  else              L.push(T("ハリ素材か","ブロード/度詰めジャージー"));
 
   if (P.softLine)   L.push(T("袖が二の腕に貼りつかない","指1〜2本のすき間"));
   else              L.push(T("袖がストンと落ちる","肘上でたるまない"));
-  return L.slice(0,7);
+  return L.slice(0,6);
 }
 function buildBottomsChecklist(code){
   const P0 = profileFromCode(code);
@@ -432,23 +1141,23 @@ function buildBottomsChecklist(code){
   const P = { ...P0, prefer: (topsAvg >= bottomsAvg) ? 'tops' : 'bottoms' };
   const T = (t,h)=>({text:t, hint:h});
   const L = [];
-  if (P.lowerHeavy) L.push(T("ハイウエストで脚長＞脚幅","INが効く"));
-  else              L.push(T("ミッド〜ややローで上重心を中和","腰位置を下げるとバランス良い"));
+  if (P.lowerHeavy) L.push(T("ハイウエストで脚長＞脚幅か","INが効く"));
+  else              L.push(T("ミッド〜ややローウエストか","腰位置を下げるとバランス良い"));
 
-  if (P.isSoft)     L.push(T("太ももに貼りつかない落ち感素材","ストレート/ワイド◎"));
-  else              L.push(T("太ももがストンと落ちる","センタープレスで補強"));
+  if (P.isSoft)     L.push(T("太ももに貼りつかない落ち感素材か","ストレート/ワイド◎"));
+  else              L.push(T("太ももがストンと落ちるか","センタープレスで補強"));
 
-  if (P.strongLine) L.push(T("ピンタック/センタープレスがまっすぐ","横に広がらない"));
-  else              L.push(T("曲線は“1要素だけ”","マーメイド/バイアスは入れすぎない"));
+  if (P.strongLine) L.push(T("ピンタック/センタープレスがまっすぐか","横に広がらない"));
+  else              L.push(T("お尻のラインがしっかり見えるか”","マーメイド/バイアスは入れすぎない"));
 
   L.push(T("腰まわりが浮かない＆食い込まない","座った時に痛くないのが基準"));
 
-  if (P.softLine)   L.push(T("裾はフル〜やや長めで線が伸びる","甲浅の靴が相性◎"));
-  else              L.push(T("裾は踝が少し見えると軽い","カッティングやスリットも良い"));
+  if (P.softLine)   L.push(T("裾はフルレングス〜やや長めで線が伸びるか","甲浅の靴が相性◎"));
+  else              L.push(T("裾は踝が少し見えるか","カッティングやスリットも良い"));
 
-  if (P.isSoft)     L.push(T("柔らか素材が馴染む","硬い生地は横に張りやすい"));
-  else              L.push(T("梳毛/デニムのハリが輪郭を作る","柔らかすぎるとボケやすい"));
-  return L.slice(0,7);
+  if (P.isSoft)     L.push(T("素材がソフトか","硬い生地は横に張りやすい"));
+  else              L.push(T("ハリのある素材か","柔らかすぎるとボケやすい"));
+  return L.slice(0,6);
 }
 
 // ← これを丸ごと貼り付け
@@ -478,8 +1187,8 @@ function renderFit7Block(code){
 
   const card = (kind, arr)=>`
     <section class="card premium-card fit7-card">
-      <h3 class="premium-title">${kind==='tops' ? '👕 TOPS フィットチェック（7）' : '👖 BOTTOMS フィットチェック（7）'}</h3>
-      <p class="muted small">5つ以上チェックが付いたら<strong>買い</strong>だよ。</p>
+      <h3 class="premium-title">${kind==='tops' ? '👕 TOPS フィットチェック（6）' : '👖 BOTTOMS フィットチェック（6）'}</h3>
+      <p class="muted small">4つ以上チェックが付いたら<strong>買い</strong>だよ。</p>
       <div class="fit7-list">
         ${arr.map(it=>`
           <div class="fit7-item">
@@ -492,7 +1201,7 @@ function renderFit7Block(code){
         `).join('')}
       </div>
       <div class="fit7-result fit7-result-${kind}">
-        （あと <span class="need-${kind}">5</span> 個で「買い」ライン）
+        （あと <span class="need-${kind}">4</span> 個で「買い」ライン）
       </div>
     </section>
   `;
@@ -511,10 +1220,10 @@ function renderFit7Block(code){
           function update(){
             const c = Array.from(boxes).filter(b=>b.checked).length;
             if(c >= 5){
-              result.textContent = "✅ 5つ以上クリア！これは『買い』だよ";
+              result.textContent = "✅ 4つ以上クリア！これは『買い』だよ";
             }else{
-              needEl.textContent = 5 - c;
-              result.textContent = "（あと " + (5 - c) + " 個で「買い」ライン）";
+              needEl.textContent = 4 - c;
+              result.textContent = "（あと " + (4 - c) + " 個で「買い」ライン）";
             }
           }
           boxes.forEach(b=>b.addEventListener('change', update));
@@ -530,8 +1239,8 @@ function renderFit7Block(code){
 function renderFitCard(kind, items){
   return `
     <section class="card premium-card fit7-card">
-      <h3 class="premium-title">${kind==='tops' ? '👕 TOPS フィットチェック（7）' : '👖 BOTTOMS フィットチェック（7）'}</h3>
-      <p class="muted small">5つ以上チェックが付いたら<strong>買い</strong>だよ。</p>
+      <h3 class="premium-title">${kind==='tops' ? '👕 TOPS フィットチェック（6）' : '👖 BOTTOMS フィットチェック（6）'}</h3>
+      <p class="muted small">4つ以上チェックが付いたら<strong>買い</strong>だよ。</p>
       <div class="fit7-list">
         ${items.map(it=>`
           <div class="fit7-item">
@@ -544,7 +1253,7 @@ function renderFitCard(kind, items){
         `).join('')}
       </div>
       <div class="fit7-result fit7-result-${kind}">
-        （あと <span class="need-${kind}">5</span> 個で「買い」ライン）
+        （あと <span class="need-${kind}">4</span> 個で「買い」ライン）
       </div>
     </section>
   `;
@@ -567,10 +1276,10 @@ function renderFit7HTML(code){
           function update(){
             const c = Array.from(boxes).filter(b=>b.checked).length;
             if (c >= 5){
-              result.textContent = "✅ 5つ以上クリア！これは『買い』だよ";
+              result.textContent = "✅ 4つ以上クリア！これは『買い』だよ";
             } else {
-              needEl.textContent = 5 - c;
-              result.textContent = "（あと " + (5 - c) + " 個で「買い」ライン）";
+              needEl.textContent = 4 - c;
+              result.textContent = "（あと " + (4 - c) + " 個で「買い」ライン）";
             }
           }
           boxes.forEach(b=>b.addEventListener('change', update));
@@ -784,8 +1493,8 @@ function wireFit7(root = document){
     if(!boxes.length || !result || !needEl) return;
     const update = ()=>{
       const c = Array.from(boxes).filter(b=>b.checked).length;
-      if (c >= 5) result.textContent = "✅ 5つ以上クリア！これは『買い』だよ";
-      else { needEl.textContent = 5 - c; result.textContent = `（あと ${5-c} 個で「買い」ライン）`; }
+      if (c >= 4) result.textContent = "✅ 4つ以上クリア！これは『買い』だよ";
+      else { needEl.textContent = 4 - c; result.textContent = `（あと ${4-c} 個で「買い」ライン）`; }
     };
     boxes.forEach(b=>b.addEventListener('change', update));
     update();
@@ -820,58 +1529,62 @@ let palette = getPaletteByCode(code, { season: currentSeason });
       <div class="prm-hero-left">
         <div class="prm-badge">${emoji} Premium Report</div>
         <h2 class="prm-ttl"><span>${animal}</span>${label}</h2>
-        <p class="prm-lead">あなたに最適化したカラー・シルエット・コーデ指針を1ページで。</p>
+        <p class="prm-lead">あなたに最適化したカラーを提案。</p>
         <div class="prm-actions">
           <button class="btn primary" onclick="window.print()">PDF/印刷</button>
           <button class="btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">タイプ概要へ戻る</button>
         </div>
 
         <!-- ← “Default” は出さない。季節だけ -->
-        <div class="prm-tabs">
-          <button class="pill ${currentSeason==='summer'?'active':''}" data-season="summer">ブルベ夏</button>
-          <button class="pill ${currentSeason==='winter'?'active':''}" data-season="winter">ブルベ冬</button>
-          <button class="pill ${currentSeason==='spring'?'active':''}" data-season="spring">イエベ春</button>
-          <button class="pill ${currentSeason==='autumn'?'active':''}" data-season="autumn">イエベ秋</button>
-        </div>
+<div class="prm-tabs">
+  <button class="pill" data-season="SU">ブルベ夏</button>
+  <button class="pill" data-season="WI">ブルベ冬</button>
+  <button class="pill" data-season="SP">イエベ春</button>
+  <button class="pill" data-season="AU">イエベ秋</button>
+</div>
       </div>
 
       <div class="prm-hero-right">
-        <div class="prm-swatch-grid" id="${UID}-grid">
-          ${palette.map(sw).join('')}
-        </div>
+       <div class="prm-swatch-grid" id="${UID}-grid">
+  ${ (Array.isArray(palette) ? palette : [])
+      .map(coerceColor)
+      .map(window.swatchNode)
+      .join('') }
+</div>
       </div>
     </section>
 
     <script>
-      (function(){
-        // DOM取得（nullガード付き）
-        var host = document.getElementById('${UID}');
-        if(!host) return;
-        var grid = document.getElementById('${UID}-grid');
-        if(!grid) return;
+(function(){
+  var host = document.getElementById('${UID}');
+  if(!host) return;
+  var grid = document.getElementById('${UID}-grid');
+  if(!grid) return;
+  var tabs = host.querySelectorAll('.prm-tabs .pill');
 
-        var tabs = host.querySelectorAll('.prm-tabs .pill');
-        tabs.forEach(function(btn){
-          btn.addEventListener('click', function(){
-            tabs.forEach(function(b){ b.classList.remove('active'); });
-            btn.classList.add('active');
-            var season = btn.dataset.season || null;
-            // ユーザー選択を覚えたいなら以下を有効化
-            // window.USER_COLOR_SEASON = season;
+  function render(seasonCode){
+  const S = normalizeSeason(seasonCode);
+  const pal = getPaletteByCode('${code}', { season: S }); // ここでもう {hex,name} 配列
+  grid.innerHTML = pal.map(window.swatchNode).join('');
+}
 
-            var pal = (window.getPaletteByCode && getPaletteByCode('${code}', { season: season })) || [];
-            if(!Array.isArray(pal)) pal = [];
-            if(!grid) return; // 念のため
+  tabs.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabs.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      render(btn.dataset.season); // SU/WI/SP/AU が入ってくる
+    });
+  });
 
-            grid.innerHTML = pal.map(function(hex){
-              return '<div class="prm-swatch" title="'+hex+'">'
-                   +   '<span style="background:'+hex+'"></span><i>'+hex+'</i>'
-                   + '</div>';
-            }).join('');
-          });
-        });
-      })();
-    </script>
+  // 初期表示：ユーザー記憶 or TYPE_META.season or SU
+ // 初期表示
+const initial = normalizeSeason(window.USER_COLOR_SEASON || (window.TYPE_META?.['${code}']?.season) || 'SU');
+tabs.forEach(b=> b.classList.toggle('active', normalizeSeason(b.dataset.season)===initial));
+render(initial);
+})();
+</script>
+ 
+    
   `;
 // 季節タブの配線（Premium Packの返すHTMLの後に置く）
 
@@ -1009,7 +1722,7 @@ function shareRow({kind, lead, best, next}){
         </div>
         ${meter(best.score)}
         <div class="best-cta">
-          <button class="btn primary small" onclick="goDetails('${best.code}')">このタイプの着こなしを見る →</button>
+          <button class="btn primary small" onclick="goDetails('${best.code}')">このタイプの着こなし/有名人を見る →</button>
         </div>
       </div>
       ${next?.length ? `<div class="match-more muted small">ほかにも相性が良いタイプ：${next.map(x=>pill(x.code)).join('')}</div>` : ``}
@@ -1213,7 +1926,7 @@ function renderShareCardHTML(code){
     <section class="card share-cute">
       <div class="share-head">
         <div class="share-badge">🫶 服シェア相性</div>
-        <p class="muted small">上2文字一致＝TOPS／下2文字一致＝BOTTOMS（近さの目安だよ）</p>
+        <p class="muted small">似てる骨格の服も参考にしよう！TOPS・BOTTOMS別であなたのスコアから”あなただけ”のランキングを生成しています！</p>
       </div>
 
       ${makeRow({kind:'tops',    best:compat.topsBest,    next:compat.topsNext})}
@@ -1350,14 +2063,15 @@ function _renderResultCore(){
 
   const groupHTML = brandPack ? `
   <div class="brand-groups">
-    <div class="brand-group"><h4>ハイブランド</h4><div class="chips">${brandPack.high.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
-    <div class="brand-group"><h4>ミドルブランド</h4><div class="chips">${brandPack.middle.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
-    <div class="brand-group"><h4>ファスト</h4><div class="chips">${brandPack.fast.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
+    <div class="brand-group"><h4>🥇ハイブランド</h4><div class="chips">${brandPack.high.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
+    <div class="brand-group"><h4>🥈ミドルブランド</h4><div class="chips">${brandPack.middle.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
+    <div class="brand-group"><h4>🥉ファスト</h4><div class="chips">${brandPack.fast.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
   </div>` : '';
 
   const el = document.createElement('div');
   el.innerHTML = `
     <div class="cols">
+    <div class="prm-badge">${meta.emoji || ''} Premium Report</div>
       <div class="card result">
         <h2>診断結果：<span class="ok">${code}</span> — <span class="em">${meta.emoji||''}</span> ${meta.name||code}</h2>
         <div class="tags">
@@ -1413,7 +2127,7 @@ function _renderResultCore(){
 <!-- ✅ Fit チェック（TOPS / BOTTOMS） -->
 　　　　　　${renderFit7HTML(code)}
           
-          <p class="small">※ 提案は各軸のスコアとタイプ固有情報から生成しています。</p>
+          <p class="small">※ 提案はあなたの各軸のスコアとタイプ固有情報から生成しています。</p>
         </div>
 
       
@@ -1443,6 +2157,150 @@ wireSeasonTabsAll(root); // ← これを追加.
   wireFit7(root);
   wirePremiumHero(root);   
   // 共有ボタン
+  /* ================= Premium Stats (Donut + Lists) ================ */
+/* 依存: window.ALL_CODES_ORDERED / window.TYPE_META / GAS_URL(任意) */
+
+(function(){
+  // ストローク色（スクショのニュアンス寄せ）
+  const RING_COLOR = { WAVE:'#d6a9b7', NATURAL:'#c7b7c2', STRAIGHT:'#c9b6b9' };
+
+  // 16タイプ → ベース判定（TYPE_META.baseが無い場合の保険）
+  function baseOf(code){
+    const b = (window.TYPE_META?.[code]?.base)||'';
+    if (b) return b;
+    // 大文字2文字目でざっくり
+    const wave = new Set(['BNLS','MNLC','MWLC','MWLS','MNLS','BNLC']);
+    const nat  = new Set(['BWUC','BWUS','BWLC','BWLS']);
+    const st   = new Set(['BNUS','MWUC','MNUC','MNUS','MWUS','BNUC']);
+    if (wave.has(code)) return 'WAVE';
+    if (nat.has(code))  return 'NATURAL';
+    if (st.has(code))   return 'STRAIGHT';
+    return 'NATURAL';
+  }
+
+  // 絵文字＆ラベル
+  function em(code){ return window.TYPE_META?.[code]?.emoji || '✨'; }
+  const ALLC = (Array.isArray(window.ALL_CODES_ORDERED) ? window.ALL_CODES_ORDERED.slice() :
+               Object.keys(window.TYPE_META||{}));
+
+  // GASから統計取得（無ければ手元データで近似）
+  async function fetchStats(){
+    // 既に親ページで stats を持ってるならそれを使う
+    if (window.__PREMIUM_STATS__) return window.__PREMIUM_STATS__;
+
+    // GAS_URL があれば使う
+    if (typeof GAS_URL === 'string' && GAS_URL.startsWith('http')){
+      try{
+        const url = GAS_URL + (GAS_URL.includes('?') ? '&' : '?') + 'stats=1';
+        const r = await fetch(url, { cache:'no-store' });
+        if (r.ok){
+          const d = await r.json();
+          return {
+            total: d.total||0,
+            byType: d.byType||{},
+            byBase: d.byBase||null,
+          };
+        }
+      }catch(_){}
+    }
+    // フォールバック（0%表示にならないよう薄いダミー）
+    const fake = { total: 0, byType:{}, byBase:null };
+    ALLC.forEach((c,i)=> fake.byType[c] = (i===0?10:(i===1?5:2)));
+    return fake;
+  }
+
+  function computeByBase(byType){
+    const out = { WAVE:0, NATURAL:0, STRAIGHT:0 };
+    for (const c of ALLC){
+      const n = byType[c]||0;
+      out[baseOf(c)] += n;
+    }
+    return out;
+  }
+
+  function donutHTML(base, pct){
+    return `
+      <div class="prm-donut" data-base="${base}">
+        <svg viewBox="0 0 120 120" class="prm-ring">
+          <circle cx="60" cy="60" r="48" class="prm-track"></circle>
+          <circle cx="60" cy="60" r="48" class="prm-prog" data-prog></circle>
+        </svg>
+        <div class="prm-donut-center">
+          <div class="prm-donut-title">${base}</div>
+          <div class="prm-donut-num">${pct}%</div>
+        </div>
+      </div>`;
+  }
+
+  function listHTML(base, byType, total){
+    // baseに属するタイプだけを％降順で
+    const pairs = ALLC
+      .filter(c => baseOf(c)===base)
+      .map(c => ({ code:c, n:(byType[c]||0) }))
+      .sort((a,b)=> b.n - a.n)
+      .slice(0,6);
+
+    return `
+      <div class="prm-type-pills">
+        ${pairs.map(p=>{
+          const pct = total ? (p.n/total*100) : 0;
+          return `
+            <div class="prm-pill">
+              <span class="l"><span>${em(p.code)}</span><span class="code">${p.code}</span></span>
+              <span class="r">${pct.toFixed(1)}%</span>
+            </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  function statsSectionHTML(stats){
+    const total  = stats.total || Object.values(stats.byType||{}).reduce((a,b)=>a+b,0);
+    const byType = stats.byType || {};
+    const byBase = stats.byBase || computeByBase(byType);
+    const pct = k => total ? Math.round((byBase[k]||0)/total*100) : 0;
+
+    return `
+      <section class="prm-stats">
+        <h3>タイプ割合（リアルタイム）</h3>
+        <p class="muted">各骨格の分布割合がリアルタイムで見れちゃう！あなたと同じ骨格の人がどれくらいの割合で存在しているのか見てみよう！</p>
+        <div class="prm-stats-row">
+          ${['WAVE','NATURAL','STRAIGHT'].map(base=>`
+            <div class="prm-stats-card" data-base="${base}">
+              ${donutHTML(base, pct(base))}
+              ${listHTML(base, byType, total)}
+            </div>
+          `).join('')}
+        </div>
+      </section>`;
+  }
+
+  function wireDonuts(host){
+    host.querySelectorAll('.prm-donut').forEach(el=>{
+      const base = el.getAttribute('data-base');
+      const prog = el.querySelector('[data-prog]');
+      const ring = 2*Math.PI*48; // r=48
+      const num  = Number(el.querySelector('.prm-donut-num')?.textContent.replace('%',''))||0;
+      const dash = (num/100)*ring;
+      if (prog){
+        prog.style.stroke = RING_COLOR[base] || '#d6a9b7';
+        prog.style.strokeDasharray = `${dash} ${ring-dash}`;
+      }
+    });
+  }
+
+  // 公開：結果カード直後に挿入
+  window.renderPremiumStats = async function(){
+    const rootCard = document.querySelector('.card.result') ||
+                     document.getElementById('premium-root') ||
+                     document.getElementById('app');
+    if (!rootCard) return;
+    const stats = await fetchStats();
+    const html  = statsSectionHTML(stats);
+    rootCard.insertAdjacentHTML('afterend', html);
+    const section = rootCard.nextElementSibling;
+    wireDonuts(section);
+  };
+})();
   (function(){
     const meta = window.TYPE_META?.[code] || { name:'', emoji:'' };
     const shareTitle = `${meta.emoji ?? ''} ${meta.name || code}（${code}）`.trim();
@@ -1464,6 +2322,8 @@ wireSeasonTabsAll(root); // ← これを追加.
       navigator.clipboard.writeText(shareUrl).then(()=>alert('リンクをコピーしました'));
     });
   })();
+  // === [PATCH-3] Premiumのときだけ、ドーナツ・割合表を差し込む ===
+
 
   // 購入ボタン
   const buyBtn = el.querySelector('#buy-premium');
@@ -1507,6 +2367,10 @@ wireSeasonTabsAll(root); // ← これを追加.
     const a = document.createElement('a'); a.href = url; a.download = `kokkaku-mbti-${code}.json`; a.click();
     URL.revokeObjectURL(url);
   });
+  // 結果カードを描いた“後”に呼ぶ
+if (typeof window.renderPremiumStats === 'function') {
+  window.renderPremiumStats();
+}
 }
 
 function renderResult(){ _renderResultCore(); }
