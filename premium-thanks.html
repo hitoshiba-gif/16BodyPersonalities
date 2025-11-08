@@ -65,7 +65,7 @@
   <script>
   // ====== 設定（既存があれば流用） ======
   // 既に global に GAS_URL / jsonp があるなら下の定義は自動で無効化されます。
-  window.GAS_URL = window.GAS_URL || "https://script.google.com/macros/s/AKfycbzRZrR7lq3cGTuzJ10sJeB_XZOo2IrQncvGHM1T_BsPxqvV1XwNiAXDrLfRipUopXL6/exec"; // ←差し替え
+  window.GAS_URL = window.GAS_URL || "https://script.google.com/macros/s/AKfycbxg7AfmpclGuulkYxS6YjdpDt_wQy7P6D-P-W8dQ9P0QCqcR8TKDlc9fu0E9vNLltkX/exec"; // ←差し替え
 
   // 簡易 JSONP（未定義なら注入）
   if (typeof window.jsonp !== 'function') {
@@ -191,7 +191,7 @@
 
   elHome.addEventListener('click', ()=>{
     // 必要に応じてトップへのパスに変更
-    location.href = './app.html';
+    location.href = './index.html';
   });
   </script>
 </body>

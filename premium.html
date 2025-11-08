@@ -160,7 +160,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
   <!-- GAS -->
-  <script>const GAS_URL="https://script.google.com/macros/s/AKfycbxVTRr8ju0FPCi7rDiY6lXI4c3oGUOGhmEv8zttNf8yS_1sO01ssg5yWfvgPilcxzvj/exec";</script>
+  <script>const GAS_URL="https://script.google.com/macros/s/AKfycbxg7AfmpclGuulkYxS6YjdpDt_wQy7P6D-P-W8dQ9P0QCqcR8TKDlc9fu0E9vNLltkX/exec";</script>
   <script>window.__RESULT_MOUNT__='premium-root';</script>
 
   <!-- data & renderer -->
@@ -445,6 +445,16 @@
     // 起動
     window.addEventListener('DOMContentLoaded', boot);
   </script>
+  <!-- donut stroke gradient (once) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="grad-donut" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#ffd3ec"/>
+      <stop offset="50%" stop-color="#f19ac2"/>
+      <stop offset="100%" stop-color="#d28cff"/>
+    </linearGradient>
+  </defs>
+</svg>
 
   <!-- 以降：あなたの premium 用スクリプト（boot(), jsonp など）そのまま -->
   <!-- ★既存の boot() ブロックはこの下に置いてOK（変更不要） -->
