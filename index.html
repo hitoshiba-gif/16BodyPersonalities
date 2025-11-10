@@ -51,10 +51,7 @@
 <!-- 半透明オーバーレイ -->
 <div class="scrim" id="scrim" hidden></div>
 <div class="topbar-spacer"></div> <!-- ナビの高さぶん余白（重なり防止） -->
-    <header>
-      <span class="badge">1st Edition</span>
-      <h1>16BodyPersonalities</h1>
-    </header>
+    
 
     <!-- ===== カード1：イントロ ===== -->
     <section class="card hero-card hero-cute">
@@ -65,9 +62,6 @@
   </div>
 
   <div class="hero-inner">
-    <div class="badge-row">
-      <span class="soft-badge accent">1st Edition</span>
-    </div>
 
     <h2 class="hero-title">
       あなたの<span class="sparkle">Body</span> Personalities を診断
@@ -85,78 +79,61 @@
     <span class="loop">🐨 🐺 🦋 🐹 🕊 🐻 🦄 🦅 🦊 🦌 🐆 🦈 🐅 🦚 🐬 🦉</span>
   </div>
 </div>
+<section class="about-16bp cute-luxe" id="about-16bp">
+  <!-- グラデの縁取り（装飾） -->
+  <div class="about-frame">
+    <!-- 角の光るアクセント -->
+    <span class="corner c1"></span>
+    <span class="corner c2"></span>
+    <span class="corner c3"></span>
+    <span class="corner c4"></span>
+
+    <!-- 見出し行 -->
+    <div class="about-head">
+      <span class="about-badge">Our Philosophy</span>
+      <h3 class="about-title">
+        骨格を「型」ではなく「個性」として扱う、16BodyPersonalities。
+      </h3>
+      <p class="about-sub">
+        私たちは、あなたの身体に宿る“構造のニュアンス”を丁寧に言語化します。
+      </p>
+    </div>
+
+    <!-- 本文 -->
+    <div class="about-body">
+      <p>
+        世の中には <b>3タイプ</b> や <b>8タイプ</b> の骨格診断が広く知られています。けれど、実際の身体はもっと繊細で、もっと豊か。
+        同じ肩幅でも丸みの出方、骨の存在感、重心、筋の通り方のわずかな差で、纏う印象は大きく変わります。
+      </p>
+      <p>
+        既存の“箱”に分類するほど、あなたらしさの質感はこぼれ落ちてしまう——私たちはその課題に向き合い、
+        骨格を <b>4つの軸（Frame / Surface / Balance / Line）</b> に分解。軸ごとの強弱の組み合わせから、単なる拡張ではない
+        <b>16のパーソナリティ</b> を描き出しました。
+      </p>
+      <p>
+        16BodyPersonalities は、あなたを型にはめる診断ではありません。<br/>
+        あなたの“本来の構造美”を、<em>やさしく、精密に、そして上質に</em> 引き出すための新しい言語です。
+      </p>
+    </div>
+
+    <!-- 下部アクション -->
+    <div class="about-actions">
+      <a class="btn luxe" href="app.html">診断をはじめる</a>
+      <a class="btn ghost" href="gallery.html" aria-label="タイプを見る">
+        タイプを見る
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ✅ 絵文字リボンのすぐ下に貼り付け -->
+<!-- ===== 16BodyPersonalities とは（cute & luxe） ===== -->
   </div>
 </section>
 
 <!-- ===== 広告：診断CTAとタイプ割合の“間” ===== -->
 
 
-   <section class="card" style="margin-top:12px;">
-  <h3>タイプ割合（リアルタイム）</h3>
-  <p class="muted small">各骨格の分布割合がリアルタイムで見れちゃう！</p>
-
-  <!-- 3ベースのドーナツ -->
-  <div class="donut-row">
-    <div class="donut-card" data-base="WAVE" style="position:relative;padding:8px;border:1px solid var(--border,#ddd);border-radius:12px;">
-      <div class="donut" data-key="WAVE" style="width:140px;height:140px;margin:0 auto;position:relative;">
-        <svg viewBox="0 0 120 120" class="ring" style="width:100%;height:100%;">
-          <circle cx="60" cy="60" r="48" class="track" style="fill:none;stroke:#eee;stroke-width:16;"></circle>
-          <circle cx="60" cy="60" r="48" class="prog" data-prog style="fill:none;stroke:currentColor;stroke-width:16;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;stroke-dasharray:0 999;"></circle>
-        </svg>
-        <div class="donut-center" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-          <div class="donut-title" style="font-weight:700;">WAVE</div>
-          <div class="donut-num" data-num="WAVE" style="font-size:18px;">0%</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- NATURAL -->
-    <div class="donut-card" data-base="NATURAL" style="position:relative;padding:8px;border:1px solid var(--border,#ddd);border-radius:12px;">
-      <div class="donut" data-key="NATURAL" style="width:140px;height:140px;margin:0 auto;position:relative;">
-        <svg viewBox="0 0 120 120" class="ring" style="width:100%;height:100%;">
-          <circle cx="60" cy="60" r="48" class="track" style="fill:none;stroke:#eee;stroke-width:16;"></circle>
-          <circle cx="60" cy="60" r="48" class="prog" data-prog style="fill:none;stroke:currentColor;stroke-width:16;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;stroke-dasharray:0 999;"></circle>
-        </svg>
-        <div class="donut-center" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-          <div class="donut-title" style="font-weight:700;">NATURAL</div>
-          <div class="donut-num" data-num="NATURAL" style="font-size:18px;">0%</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STRAIGHT -->
-    <div class="donut-card" data-base="STRAIGHT" style="position:relative;padding:8px;border:1px solid var(--border,#ddd);border-radius:12px;">
-      <div class="donut" data-key="STRAIGHT" style="width:140px;height:140px;margin:0 auto;position:relative;">
-        <svg viewBox="0 0 120 120" class="ring" style="width:100%;height:100%;">
-          <circle cx="60" cy="60" r="48" class="track" style="fill:none;stroke:#eee;stroke-width:16;"></circle>
-          <circle cx="60" cy="60" r="48" class="prog" data-prog style="fill:none;stroke:currentColor;stroke-width:16;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;stroke-dasharray:0 999;"></circle>
-        </svg>
-        <div class="donut-center" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-          <div class="donut-title" style="font-weight:700;">STRAIGHT</div>
-          <div class="donut-num" data-num="STRAIGHT" style="font-size:18px;">0%</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 16タイプの表 -->
-  <h3 style="margin:0 0 6px;">16タイプ存在割合</h3>
-  <div class="type-grid" id="typeGridTop"></div>
-</section>
-
-    <!-- ===== カード2：特徴説明 ===== -->
-    <section class="card">
-      <h3>この診断の特徴</h3>
-      <ul>
-        <li>骨格の特徴（ストレート / ウェーブ / ナチュラル）をもとに更に16タイプに分析！</li>
-        <li>これまでなかった深度で16タイプを導出！</li>
-        <li>ファッション・印象傾向をトータルで提示！</li>
-      </ul>
-    </section>
-
-    <!-- ===== カード3：ギャラリー or 結果一覧 ===== -->
-   <!-- ===== カード3：ギャラリー導線 ===== -->
-
+   
     <footer class="footer">
       <span class="small">© 2025 16BodyPersonalities Project</span>
       <span>
