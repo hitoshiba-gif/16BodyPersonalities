@@ -137,7 +137,7 @@ window.KM_TYPES = {
     image:'images/BWUC.jpg',
     celebrities:{
       kr: ['カズハ（LE SSERAFIM）','ソンチャン（RIIZE）','ウナク（BOYNEXTDOOR）'],
-  jp: ['冨永愛','薮宏太','中丸雄一','源大(モデル),'横尾渉','ユンギ（BTS）'],
+  jp: ['冨永愛','薮宏太','中丸雄一','源大(モデル)'],
       global:['Cara Delevingne','Gigi Hadid']
     },
     bodyDetail:'骨感（B）/面積広め（W）/上重心（U）/曲線（C）。フレームは大きめで骨格が通り、上に視線が集まりやすい。モデル体型。',
