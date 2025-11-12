@@ -138,7 +138,7 @@ window.TYPE_META = {
       'ボクシーJK＋ストレートパンツ＋白スニーカー',
       'スタンドカラーシャツ＋ミニスカート（曲線）'
     ],
-    celebrities:{ jp: ['冨永愛','薮宏太','中丸雄一','源大(モデル),'横尾渉','ユンギ（BTS）'], kr: ['カズハ（LE SSERAFIM）','ソンチャン（RIIZE）','ウナク（BOYNEXTDOOR）'], global:['Cara Delevingne','Gigi Hadid'] }
+    celebrities:{ jp: ['冨永愛','薮宏太','中丸雄一','源大(モデル)'], kr: ['カズハ（LE SSERAFIM）','ソンチャン（RIIZE）','ウナク（BOYNEXTDOOR）'], global:['Cara Delevingne','Gigi Hadid'] }
   },
 
   BWUS:{ // Fairy Natural
