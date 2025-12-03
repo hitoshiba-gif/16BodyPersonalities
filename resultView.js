@@ -26,7 +26,7 @@ async function fetchStatsForDonut(GAS){
 (function bootstrapSafeGlobals(){
   // ---- AXES（4軸） ----
   const DEFAULT_AXES = [
-    { key:'frame',   posLabel:'骨感主導（B）',  negLabel:'肉感主導（M）',  codePos:'B', codeNeg:'M' },
+    { key:'frame',   posLabel:'骨格主導（B）',  negLabel:'肉付き主導（M）',  codePos:'B', codeNeg:'M' },
     { key:'surface', posLabel:'身体フレーム広（W）', negLabel:'身体フレーム狭（N）', codePos:'W', codeNeg:'N' },
     { key:'balance', posLabel:'上重心（U）',       negLabel:'下重心（L）',       codePos:'U', codeNeg:'L' },
     { key:'line',    posLabel:'直線（S）',         negLabel:'曲線（C）',         codePos:'S', codeNeg:'C' },
@@ -2042,24 +2042,49 @@ function _renderResultCore(){
   const barsHTML = `
     <div class="traits">
       ${[
-        {key:'Frame',   ax:window.AXES[0], data:pf},
-        {key:'Surface', ax:window.AXES[1], data:ps},
-        {key:'Balance', ax:window.AXES[2], data:pb},
-        {key:'Line',    ax:window.AXES[3], data:pl},
-      ].map(({key,ax,data})=>`
-        <div class="trait">
-          <div class="row">
-            <div class="title">${key}：<span class="${data.posSide?'ok':'warn'}">${data.pct}% ${data.sideLabel?.replace?.(/（.*?）/g,'')||''}</span></div>
-            <div class="percent">${data.pct}%</div>
+      { key:'Frame',   ax:AXES[0], data:pf, cls:'axis-frame'   },
+      { key:'Surface', ax:AXES[1], data:ps, cls:'axis-surface' },
+      { key:'Balance', ax:AXES[2], data:pb, cls:'axis-balance' },
+      { key:'Line',    ax:AXES[3], data:pl, cls:'axis-line'    },
+      ].map(({ key, ax, data }) => {
+        const pctRaw  = data.pct;          // 0〜100
+        const offset  = pctRaw - 50;       // 中央からのズレ（-50〜+50）
+        const absPct  = Math.abs(offset);  // ズレの強さ
+        const mainPct = pctRaw >= 50 ? pctRaw : 100 - pctRaw;
+
+        const sideLabel = data.sideLabel.replace(/（.*?）/g, '');
+        const isRight   = offset >= 0;
+
+        const fillLeft  = isRight ? '50%' : `calc(50% - ${absPct}%)`;
+        const fillWidth = `${absPct}%`;
+        const thumbLeft = `calc(50% + ${offset}%)`;
+
+        return `
+          <div class="trait">
+            <div class="row">
+              <div class="title">
+                ${key}：
+                <span class="${isRight ? 'ok' : 'warn'}">
+                  ${Math.round(mainPct)}% ${sideLabel}
+                </span>
+              </div>
+               <div class="percent">${Math.round(mainPct)}%</div>
+            </div>
+
+            <div class="central-meter">
+              <div class="axis-line"></div>
+              <div class="fill"  style="left:${fillLeft}; width:${fillWidth};"></div>
+              <div class="thumb" style="left:${thumbLeft};"></div>
+            </div>
+
+            <div class="ends">
+              <span>${ax.negLabel}</span><span>${ax.posLabel}</span>
+            </div>
           </div>
-          <div class="meter">
-            <div class="fill" style="width:${data.pct}%;"></div>
-            <div class="thumb" style="left:${data.pct}%;"></div>
-          </div>
-          <div class="ends"><span>${ax?.negLabel||''}</span><span>${ax?.posLabel||''}</span></div>
-        </div>
-      `).join('')}
-    </div>`;
+        `;
+      }).join('')}
+    </div>
+  `;
 
   const groupHTML = brandPack ? `
   <div class="brand-groups">

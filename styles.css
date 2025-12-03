@@ -3171,3 +3171,334 @@ body { padding-bottom: env(safe-area-inset-bottom); }
   .card.hero-card { border-radius: 0; }
 }
 
+/* ==== Drawer Cute × Luxe ==== */
+:root{
+  --drawer-w: 320px;
+  --drawer-bg: rgba(255,255,255,.72);
+  --drawer-stroke: rgba(255,255,255,.95);
+  --drawer-ring: #ececf1;
+  --drawer-shadow: 0 20px 60px rgba(16,12,40,.22);
+}
+
+@media (min-width: 560px){
+  :root{ --drawer-w: 360px; }
+}
+
+/* グラデはテーマ連動 */
+[data-theme="WAVE"] .drawer{ --drawer-grad: linear-gradient(135deg,#ffd3ec 0%,#f19ac2 45%,#d28cff 100%); }
+[data-theme="NATURAL"] .drawer{ --drawer-grad: linear-gradient(135deg,#e2ffd1 0%,#b7f0c1 45%,#7dddb5 100%); }
+[data-theme="STRAIGHT"] .drawer{ --drawer-grad: linear-gradient(135deg,#d9e8ff 0%,#a7c8ff 45%,#7aa7ff 100%); }
+
+/* 本体 */
+.drawer.cute-luxe{
+  position: fixed;
+  z-index: 1000;
+  top: 0; right: 0; bottom: 0;
+  width: var(--drawer-w);
+  transform: translateX(100%);
+  transition: transform .36s cubic-bezier(.22,.61,.36,1);
+  background:
+    linear-gradient(#fff,#fff) padding-box,
+    var(--drawer-grad) border-box;
+  border-left: 1.5px solid transparent; /* グラデ枠 */
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  box-shadow: var(--drawer-shadow);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+.drawer.open{ transform: translateX(0); }
+
+/* ヘッダ */
+.drawer-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--drawer-ring);
+  background: var(--drawer-bg);
+}
+.drawer-brand{
+  font-weight: 800; letter-spacing:.01em; text-decoration:none;
+  color:#111; font-size: 16px;
+}
+.drawer-brand .brand-accent{
+  background: linear-gradient(90deg,#ffacd9,#ff6fb7);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.drawer-close{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  width:32px; height:32px; border-radius:8px; font-size:18px; line-height:32px;
+}
+.drawer-close:hover{ background: rgba(0,0,0,.05); }
+
+/* リンク */
+.drawer-links{
+  overflow:auto; padding: 10px 8px 12px;
+  background: linear-gradient(180deg,var(--drawer-bg), rgba(255,255,255,.85));
+}
+.drawer-item{
+  display:flex; align-items:center; gap:12px;
+  padding: 12px 12px;
+  margin: 4px 4px;
+  border-radius: 14px;
+  text-decoration: none;
+  color:#222; font-weight:700;
+  border: 1px solid var(--drawer-ring);
+  background: #fff;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.drawer-item i{ font-style:normal; font-size:18px; width:22px; text-align:center; }
+.drawer-item:hover{ transform: translateY(-1px); box-shadow: 0 10px 22px rgba(0,0,0,.08); }
+.drawer-item:active{ transform: translateY(0); }
+.drawer-item[aria-current="page"]{
+  border-color: transparent;
+  background: linear-gradient(#fff,#fff) padding-box, var(--drawer-grad) border-box;
+}
+
+/* 仕切り */
+.drawer-sep{
+  border:0; height:1px;
+  margin: 10px 8px;
+  background: linear-gradient(90deg, transparent, var(--drawer-ring), transparent);
+}
+
+/* フッタCTA */
+.drawer-footer{
+  padding: 12px; border-top: 1px solid var(--drawer-ring);
+  background: var(--drawer-bg);
+}
+.drawer-cta{
+  width:100%; padding:12px 16px; border-radius:12px; font-weight:800;
+  border:1px solid transparent; cursor:pointer; color:#111;
+  background: linear-gradient(#fff,#fff) padding-box, var(--drawer-grad) border-box;
+  box-shadow: 0 8px 22px rgba(210,140,255,.22);
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.drawer-cta:hover{ transform: translateY(-1px); box-shadow: 0 14px 28px rgba(210,140,255,.26); }
+
+/* スクリーン覆う半透明 */
+.scrim{
+  position:fixed; inset:0; z-index: 999;
+  background: rgba(10,8,20,.25);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity:0; pointer-events:none; transition: opacity .25s ease;
+}
+.scrim.show{ opacity:1; pointer-events:auto; }
+
+/* 低モーション配慮 */
+@media (prefers-reduced-motion: reduce){
+  .drawer, .drawer-cta, .drawer-item{ transition:none !important; }
+}
+
+/* ===== ヘッダーのハンバーガーを常に44pxのタップサイズに ===== */
+.site-header .hamburger{
+  width: 44px; height: 44px;
+  min-width: 44px; min-height: 44px;
+  padding: 0;                  /* グローバルbuttonのパディングを上書き */
+  border: none;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+.site-header .hamburger svg{
+  width: 24px; height: 24px;   /* アイコンは24px固定 */
+  flex: none;
+}
+
+/* “.hamburger をボタン風にしない”ための保険（他のbuttonスタイルを打ち消し） */
+button.hamburger {
+  font: inherit;
+  color: inherit;
+  box-shadow: none !important;
+}
+
+/* ▼ 結果画面のセンター基準バー */
+.meter.meter-center {
+  position: relative;
+  height: 10px;
+  background: #e7e7ec;
+  border-radius: 999px;
+  overflow: visible;
+}
+
+/* 真ん中の基準線 */
+.meter.meter-center::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: 50%;
+  width: 2px;
+  background: #c0c0c8;
+  transform: translateX(-1px);
+}
+
+/* 中央から左右に伸びるバー本体 */
+.meter.meter-center .fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--accent, #72e0ff);
+  border-radius: 999px;
+}
+
+/* つまみ（今まで通り％位置に置く） */
+.meter.meter-center .thumb {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--accent, #72e0ff);
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+}
+
+/* ==== 中央スタートのバー用 ==== */
+.central-meter {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: #e5e7eb;              /* うすグレーのレール */
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+/* 真ん中の「0ライン」 */
+.central-meter .axis-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.12);
+  transform: translateX(-0.5px);
+}
+
+/* 中央から左右に伸びる色付き部分 */
+.central-meter .fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent, #72e0ff); /* もともとのアクセント色に合わせる */
+}
+
+/* つまみ（〇） */
+.central-meter .thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--accent, #72e0ff);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.5);
+}
+
+/* 4軸スコア全体のレイアウト */
+.traits {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 8px;
+}
+
+/* 各軸カード */
+.trait {
+  padding: 10px 12px 12px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+
+/* タイトル行（左：名称＋ラベル / 右：%） */
+.trait .row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.trait .title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.trait .title span.ok {
+  color: #ff5b9c;
+  font-weight: 700;
+}
+
+.trait .title span.warn {
+  color: #7c9cff;
+  font-weight: 700;
+}
+
+.trait .percent {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #444;
+}
+
+/* 中央スタートのメーター本体 */
+.central-meter {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  margin: 4px 0 6px;
+}
+
+/* 軸のベースライン（薄いグレー） */
+.central-meter .axis-line {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #f3f4f8;
+}
+
+/* 塗り部分（左右どちらかに伸びる） */
+.central-meter .fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--axis-color, #f9a8d4); /* デフォはピンク */
+  opacity: 0.9;
+}
+
+/* つまみ（丸ポチ） */
+.central-meter .thumb {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 2px solid var(--axis-color, #f9a8d4);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.7),
+              0 3px 6px rgba(0,0,0,0.08);
+}
+
+/* 左右ラベル */
+.trait .ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* ==== ここから 4軸ごとの色設定 ==== */
+.axis-frame   { --axis-color: #ffb7ce; } /* いちごミルクピンク */
+.axis-surface { --axis-color: #ffd9a3; } /* アプリコット */
+.axis-balance { --axis-color: #b5e4ff; } /* ソーダブルー */
+.axis-line    { --axis-color: #d7c6ff; } /* ラベンダー */
