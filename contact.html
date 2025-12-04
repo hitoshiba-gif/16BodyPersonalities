@@ -222,6 +222,30 @@
       window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
     });
 
+    // --- リトライ付きfetch ---
+    async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          const response = await fetch(url, options);
+          if (response.status >= 500 && i < retries - 1) {
+            console.log(`Retry ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
+            continue;
+          }
+          return response;
+        } catch (error) {
+          if (i < retries - 1) {
+            console.log(`Retry ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
+            continue;
+          }
+          throw error;
+        }
+      }
+    }
+
     // --- Form Submit ---
     document.getElementById('contactForm').addEventListener('submit', async (e)=>{
       e.preventDefault();
@@ -237,7 +261,7 @@
 
       try {
         const API_URL = "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod";
-        const res = await fetch(`${API_URL}/contact`, {
+        const res = await fetchWithRetry(`${API_URL}/contact`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)

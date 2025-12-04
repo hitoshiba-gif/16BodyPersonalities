@@ -254,10 +254,34 @@ const EMOJIS_16 = [
   })();
 
 /* ==== メイン描画 ==== */
+// リトライ付きfetch（最大3回試行、指数バックオフ）
+async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.status >= 500 && i < retries - 1) {
+        console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (i < retries - 1) {
+        console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
 async function fetchStats(){
   const res = { total:0, byType:{}, byBase:{WAVE:0,NATURAL:0,STRAIGHT:0} };
   try{
-    const r = await fetch(`${API_URL}/stats`, { cache:'no-store' });
+    const r = await fetchWithRetry(`${API_URL}/stats`, { cache:'no-store' });
     if (!r.ok) return res;
     const data = await r.json();
     if (!data.ok) return res;

@@ -8,9 +8,34 @@ const isPremium = () =>
   (document.body?.dataset?.page === 'premium') ||
   /premium\.html/.test(location.pathname);
 
+// リトライ付きfetch（最大3回試行、指数バックオフ）
+async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      // ステータスコードが500番台の場合はリトライ
+      if (response.status >= 500 && i < retries - 1) {
+        console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2; // 指数バックオフ
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (i < retries - 1) {
+        console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
 async function fetchStatsForDonut(API_URL){
   try{
-    const r = await fetch(API_URL + '/stats', { cache:'no-store' });
+    const r = await fetchWithRetry(API_URL + '/stats', { cache:'no-store' });
     if(!r.ok) throw 0;
     const d = await r.json();
     return {
@@ -2385,7 +2410,7 @@ wireSeasonTabsAll(root); // ← これを追加.
       };
 
       try{
-        const response = await fetch(`${window.API_URL}/premium`, {
+        const response = await fetchWithRetry(`${window.API_URL}/premium`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)

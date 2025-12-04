@@ -207,6 +207,30 @@
     // --- 同意（必要なら本体と揃える）
     const getConsent = () => localStorage.getItem('km_consent') || 'yes';
 
+    // --- リトライ付きfetch（最大3回試行、指数バックオフ）
+    async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          const response = await fetch(url, options);
+          if (response.status >= 500 && i < retries - 1) {
+            console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
+            continue;
+          }
+          return response;
+        } catch (error) {
+          if (i < retries - 1) {
+            console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
+            continue;
+          }
+          throw error;
+        }
+      }
+    }
+
     // --- 初期 state（answers は token 復元時に上書き）
     function makeInitialState(){
       const n = (window.QUESTIONS?.frame?.length || 12);
@@ -246,7 +270,7 @@
       let code = '';
       try { code = (typeof buildCode==='function') ? buildCode().code : (window.__PREMIUM_CODE__||''); } catch(_){}
       try{
-        const res = await fetch(`${API_URL}/premium/resend`, {
+        const res = await fetchWithRetry(`${API_URL}/premium/resend`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, code: code || '' })
@@ -402,7 +426,7 @@
       // AWS: GET /premium/{token}
       let res;
       try{
-        const response = await fetch(`${API_URL}/premium/${encodeURIComponent(token)}`);
+        const response = await fetchWithRetry(`${API_URL}/premium/${encodeURIComponent(token)}`);
         res = await response.json();
       }catch(e){
         root.innerHTML = `

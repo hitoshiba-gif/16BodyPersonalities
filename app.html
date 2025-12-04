@@ -68,9 +68,35 @@
   document.body.dataset.theme = 'WAVE';
   // ============ AWS API連携設定 ============
 const API_URL = "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod"
+
+// リトライ付きfetch（最大3回試行、指数バックオフ）
+async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      // ステータスコードが500番台の場合はリトライ
+      if (response.status >= 500 && i < retries - 1) {
+        console.log(`[API] Retry ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2; // 指数バックオフ
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (i < retries - 1) {
+        console.log(`[API] Retry ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
 function sendToSheets(payload){
   console.log('[API] sending...', payload);
-  return fetch(`${API_URL}/diagnoses`, {
+  return fetchWithRetry(`${API_URL}/diagnoses`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -79,7 +105,10 @@ function sendToSheets(payload){
     console.log('[API] response:', r.status, data);
     return { status: r.status, body: data };
   }))
-  .catch(e => console.error('[API] error:', e));
+  .catch(e => {
+    console.error('[API] error:', e);
+    throw e;
+  });
 }
 
 // ユーザーの同意状態を保存/取得（ローカルに保持）
