@@ -75,21 +75,49 @@
 
 <script>
   document.body.dataset.theme = 'WAVE';
-  // ============ Google Sheets連携設定 ============
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyXIJtmz6TIUVPmZ_KcwKiQ1ZjueMvhrV5UC_F3FkiWZkwfi-WwYpUvIXiK8p_Ta-5E/exec"
+  // ============ AWS API連携設定 ============
+const API_URL = "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod"
+
+// リトライ付きfetch（最大3回試行、指数バックオフ）
+async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      // ステータスコードが500番台の場合はリトライ
+      if (response.status >= 500 && i < retries - 1) {
+        console.log(`[API] Retry ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2; // 指数バックオフ
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (i < retries - 1) {
+        console.log(`[API] Retry ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
 function sendToSheets(payload){
-  console.log('[GAS] sending...', payload);
-  return fetch(GAS_URL, {
+  console.log('[API] sending...', payload);
+  return fetchWithRetry(`${API_URL}/diagnoses`, {
     method: "POST",
-    // ★ プリフライトを発生させない許可タイプ
-    headers: { "Content-Type": "text/plain" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   })
-  .then(r => r.text().then(t => {
-    console.log('[GAS] response:', r.status, t);
-    return { status: r.status, body: t };
+  .then(r => r.json().then(data => {
+    console.log('[API] response:', r.status, data);
+    return { status: r.status, body: data };
   }))
-  .catch(e => console.error('[GAS] error:', e));
+  .catch(e => {
+    console.error('[API] error:', e);
+    throw e;
+  });
 }
 
 // ユーザーの同意状態を保存/取得（ローカルに保持）
@@ -1548,10 +1576,12 @@ ${groupHTML}
           <p class="small">※ 提案は各軸（骨格/密度/重心/ライン）のスコアとタイプ固有情報から生成しています。</p>
         </div>
          <div class="card" style="margin-top:20px; text-align:center;">
-         
-            <div class="card" style="margin-top:12px; text-align:center;">
- 
-</div>
+         <h3>💫完全版レポート💫</h3>
+  <p class="muted small">“あなた専用”の詳しい提案・さらに詳細なタイプ相性👔👖・スコアから算出した”あなた専用”のフィットチェック表📃・骨格に合うパーソナルカラー提案🎨など全部盛り！コンテンツは今後もアップデートしていく予定です！今購入すればアップデート内容がいつでも見れちゃう！！</p>
+  <button class="btn" id="buy-premium">完全版を購入（¥300）</button></div>
+
+      <div class="card" style="margin-top:12px; text-align:center;">     
+
     <h3>他の骨格タイプも見てみる</h3>
     <p>あなたのタイプ以外の15タイプを比較してみましょう。</p>
     <a href="gallery.html" class="btn" style="
@@ -1572,6 +1602,8 @@ ${groupHTML}
     <button class="share-btn" id="btn-line">LINEで送る</button>
     <button class="share-btn" id="btn-copy">リンクをコピー</button>
   </div>
+
+
 
         <div class="controls">
           <button id="retry" class="secondary">もう一度</button>
@@ -1636,7 +1668,7 @@ if (!state._sentOnce) {
   };
 })();
 
-const buyBtn = el.querySelector('#buy-premium');
+const buyBtn = document.querySelector('#buy-premium');
 if (buyBtn){
   buyBtn.addEventListener('click', () => {
     // ここで都度、最新の結果を取得
@@ -1743,7 +1775,7 @@ function jsonp(url){
 
     let data;
     try {
-      const r = await fetch(GAS_URL + '?stats=1', { cache:'no-store' });
+      const r = await fetch(API_URL + '/stats', { cache:'no-store' });
       data = await r.json();
     } catch(e) {
       data = {

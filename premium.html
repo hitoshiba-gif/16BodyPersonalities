@@ -159,8 +159,8 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
-  <!-- GAS -->
-  <script>const GAS_URL="https://script.google.com/macros/s/AKfycbyXIJtmz6TIUVPmZ_KcwKiQ1ZjueMvhrV5UC_F3FkiWZkwfi-WwYpUvIXiK8p_Ta-5E/exec";</script>
+  <!-- AWS API -->
+  <script>const API_URL="https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod";</script>
   <script>window.__RESULT_MOUNT__='premium-root';</script>
 
   <!-- data & renderer -->
@@ -207,6 +207,30 @@
     // --- 同意（必要なら本体と揃える）
     const getConsent = () => localStorage.getItem('km_consent') || 'yes';
 
+    // --- リトライ付きfetch（最大3回試行、指数バックオフ）
+    async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          const response = await fetch(url, options);
+          if (response.status >= 500 && i < retries - 1) {
+            console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
+            continue;
+          }
+          return response;
+        } catch (error) {
+          if (i < retries - 1) {
+            console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
+            continue;
+          }
+          throw error;
+        }
+      }
+    }
+
     // --- 初期 state（answers は token 復元時に上書き）
     function makeInitialState(){
       const n = (window.QUESTIONS?.frame?.length || 12);
@@ -246,7 +270,12 @@
       let code = '';
       try { code = (typeof buildCode==='function') ? buildCode().code : (window.__PREMIUM_CODE__||''); } catch(_){}
       try{
-        const r = await jsonp(`${GAS_URL}?sendMail=1&email=${encodeURIComponent(email)}&code=${encodeURIComponent(code||'')}`);
+        const res = await fetchWithRetry(`${API_URL}/premium/resend`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code: code || '' })
+        });
+        const r = await res.json();
         if (!r?.ok) throw new Error(r?.error || '送信失敗');
         alert('送信しました！迷惑メールもご確認ください。');
       }catch(e){
@@ -394,10 +423,11 @@
         return;
       }
 
-      // GAS: /exec?report=1&token=...
+      // AWS: GET /premium/{token}
       let res;
       try{
-        res = await jsonp(`${GAS_URL}?report=1&token=${encodeURIComponent(token)}`);
+        const response = await fetchWithRetry(`${API_URL}/premium/${encodeURIComponent(token)}`);
+        res = await response.json();
       }catch(e){
         root.innerHTML = `
           <div class="card">

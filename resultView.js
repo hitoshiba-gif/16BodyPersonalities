@@ -3,14 +3,39 @@
 // 依存が足りなくても落ちないようにフォールバックを同梱
 // ==================================================
 // === [PATCH-1] Premium判定 & 取得 ===
-window.GAS_URL = window.GAS_URL || "https://script.google.com/macros/s/AKfycbyXIJtmz6TIUVPmZ_KcwKiQ1ZjueMvhrV5UC_F3FkiWZkwfi-WwYpUvIXiK8p_Ta-5E/exec";
+window.API_URL = window.API_URL || "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod";
 const isPremium = () =>
   (document.body?.dataset?.page === 'premium') ||
   /premium\.html/.test(location.pathname);
 
-async function fetchStatsForDonut(GAS){
+// リトライ付きfetch（最大3回試行、指数バックオフ）
+async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      // ステータスコードが500番台の場合はリトライ
+      if (response.status >= 500 && i < retries - 1) {
+        console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2; // 指数バックオフ
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (i < retries - 1) {
+        console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
+async function fetchStatsForDonut(API_URL){
   try{
-    const r = await fetch(GAS + '?stats=1', { cache:'no-store' });
+    const r = await fetchWithRetry(API_URL + '/stats', { cache:'no-store' });
     if(!r.ok) throw 0;
     const d = await r.json();
     return {
@@ -2015,7 +2040,7 @@ function _renderResultCore(){
   document.body.dataset.theme = meta.base || 'NATURAL';
 
   // 一度だけ計測送信
-  if (!state._sentOnce && window.GAS_URL){
+  if (!state._sentOnce && window.API_URL){
     state._sentOnce = true;
     const sid = localStorage.getItem('km_session')
       || (localStorage.setItem('km_session',(crypto?.randomUUID?.()||Math.random().toString(36).slice(2))), localStorage.getItem('km_session'));
@@ -2226,10 +2251,10 @@ wireSeasonTabsAll(root); // ← これを追加.
     // 既に親ページで stats を持ってるならそれを使う
     if (window.__PREMIUM_STATS__) return window.__PREMIUM_STATS__;
 
-    // GAS_URL があれば使う
-    if (typeof GAS_URL === 'string' && GAS_URL.startsWith('http')){
+    // API_URL があれば使う
+    if (typeof API_URL === 'string' && API_URL.startsWith('http')){
       try{
-        const url = GAS_URL + (GAS_URL.includes('?') ? '&' : '?') + 'stats=1';
+        const url = API_URL + '/stats';
         const r = await fetch(url, { cache:'no-store' });
         if (r.ok){
           const d = await r.json();
@@ -2291,53 +2316,53 @@ wireSeasonTabsAll(root); // ← これを追加.
       </div>`;
   }
 
-  function statsSectionHTML(stats){
-    const total  = stats.total || Object.values(stats.byType||{}).reduce((a,b)=>a+b,0);
-    const byType = stats.byType || {};
-    const byBase = stats.byBase || computeByBase(byType);
-    const pct = k => total ? Math.round((byBase[k]||0)/total*100) : 0;
+  //function statsSectionHTML(stats){
+    //const total  = stats.total || Object.values(stats.byType||{}).reduce((a,b)=>a+b,0);
+    //const byType = stats.byType || {};
+    //const byBase = stats.byBase || computeByBase(byType);
+    //const pct = k => total ? Math.round((byBase[k]||0)/total*100) : 0;
 
-    return `
-      <section class="prm-stats">
-        <h3>タイプ割合（リアルタイム）</h3>
-        <p class="muted">各骨格の分布割合がリアルタイムで見れちゃう！あなたと同じ骨格の人がどれくらいの割合で存在しているのか見てみよう！</p>
-        <div class="prm-stats-row">
-          ${['WAVE','NATURAL','STRAIGHT'].map(base=>`
-            <div class="prm-stats-card" data-base="${base}">
-              ${donutHTML(base, pct(base))}
-              ${listHTML(base, byType, total)}
-            </div>
-          `).join('')}
-        </div>
-      </section>`;
-  }
+    //return `
+      //<section class="prm-stats">
+        //<h3>タイプ割合（リアルタイム）</h3>
+        //<p class="muted">各骨格の分布割合がリアルタイムで見れちゃう！あなたと同じ骨格の人がどれくらいの割合で存在しているのか見てみよう！</p>
+        //<div class="prm-stats-row">
+         // ${['WAVE','NATURAL','STRAIGHT'].map(base=>`
+            //<div class="prm-stats-card" data-base="${base}">
+              //${donutHTML(base, pct(base))}
+              //${listHTML(base, byType, total)}
+            //</div>
+         // `).join('')}
+        //</div>
+      //</section>`;
+  //}
 
-  function wireDonuts(host){
-    host.querySelectorAll('.prm-donut').forEach(el=>{
-      const base = el.getAttribute('data-base');
-      const prog = el.querySelector('[data-prog]');
-      const ring = 2*Math.PI*48; // r=48
-      const num  = Number(el.querySelector('.prm-donut-num')?.textContent.replace('%',''))||0;
-      const dash = (num/100)*ring;
-      if (prog){
-        prog.style.stroke = RING_COLOR[base] || '#d6a9b7';
-        prog.style.strokeDasharray = `${dash} ${ring-dash}`;
-      }
-    });
-  }
+  //function wireDonuts(host){
+    //host.querySelectorAll('.prm-donut').forEach(el=>{
+      //const base = el.getAttribute('data-base');
+      //const prog = el.querySelector('[data-prog]');
+     // const ring = 2*Math.PI*48; // r=48
+      //const num  = Number(el.querySelector('.prm-donut-num')?.textContent.replace('%',''))||0;
+      //const dash = (num/100)*ring;
+      //if (prog){
+       // prog.style.stroke = RING_COLOR[base] || '#d6a9b7';
+       // prog.style.strokeDasharray = `${dash} ${ring-dash}`;
+      //}
+   // });
+ // }
 
   // 公開：結果カード直後に挿入
-  window.renderPremiumStats = async function(){
-    const rootCard = document.querySelector('.card.result') ||
-                     document.getElementById('premium-root') ||
-                     document.getElementById('app');
-    if (!rootCard) return;
-    const stats = await fetchStats();
-    const html  = statsSectionHTML(stats);
-    rootCard.insertAdjacentHTML('afterend', html);
-    const section = rootCard.nextElementSibling;
-    wireDonuts(section);
-  };
+  //window.renderPremiumStats = async function(){
+    //const rootCard = document.querySelector('.card.result') ||
+                    // document.getElementById('premium-root') ||
+                    // document.getElementById('app');
+    //if (!rootCard) return;
+   // const stats = await fetchStats();
+   // const html  = statsSectionHTML(stats);
+    //rootCard.insertAdjacentHTML('afterend', html);
+    //const section = rootCard.nextElementSibling;
+   // wireDonuts(section);
+ // };
 })();
   (function(){
     const meta = window.TYPE_META?.[code] || { name:'', emoji:'' };
@@ -2373,16 +2398,24 @@ wireSeasonTabsAll(root); // ← これを追加.
       const answers  = state.answers || {};
       const sessionId= localStorage.getItem('km_session')
                     || (localStorage.setItem('km_session',(crypto?.randomUUID?.()||Math.random().toString(36).slice(2))), localStorage.getItem('km_session'));
-      if (!window.GAS_URL) { alert('GAS_URL が設定されていません'); return; }
-      const url = window.GAS_URL
-        + '?savePremium=1'
-        + '&email='    + encodeURIComponent(email)
-        + '&sessionId='+ encodeURIComponent(sessionId)
-        + '&code='     + encodeURIComponent(code)
-        + '&scores='   + encodeURIComponent(JSON.stringify(scores))
-        + '&answers='  + encodeURIComponent(JSON.stringify(answers));
+      if (!window.API_URL) { alert('API_URL が設定されていません'); return; }
+
+      const body = {
+        email,
+        sessionId,
+        code,
+        scores,
+        answers,
+        noMail: false
+      };
+
       try{
-        const res = await jsonp(url);
+        const response = await fetchWithRetry(`${window.API_URL}/premium`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const res = await response.json();
         if (!res?.ok) throw new Error(res?.error || '保存に失敗');
         alert('購入ありがとうございます！完全版URLをメールで送りました📩（迷惑メールもご確認ください）');
       }catch(e){ console.error(e); alert('メール送信に失敗しました。時間を置いて再度お試しください。'); }
