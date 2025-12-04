@@ -145,8 +145,8 @@
   </div>
   
   <script>
-/* ==== GASエンドポイント ==== */
-const GAS_URL = "https://script.google.com/macros/s/AKfycby2H5KNrr2prVQqs4pNCWTmw2U0FJ-_dDs6wg0A6qWsV9JjujZLGvvbBIn14Xt34RpO/exec";
+/* ==== AWS APIエンドポイント ==== */
+const API_URL = "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod";
 
 /* ==== 16タイプ（軽量メタ） ==== */
 const CODE_META = {
@@ -255,12 +255,12 @@ const EMOJIS_16 = [
 
 /* ==== メイン描画 ==== */
 async function fetchStats(){
-  const url = GAS_URL + '?stats=1';
   const res = { total:0, byType:{}, byBase:{WAVE:0,NATURAL:0,STRAIGHT:0} };
   try{
-    const r = await fetch(url, { cache:'no-store' });
+    const r = await fetch(`${API_URL}/stats`, { cache:'no-store' });
     if (!r.ok) return res;
     const data = await r.json();
+    if (!data.ok) return res;
     res.total  = data.total  || 0;
     res.byType = data.byType || {};
     res.byBase = data.byBase || { WAVE:0, NATURAL:0, STRAIGHT:0 };

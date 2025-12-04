@@ -1,0 +1,45 @@
+# AWS SAM
+.aws-sam/
+samconfig.toml
+
+# Parameters (contains secrets)
+parameters-*.json
+!parameters-*.json.example
+
+# Environment variables (contains secrets)
+.env
+.env.local
+.env.*.local
+
+# Node modules
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+
+# Build artifacts
+dist/
+build/
+*.zip
+
+# Coverage
+coverage/
+.nyc_output/

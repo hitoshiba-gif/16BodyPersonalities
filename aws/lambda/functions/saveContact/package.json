@@ -1,0 +1,10 @@
+{
+  "name": "save-contact",
+  "version": "1.0.0",
+  "description": "Save contact inquiry",
+  "main": "index.js",
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

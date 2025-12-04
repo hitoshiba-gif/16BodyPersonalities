@@ -1,0 +1,30 @@
+[
+  {
+    "ParameterKey": "DBHost",
+    "ParameterValue": "your-rds-instance.xxxxxx.ap-northeast-1.rds.amazonaws.com"
+  },
+  {
+    "ParameterKey": "DBPort",
+    "ParameterValue": "5432"
+  },
+  {
+    "ParameterKey": "DBName",
+    "ParameterValue": "16bp_production"
+  },
+  {
+    "ParameterKey": "DBUser",
+    "ParameterValue": "postgres"
+  },
+  {
+    "ParameterKey": "DBPassword",
+    "ParameterValue": "YOUR_SECURE_PASSWORD_HERE"
+  },
+  {
+    "ParameterKey": "BaseURL",
+    "ParameterValue": "https://16bodypersonalities.com"
+  },
+  {
+    "ParameterKey": "FromEmail",
+    "ParameterValue": "noreply@16bodypersonalities.com"
+  }
+]

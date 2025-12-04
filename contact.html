@@ -236,14 +236,19 @@
       };
 
       try {
-        // ★ ここにあなたのGoogle Apps Script URLを挿入！
-        const res = await fetch("https://script.google.com/macros/s/AKfycbwduui6FJMJ7fCa0sP_F4JsuR3GHT42NWfGX0xK5gseWVG232j_U4IVca6h_rX6tE7rxg/exec", {
+        const API_URL = "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod";
+        const res = await fetch(`${API_URL}/contact`, {
           method: "POST",
-          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         });
-        status.textContent = "ありがとうございます！送信が完了しました 🎉";
-        e.target.reset();
+        const result = await res.json();
+        if (result.ok) {
+          status.textContent = "ありがとうございます！送信が完了しました 🎉";
+          e.target.reset();
+        } else {
+          throw new Error(result.error || '送信に失敗しました');
+        }
       } catch(err) {
         console.error(err);
         status.textContent = "エラーが発生しました。時間をおいて再度お試しください。";

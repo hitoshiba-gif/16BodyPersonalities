@@ -66,21 +66,20 @@
 
 <script>
   document.body.dataset.theme = 'WAVE';
-  // ============ Google Sheets連携設定 ============
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyXIJtmz6TIUVPmZ_KcwKiQ1ZjueMvhrV5UC_F3FkiWZkwfi-WwYpUvIXiK8p_Ta-5E/exec"
+  // ============ AWS API連携設定 ============
+const API_URL = "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod"
 function sendToSheets(payload){
-  console.log('[GAS] sending...', payload);
-  return fetch(GAS_URL, {
+  console.log('[API] sending...', payload);
+  return fetch(`${API_URL}/diagnoses`, {
     method: "POST",
-    // ★ プリフライトを発生させない許可タイプ
-    headers: { "Content-Type": "text/plain" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   })
-  .then(r => r.text().then(t => {
-    console.log('[GAS] response:', r.status, t);
-    return { status: r.status, body: t };
+  .then(r => r.json().then(data => {
+    console.log('[API] response:', r.status, data);
+    return { status: r.status, body: data };
   }))
-  .catch(e => console.error('[GAS] error:', e));
+  .catch(e => console.error('[API] error:', e));
 }
 
 // ユーザーの同意状態を保存/取得（ローカルに保持）
@@ -1564,6 +1563,14 @@ ${groupHTML}
     <button class="share-btn" id="btn-copy">リンクをコピー</button>
   </div>
 
+  <div class="premium-cta" style="margin-top:24px;padding:20px;background:linear-gradient(135deg,#fff6f9,#f0f9ff);border-radius:16px;border:2px solid #ffd6e8;">
+    <h3 style="margin-top:0;color:#d63384;">💎 完全版レポートを購入</h3>
+    <p style="color:#666;margin:8px 0 16px;">より詳細な分析・パーソナルカラー提案・フィットチェックなどが含まれます</p>
+    <button id="buy-premium" style="background:linear-gradient(135deg,#ff69b4,#ff1493);color:white;border:none;padding:14px 32px;border-radius:999px;font-weight:bold;font-size:16px;cursor:pointer;box-shadow:0 4px 12px rgba(255,20,147,0.3);transition:transform 0.2s;">
+      完全版を購入する（¥300）
+    </button>
+  </div>
+
         <div class="controls">
           <button id="retry" class="secondary">もう一度</button>
         </div>
@@ -1627,7 +1634,7 @@ if (!state._sentOnce) {
   };
 })();
 
-const buyBtn = el.querySelector('#buy-premium');
+const buyBtn = document.querySelector('#buy-premium');
 if (buyBtn){
   buyBtn.addEventListener('click', () => {
     // ここで都度、最新の結果を取得
@@ -1734,7 +1741,7 @@ function jsonp(url){
 
     let data;
     try {
-      const r = await fetch(GAS_URL + '?stats=1', { cache:'no-store' });
+      const r = await fetch(API_URL + '/stats', { cache:'no-store' });
       data = await r.json();
     } catch(e) {
       data = {

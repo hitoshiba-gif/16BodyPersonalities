@@ -1,0 +1,12 @@
+{
+  "name": "save-premium",
+  "version": "1.0.0",
+  "description": "Save premium report and issue token",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.490.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

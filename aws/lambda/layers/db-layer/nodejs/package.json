@@ -1,0 +1,12 @@
+{
+  "name": "16bp-db-layer",
+  "version": "1.0.0",
+  "description": "Database connection and utilities for 16BodyPersonalities Lambda functions",
+  "main": "db.js",
+  "dependencies": {
+    "pg": "^8.11.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

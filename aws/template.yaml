@@ -1,0 +1,199 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 16BodyPersonalities API Backend
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: nodejs18.x
+    MemorySize: 512
+    Environment:
+      Variables:
+        DB_HOST: !Ref DBHost
+        DB_PORT: !Ref DBPort
+        DB_NAME: !Ref DBName
+        DB_USER: !Ref DBUser
+        DB_PASSWORD: !Ref DBPassword
+        DB_SSL: 'true'
+        BASE_URL: !Ref BaseURL
+        FROM_EMAIL: !Ref FromEmail
+        NODE_ENV: production
+    Layers:
+      - !Ref DbLayer
+
+Parameters:
+  DBHost:
+    Type: String
+    Description: PostgreSQL host address
+  DBPort:
+    Type: String
+    Default: '5432'
+    Description: PostgreSQL port
+  DBName:
+    Type: String
+    Default: '16bp_production'
+    Description: Database name
+  DBUser:
+    Type: String
+    Description: Database user
+  DBPassword:
+    Type: String
+    NoEcho: true
+    Description: Database password
+  BaseURL:
+    Type: String
+    Default: 'https://16bodypersonalities.com'
+    Description: Base URL for premium links
+  FromEmail:
+    Type: String
+    Default: 'noreply@16bodypersonalities.com'
+    Description: From email address for SES
+
+Resources:
+  # Lambda Layer (Database connection)
+  DbLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: 16bp-db-layer
+      Description: Database connection and utilities
+      ContentUri: lambda/layers/db-layer/
+      CompatibleRuntimes:
+        - nodejs18.x
+    Metadata:
+      BuildMethod: nodejs18.x
+
+  # API Gateway
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      GatewayResponses:
+        DEFAULT_4XX:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+        DEFAULT_5XX:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  # Lambda Functions
+
+  SaveDiagnosisFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 16bp-saveDiagnosis
+      CodeUri: lambda/functions/saveDiagnosis/
+      Handler: index.handler
+      Description: Save diagnosis results
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /diagnoses
+            Method: POST
+
+  GetStatsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 16bp-getStats
+      CodeUri: lambda/functions/getStats/
+      Handler: index.handler
+      Description: Get diagnosis statistics
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /stats
+            Method: GET
+
+  SavePremiumFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 16bp-savePremium
+      CodeUri: lambda/functions/savePremium/
+      Handler: index.handler
+      Description: Save premium report and issue token
+      Policies:
+        - SESCrudPolicy:
+            IdentityName: !Ref FromEmail
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /premium
+            Method: POST
+
+  GetPremiumFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 16bp-getPremium
+      CodeUri: lambda/functions/getPremium/
+      Handler: index.handler
+      Description: Get premium report by token
+      Events:
+        ApiPath:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /premium/{token}
+            Method: GET
+        ApiQuery:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /premium
+            Method: GET
+
+  ResendPremiumFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 16bp-resendPremium
+      CodeUri: lambda/functions/resendPremium/
+      Handler: index.handler
+      Description: Resend premium URL by email
+      Policies:
+        - SESCrudPolicy:
+            IdentityName: !Ref FromEmail
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /premium/resend
+            Method: POST
+
+  SaveContactFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 16bp-saveContact
+      CodeUri: lambda/functions/saveContact/
+      Handler: index.handler
+      Description: Save contact inquiry
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /contact
+            Method: POST
+
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/prod"
+    Export:
+      Name: 16BP-API-Endpoint
+
+  DbLayerArn:
+    Description: "DB Layer ARN"
+    Value: !Ref DbLayer
+    Export:
+      Name: 16BP-DB-Layer-ARN

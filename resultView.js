@@ -3,14 +3,14 @@
 // 依存が足りなくても落ちないようにフォールバックを同梱
 // ==================================================
 // === [PATCH-1] Premium判定 & 取得 ===
-window.GAS_URL = window.GAS_URL || "https://script.google.com/macros/s/AKfycbyXIJtmz6TIUVPmZ_KcwKiQ1ZjueMvhrV5UC_F3FkiWZkwfi-WwYpUvIXiK8p_Ta-5E/exec";
+window.API_URL = window.API_URL || "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod";
 const isPremium = () =>
   (document.body?.dataset?.page === 'premium') ||
   /premium\.html/.test(location.pathname);
 
-async function fetchStatsForDonut(GAS){
+async function fetchStatsForDonut(API_URL){
   try{
-    const r = await fetch(GAS + '?stats=1', { cache:'no-store' });
+    const r = await fetch(API_URL + '/stats', { cache:'no-store' });
     if(!r.ok) throw 0;
     const d = await r.json();
     return {
@@ -2015,7 +2015,7 @@ function _renderResultCore(){
   document.body.dataset.theme = meta.base || 'NATURAL';
 
   // 一度だけ計測送信
-  if (!state._sentOnce && window.GAS_URL){
+  if (!state._sentOnce && window.API_URL){
     state._sentOnce = true;
     const sid = localStorage.getItem('km_session')
       || (localStorage.setItem('km_session',(crypto?.randomUUID?.()||Math.random().toString(36).slice(2))), localStorage.getItem('km_session'));
@@ -2226,10 +2226,10 @@ wireSeasonTabsAll(root); // ← これを追加.
     // 既に親ページで stats を持ってるならそれを使う
     if (window.__PREMIUM_STATS__) return window.__PREMIUM_STATS__;
 
-    // GAS_URL があれば使う
-    if (typeof GAS_URL === 'string' && GAS_URL.startsWith('http')){
+    // API_URL があれば使う
+    if (typeof API_URL === 'string' && API_URL.startsWith('http')){
       try{
-        const url = GAS_URL + (GAS_URL.includes('?') ? '&' : '?') + 'stats=1';
+        const url = API_URL + '/stats';
         const r = await fetch(url, { cache:'no-store' });
         if (r.ok){
           const d = await r.json();
@@ -2373,16 +2373,24 @@ wireSeasonTabsAll(root); // ← これを追加.
       const answers  = state.answers || {};
       const sessionId= localStorage.getItem('km_session')
                     || (localStorage.setItem('km_session',(crypto?.randomUUID?.()||Math.random().toString(36).slice(2))), localStorage.getItem('km_session'));
-      if (!window.GAS_URL) { alert('GAS_URL が設定されていません'); return; }
-      const url = window.GAS_URL
-        + '?savePremium=1'
-        + '&email='    + encodeURIComponent(email)
-        + '&sessionId='+ encodeURIComponent(sessionId)
-        + '&code='     + encodeURIComponent(code)
-        + '&scores='   + encodeURIComponent(JSON.stringify(scores))
-        + '&answers='  + encodeURIComponent(JSON.stringify(answers));
+      if (!window.API_URL) { alert('API_URL が設定されていません'); return; }
+
+      const body = {
+        email,
+        sessionId,
+        code,
+        scores,
+        answers,
+        noMail: false
+      };
+
       try{
-        const res = await jsonp(url);
+        const response = await fetch(`${window.API_URL}/premium`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const res = await response.json();
         if (!res?.ok) throw new Error(res?.error || '保存に失敗');
         alert('購入ありがとうございます！完全版URLをメールで送りました📩（迷惑メールもご確認ください）');
       }catch(e){ console.error(e); alert('メール送信に失敗しました。時間を置いて再度お試しください。'); }
