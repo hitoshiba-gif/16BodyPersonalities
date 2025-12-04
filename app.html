@@ -60,64 +60,7 @@
   <!-- ==== Result Gate UI (CPV対応) ==== -->
 
   <!-- ====== Realtime Cute Dashboard ====== -->
-<section id="cute-stats" class="dash card" style="margin-top:16px;">
-  <div class="dash-head">
-    <h2>タイプ割合（リアルタイム）</h2>
-    <p class="muted">各骨格の分布割合がリアルタイムで見れちゃう！あなたと同じ骨格の人がどれくらいの割合で存在しているのか見てみよう！</p>
-  </div>
 
-  <!-- 3ベースのドーナツ（WAVE / NATURAL / STRAIGHT） -->
-  <div class="donut-row">
-    <div class="donut-card" data-base="WAVE">
-      <div class="donut" data-key="WAVE">
-        <svg viewBox="0 0 120 120" class="ring">
-          <circle cx="60" cy="60" r="48" class="track"></circle>
-          <circle cx="60" cy="60" r="48" class="prog" data-prog></circle>
-        </svg>
-        <div class="donut-center">
-          <div class="donut-title">WAVE</div>
-          <div class="donut-num" data-num="WAVE">0%</div>
-        </div>
-      </div>
-      <div class="chips mini" data-chip="WAVE"></div>
-    </div>
-
-    <div class="donut-card" data-base="NATURAL">
-      <div class="donut" data-key="NATURAL">
-        <svg viewBox="0 0 120 120" class="ring">
-          <circle cx="60" cy="60" r="48" class="track"></circle>
-          <circle cx="60" cy="60" r="48" class="prog" data-prog></circle>
-        </svg>
-        <div class="donut-center">
-          <div class="donut-title">NATURAL</div>
-          <div class="donut-num" data-num="NATURAL">0%</div>
-        </div>
-      </div>
-      <div class="chips mini" data-chip="NATURAL"></div>
-    </div>
-
-    <div class="donut-card" data-base="STRAIGHT">
-      <div class="donut" data-key="STRAIGHT">
-        <svg viewBox="0 0 120 120" class="ring">
-          <circle cx="60" cy="60" r="48" class="track"></circle>
-          <circle cx="60" cy="60" r="48" class="prog" data-prog></circle>
-        </svg>
-        <div class="donut-center">
-          <div class="donut-title">STRAIGHT</div>
-          <div class="donut-num" data-num="STRAIGHT">0%</div>
-        </div>
-      </div>
-      <div class="chips mini" data-chip="STRAIGHT"></div>
-    </div>
-  </div>
-
-  <!-- 16タイプの“動物バッジ＋バー”グリッド -->
-  <div class="type-grid" id="typeGrid"></div>
-
-  <div class="small muted" style="margin-top:8px;">
-    ※ 直近サンプルからの比率／表示は自動リフレッシュされます
-  </div>
-</section>
 
 </div>
 
@@ -1772,76 +1715,6 @@ function jsonp(url){
     document.head.appendChild(s);
   });
 }
-
-// === 集計データ反映 ===
-async function refreshCuteStats(){
-  const data = await jsonp(GAS_URL + '?stats=1');
-  if (!data?.ok) return console.warn('No valid data from GAS');
-
-  const byType = data.byType || {};
-  const total  = data.total || 1;
-  const byBase = data.byBase || {WAVE:0,NATURAL:0,STRAIGHT:0};
-  const ALL_CODES = Object.keys(TYPE_META);
-
-  // ---- 3ベースドーナツ ----
-  for(const base of ['WAVE','NATURAL','STRAIGHT']){
-    const pct = Math.round((byBase[base]||0) / total * 100);
-    const donut = document.querySelector(`.donut[data-key="${base}"]`);
-    const numEl = document.querySelector(`.donut-num[data-num="${base}"]`);
-    if(donut && numEl){
-      numEl.textContent = pct + '%';
-      const C = 2 * Math.PI * 48;
-      const dash = (pct/100) * C;
-      const prog = donut.querySelector('[data-prog]');
-      if(prog) prog.style.strokeDasharray = `${dash} ${C-dash}`;
-    }
-
-    const chipBox = document.querySelector(`.chips.mini[data-chip="${base}"]`);
-    if(chipBox){
-      const group = ALL_CODES
-        .filter(c => TYPE_META[c]?.base === base)
-        .map(c => ({ code:c, n:byType[c]||0 }))
-        .sort((a,b)=>b.n - a.n);
-
-      chipBox.innerHTML = group.map(g=>{
-        const nick = (window.TYPE_NICK && TYPE_NICK[g.code]?.label) || g.code;
-        const emo  = TYPE_META[g.code]?.emoji ?? '🧭';
-        const pct  = ((g.n / total) * 100).toFixed(1);
-        return `<span class="chip" title="${nick}">${emo} ${nick}
-                  <span class="small muted" style="margin-left:4px;">${pct}%</span>
-                </span>`;
-      }).join('');
-    }
-  }
-
-  // ---- 16タイプグリッド ----
-  const grid = document.getElementById('typeGrid');
-  if(grid){
-    const max = Math.max(...Object.values(byType),1);
-    grid.innerHTML = ALL_CODES.map(code=>{
-      const n = byType[code] || 0;
-      const pct = Math.round(n / total * 100);
-      const width = Math.max(3, Math.round(n / max * 100));
-      const emo  = TYPE_META[code]?.emoji ?? '🧭';
-      const nick = (window.TYPE_NICK && TYPE_NICK[code]?.label) || code;
-      return `
-        <div class="type-cell" data-code="${code}" title="${code}">
-          <div class="type-ico">${emo}</div>
-          <div class="type-meta">
-            <div class="type-name">${nick} <span class="muted">(${code})</span></div>
-            <div class="type-bar"><i style="width:${width}%"></i></div>
-            <div class="small muted" style="margin-top:4px">${pct}% ・ ${n}件</div>
-          </div>
-        </div>`;
-    }).join('');
-  }
-}
-
-// 起動＆自動更新
-document.addEventListener('DOMContentLoaded', ()=>{
-  refreshCuteStats();
-  setInterval(refreshCuteStats, 60000);
-});
 </script>
 
 
@@ -1899,7 +1772,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   renderTypeDistributionCards();
-  setInterval(renderTypeDistributionCards, 60000);
+  setInterval(renderTypeDistributionCards, 600000000);
 
 
 
