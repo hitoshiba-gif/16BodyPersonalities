@@ -2316,53 +2316,53 @@ wireSeasonTabsAll(root); // ← これを追加.
       </div>`;
   }
 
-  function statsSectionHTML(stats){
-    const total  = stats.total || Object.values(stats.byType||{}).reduce((a,b)=>a+b,0);
-    const byType = stats.byType || {};
-    const byBase = stats.byBase || computeByBase(byType);
-    const pct = k => total ? Math.round((byBase[k]||0)/total*100) : 0;
+  //function statsSectionHTML(stats){
+    //const total  = stats.total || Object.values(stats.byType||{}).reduce((a,b)=>a+b,0);
+    //const byType = stats.byType || {};
+    //const byBase = stats.byBase || computeByBase(byType);
+    //const pct = k => total ? Math.round((byBase[k]||0)/total*100) : 0;
 
-    return `
-      <section class="prm-stats">
-        <h3>タイプ割合（リアルタイム）</h3>
-        <p class="muted">各骨格の分布割合がリアルタイムで見れちゃう！あなたと同じ骨格の人がどれくらいの割合で存在しているのか見てみよう！</p>
-        <div class="prm-stats-row">
-          ${['WAVE','NATURAL','STRAIGHT'].map(base=>`
-            <div class="prm-stats-card" data-base="${base}">
-              ${donutHTML(base, pct(base))}
-              ${listHTML(base, byType, total)}
-            </div>
-          `).join('')}
-        </div>
-      </section>`;
-  }
+    //return `
+      //<section class="prm-stats">
+        //<h3>タイプ割合（リアルタイム）</h3>
+        //<p class="muted">各骨格の分布割合がリアルタイムで見れちゃう！あなたと同じ骨格の人がどれくらいの割合で存在しているのか見てみよう！</p>
+        //<div class="prm-stats-row">
+         // ${['WAVE','NATURAL','STRAIGHT'].map(base=>`
+            //<div class="prm-stats-card" data-base="${base}">
+              //${donutHTML(base, pct(base))}
+              //${listHTML(base, byType, total)}
+            //</div>
+         // `).join('')}
+        //</div>
+      //</section>`;
+  //}
 
-  function wireDonuts(host){
-    host.querySelectorAll('.prm-donut').forEach(el=>{
-      const base = el.getAttribute('data-base');
-      const prog = el.querySelector('[data-prog]');
-      const ring = 2*Math.PI*48; // r=48
-      const num  = Number(el.querySelector('.prm-donut-num')?.textContent.replace('%',''))||0;
-      const dash = (num/100)*ring;
-      if (prog){
-        prog.style.stroke = RING_COLOR[base] || '#d6a9b7';
-        prog.style.strokeDasharray = `${dash} ${ring-dash}`;
-      }
-    });
-  }
+  //function wireDonuts(host){
+    //host.querySelectorAll('.prm-donut').forEach(el=>{
+      //const base = el.getAttribute('data-base');
+      //const prog = el.querySelector('[data-prog]');
+     // const ring = 2*Math.PI*48; // r=48
+      //const num  = Number(el.querySelector('.prm-donut-num')?.textContent.replace('%',''))||0;
+      //const dash = (num/100)*ring;
+      //if (prog){
+       // prog.style.stroke = RING_COLOR[base] || '#d6a9b7';
+       // prog.style.strokeDasharray = `${dash} ${ring-dash}`;
+      //}
+   // });
+ // }
 
   // 公開：結果カード直後に挿入
-  window.renderPremiumStats = async function(){
-    const rootCard = document.querySelector('.card.result') ||
-                     document.getElementById('premium-root') ||
-                     document.getElementById('app');
-    if (!rootCard) return;
-    const stats = await fetchStats();
-    const html  = statsSectionHTML(stats);
-    rootCard.insertAdjacentHTML('afterend', html);
-    const section = rootCard.nextElementSibling;
-    wireDonuts(section);
-  };
+  //window.renderPremiumStats = async function(){
+    //const rootCard = document.querySelector('.card.result') ||
+                    // document.getElementById('premium-root') ||
+                    // document.getElementById('app');
+    //if (!rootCard) return;
+   // const stats = await fetchStats();
+   // const html  = statsSectionHTML(stats);
+    //rootCard.insertAdjacentHTML('afterend', html);
+    //const section = rootCard.nextElementSibling;
+   // wireDonuts(section);
+ // };
 })();
   (function(){
     const meta = window.TYPE_META?.[code] || { name:'', emoji:'' };
