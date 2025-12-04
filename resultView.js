@@ -1973,18 +1973,31 @@ function baseLabel(b){
        : b==='NATURAL'?'NATURAL（骨感・直線・ラフ）' : (b||'');
 }
 
-// ==================================================
-// かわいい統計（任意）
-// ==================================================
-async function refreshCuteStats(){
-  if (!window.GAS_URL) return;
-  try{
-    const data = await jsonp(window.GAS_URL + '?stats=1');
-    if (!data?.ok) return;
-    // 必要なら描画を追加
-  }catch(e){ console.warn(e); }
-}
+//let isRefreshingCuteStats = false;
+//==================================================
+//かわいい統計（任意）
+//==================================================
+//async function refreshCuteStats() {
+  //if (!window.GAS_URL) return;
 
+  // すでにリクエスト中なら新しいリクエストは投げない
+  //if (isRefreshingCuteStats) return;
+  //isRefreshingCuteStats = true;
+
+  //try {
+    //const data = await jsonp(window.GAS_URL + '?stats=1');
+    //if (!data?.ok) return;
+
+    // TODO: 必要ならここで stats の描画処理を呼ぶ
+     //renderCuteStats(data) //みたいなのがあればここで呼ぶ
+
+  //} catch (e) {
+    //console.warn('[cuteStats] JSONP error', e);
+  //} finally {
+    // 終わったらフラグ解除（成功でも失敗でも）
+    //isRefreshingCuteStats = false;
+  //}
+//}
 // ==================================================
 // メイン描画
 // ==================================================
@@ -2401,9 +2414,9 @@ if (typeof window.renderPremiumStats === 'function') {
 function renderResult(){ _renderResultCore(); }
 
 // 任意：自動で統計更新
-try{
-  document.addEventListener('DOMContentLoaded', ()=>{
-    refreshCuteStats();
-    setInterval(refreshCuteStats, 60_000);
-  });
-}catch(_){}
+//try{
+  //document.addEventListener('DOMContentLoaded', ()=>{
+    //refreshCuteStats();
+    //setInterval(refreshCuteStats, 300000);
+ // });
+//}catch(_){}
