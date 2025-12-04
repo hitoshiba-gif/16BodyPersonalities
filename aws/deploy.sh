@@ -7,8 +7,8 @@
 set -e  # エラーで停止
 
 ENV=${1:-production}
-STACK_NAME="16bp-backend-${ENV}"
-S3_BUCKET="16bp-deployment-${ENV}"
+STACK_NAME="bp16-backend-${ENV}"
+S3_BUCKET="bp16-deployment-${ENV}"
 REGION="ap-northeast-1"
 
 echo "========================================="
@@ -29,9 +29,9 @@ fi
 
 # Lambda Layer の依存関係をインストール
 echo "Installing Lambda Layer dependencies..."
-cd lambda/layers/db-layer/nodejs
+cd lambda/layers/db-layer
 npm install --production
-cd ../../../../
+cd ../../../
 
 # 各Lambda関数の依存関係をインストール
 echo "Installing Lambda function dependencies..."
@@ -76,13 +76,16 @@ fi
 echo "Building SAM application..."
 sam build
 
+# パラメータをJSONから読み取って文字列に変換
+PARAMS=$(cat ${PARAM_FILE} | jq -r '.[] | "\(.ParameterKey)=\(.ParameterValue)"' | tr '\n' ' ')
+
 # SAM デプロイ
 echo "Deploying to AWS..."
 sam deploy \
   --template-file .aws-sam/build/template.yaml \
   --stack-name ${STACK_NAME} \
   --s3-bucket ${S3_BUCKET} \
-  --parameter-overrides file://${PARAM_FILE} \
+  --parameter-overrides ${PARAMS} \
   --capabilities CAPABILITY_IAM \
   --region ${REGION} \
   --no-fail-on-empty-changeset
