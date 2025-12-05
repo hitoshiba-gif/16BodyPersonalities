@@ -325,6 +325,7 @@
     return { code: code2, scores:scores2, answers:answers2, sessionId:sessionIdLS };
   }
 
+  // ▼▼▼ この関数を丸ごと上書きしてください ▼▼▼
   async function issueLink(payload){
     if(!payload?.code){ setStatus('진단 코드를 찾을 수 없습니다. 먼저 진단을 완료해 주세요.','err'); return; }
     setStatus('링크 발행 중…✨');
@@ -346,9 +347,27 @@
       });
       const res = await response.json();
       if(!res?.ok) throw new Error(res?.error || '전송 실패');
-      const token = res?.token || res?.data?.token || '';
-      if(!token) throw new Error('토큰 없음');
-      const fullURL = (res.link || (BASE_URL + '/premium-ko.html?token=' + encodeURIComponent(token)));
+
+      // --- 修正箇所: トークンを確実に取得して、韓国語URLを作る ---
+      
+      // 1. まず素直にトークンを探す
+      let token = res?.token || res?.data?.token || '';
+
+      // 2. もしトークンが無くて、リンクがあるなら、リンクから無理やり抜き出す
+      if (!token && res.link) {
+        try {
+          const urlObj = new URL(res.link);
+          token = urlObj.searchParams.get('token'); 
+        } catch(e) {}
+      }
+
+      if(!token) throw new Error('토큰을 찾을 수 없습니다 (Server response missing token)');
+
+      // 3. 抜き出したトークンを使って、強制的に韓国語版URLを作る
+      // ★ここがポイント！ base + premium-ko.html + token
+      const fullURL = BASE_URL + '/premium-ko.html?token=' + encodeURIComponent(token);
+
+      // -------------------------------------------------------
 
       elLinkBox.textContent = fullURL;
       elLinkBox.dataset.url = fullURL;
@@ -362,6 +381,7 @@
       setStatus('오류: '+(e?.message||e), 'err');
     }
   }
+  // ▲▲▲ ここまで ▲▲▲
 
   // ===== 실행 =====
   window.addEventListener('DOMContentLoaded', ()=>{
@@ -396,7 +416,7 @@
     if(url) window.open(url, '_blank', 'noopener');
   });
 
-  elHome.addEventListener('click', ()=> location.href='index.html');
+  elHome.addEventListener('click', ()=> location.href='index-ko.html');
   </script>
 </body>
 </html>
