@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>16BodyPersonalities</title>
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="WAVE"> <header class="site-header">
+  <a class="brand" href="index-ko.html">16Body<span>Personalities</span></a>
+
+  <nav class="nav-links">
+    <a href="index-ko.html" class="chip-btn">홈</a>
+    <a href="gallery-ko.html" class="chip-btn">타입 갤러리</a>
+    <a href="contact-ko.html" class="chip-btn">문의하기</a>
+  </nav>
+
+  <button class="hamburger" id="navOpen" aria-label="메뉴" aria-controls="drawer" aria-expanded="false">
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <a class="drawer-brand">16Body<span>Personalities</span></a>
+    <button class="drawer-close" id="navClose" aria-label="닫기">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="drawer-links">
+    <a href="index-ko.html" class="drawer-item">홈</a>
+    <a href="app-ko.html" class="drawer-item">진단 시작하기</a>
+    <a href="gallery-ko.html" class="drawer-item">타입 갤러리</a>
+    <a href="privacy-ko.html" class="drawer-item">개인정보처리방침</a>
+    <a href="terms-ko.html" class="drawer-item">이용약관</a>
+    <a href="contact-ko.html" class="drawer-item">문의하기</a>
+  </nav>
+</aside>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="topbar-spacer"></div> <section class="card hero-card hero-cute">
+  <div class="hero-bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="hero-inner">
+
+    <h2 class="hero-title">
+      당신의 <span class="sparkle">Body</span> Personalities 진단
+    </h2>
+    <p class="muted">16가지 체형 진단으로 나만의 구조를 알아보세요.</p>
+
+    <div class="controls cute-cta">
+      <button class="btn-cta" onclick="location.href='app-ko.html'">진단 시작하기</button>
+      <button class="btn-ghost" onclick="location.href='gallery-ko.html'">타입 보기</button>
+    </div>
+
+    <div class="emoji-ribbon full" id="emojiRibbon" aria-hidden="true">
+  <div class="ribbon-track" id="ribbonTrack">
+    <span class="loop">🐨 🐺 🦋 🐹 🕊 🐻 🦄 🦅 🦊 🦌 🐆 🦈 🐅 🦚 🐬 🦉</span>
+  </div>
+</div>
+<section class="about-16bp cute-luxe" id="about-16bp">
+  <div class="about-frame">
+    <span class="corner c1"></span>
+    <span class="corner c2"></span>
+    <span class="corner c3"></span>
+    <span class="corner c4"></span>
+
+    <div class="about-head">
+      <span class="about-badge">Our Philosophy</span>
+      <h3 class="about-title">
+        골격을 '틀'이 아닌 '개성'으로 바라보는, 16BodyPersonalities
+      </h3>
+      <p class="about-sub">
+        우리는 당신의 신체에 깃든 "구조적 뉘앙스"를 섬세하게 언어화합니다.
+      </p>
+    </div>
+
+    <div class="about-body">
+      <p>
+        세상에는 <b>3가지 타입</b>이나 <b>8가지 타입</b>의 골격 진단이 널리 알려져 있습니다. 하지만 실제 신체는 훨씬 섬세하고 풍부합니다.
+        같은 어깨너비라도 둥근 느낌, 뼈의 존재감, 무게중심, 근육 형태의 미세한 차이로 인해 풍기는 인상은 크게 달라집니다.
+      </p>
+      <p>
+        기존의 "상자"에 분류할수록 당신만의 고유한 질감은 사라져 버립니다. 우리는 그 과제를 마주하고,
+        골격을 <b>4가지 축 (Frame / Surface / Balance / Line)</b>으로 분해했습니다. 각 축의 강약 조합을 통해, 단순한 확장이 아닌
+        <b>16가지 퍼스널리티</b>를 그려냈습니다.
+      </p>
+      <p>
+        16BodyPersonalities는 당신을 틀에 가두는 진단이 아닙니다.<br/>
+        당신의 "본연의 구조미"를 <em>부드럽고, 정밀하게, 그리고 고급스럽게</em> 끌어내기 위한 새로운 언어입니다.
+      </p>
+    </div>
+
+    <div class="about-actions">
+      <a class="btn luxe" href="app-ko.html">진단 시작하기</a>
+      <a class="btn ghost" href="gallery-ko.html" aria-label="타입 보기">
+        타입 보기
+      </a>
+    </div>
+  </div>
+</section>
+</div>
+</section>
+
+<footer class="footer">
+      <span class="small">© 2025 16BodyPersonalities Project</span>
+      <span>
+    <a class="muted" href="terms-ko.html">Terms</a> ・
+    <a class="muted" href="privacy-ko.html">Privacy</a>
+  </span>
+</footer>
+    </footer>
+  </div>
+  
+  <script>
+/* ==== AWS API 엔드포인트 ==== */
+const API_URL = "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod";
+
+/* ==== 16타입 (동물 이름 한국어 변환) ==== */
+const CODE_META = {
+  BNLS:{emoji:'🐨', label:'골격 코알라'},    MNLC:{emoji:'🐺', label:'골격 늑대'},
+  MWLC:{emoji:'🦋', label:'골격 나비'},      MWLS:{emoji:'🐹', label:'골격 햄스터'},
+  MNLS:{emoji:'🕊', label:'골격 비둘기'},    BNLC:{emoji:'🐻', label:'골격 테디'},
+  BWUC:{emoji:'🦄', label:'골격 유니콘'},    BWUS:{emoji:'🦅', label:'골격 독수리'},
+  BWLC:{emoji:'🦊', label:'골격 여우'},      BWLS:{emoji:'🦌', label:'골격 밤비'},
+  BNUS:{emoji:'🐆', label:'골격 표범'},      MWUC:{emoji:'🦈', label:'골격 상어'},
+  MNUC:{emoji:'🐅', label:'골격 호랑이'},    MNUS:{emoji:'🦚', label:'골격 공작'},
+  MWUS:{emoji:'🐬', label:'골격 돌고래'},    BNUC:{emoji:'🦉', label:'골격 올빼미'},
+};
+const ALL_CODES = Object.keys(CODE_META);
+
+
+/* 16타입 동물 이모지 */
+const EMOJIS_16 = [
+  '🐨','🐺','🦋','🐹','🕊','🐻','🦄','🦅',
+  '🦊','🦌','🐆','🦈','🐅','🦚','🐬','🦉'
+];
+
+(function makeEmojiCloud() {
+  const host = document.querySelector('.emoji-cloud');
+  if (!host) return;
+
+  const N = 18; 
+  const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  const isMobile = vw < 480;
+
+  for (let i = 0; i < N; i++) {
+    const span = document.createElement('span');
+    span.className = 'emo';
+    span.textContent = EMOJIS_16[i % EMOJIS_16.length];
+
+    const size   = isMobile ? rand(18, 28)  : rand(22, 34);
+    const x      = rand(6, 94);      // 가로 위치 %
+    const yStart = rand(102, 120);   // 화면 아래에서
+    const dur    = rand(10, 16);     // 부유 시간
+    const delay  = rand(-8, 6);      // 시간차
+    const drift  = rand(14, 28);     // 좌우 흔들림
+    const rot    = rand(6, 14) * (Math.random() < .5 ? -1 : 1);
+    const travel = isMobile ? rand(48, 60) : rand(55, 70); // 상승 거리（vh）
+    const opacity= rand(55, 80) / 100;
+
+    span.style.setProperty('--size', size);
+    span.style.setProperty('--x', x);
+    span.style.setProperty('--yStart', yStart);
+    span.style.setProperty('--dur', dur + 's');
+    span.style.setProperty('--delay', delay + 's');
+    span.style.setProperty('--drift', drift + 'px');
+    span.style.setProperty('--rot', rot + 'deg');
+    span.style.setProperty('--heightTravel', travel + 'vh');
+    span.style.setProperty('--opacity', opacity);
+
+    host.appendChild(span);
+  }
+
+  function rand(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+})();
+</script>
+<script>
+  (function(){
+    const ribbon = document.getElementById('emojiRibbon');
+    const track  = document.getElementById('ribbonTrack');
+    if(!ribbon || !track) return;
+
+    const durSec = Number(ribbon.dataset.speed || 28);
+    track.style.setProperty('--dur', durSec + 's');
+
+    const base = track.querySelector('.loop');
+    if(!base) return;
+
+    const needWidth = () => ribbon.clientWidth * 2.2;
+    while (track.scrollWidth < needWidth()) {
+      track.appendChild(base.cloneNode(true));
+    }
+    track.appendChild(base.cloneNode(true));
+
+    const half = track.scrollWidth / 2;
+    const gap  = Math.max(0, half - ribbon.clientWidth);
+    const ratio = half ? (gap / half) : 0;
+    const delaySec = -(ratio * durSec);
+    track.style.setProperty('--delay', delaySec + 's');
+
+    requestAnimationFrame(()=> track.classList.add('is-ready'));
+
+    let t;
+    window.addEventListener('resize', ()=>{
+      clearTimeout(t);
+      t = setTimeout(()=>{
+        track.innerHTML = '';
+        track.appendChild(base.cloneNode(true));
+        (function rebuild(){
+          while (track.scrollWidth < needWidth()) track.appendChild(base.cloneNode(true));
+          track.appendChild(base.cloneNode(true));
+          const half = track.scrollWidth / 2;
+          const gap  = Math.max(0, half - ribbon.clientWidth);
+          const ratio = half ? (gap / half) : 0;
+          const delaySec = -(ratio * durSec);
+          track.style.setProperty('--delay', delaySec + 's');
+          track.classList.add('is-ready');
+        })();
+      }, 120);
+    }, { passive:true });
+  })();
+
+/* ==== 메인 그리기 ==== */
+// 재시도 포함 fetch (최대 3회 시도)
+async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.status >= 500 && i < retries - 1) {
+        console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (i < retries - 1) {
+        console.log(`[Retry] ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
+async function fetchStats(){
+  const res = { total:0, byType:{}, byBase:{WAVE:0,NATURAL:0,STRAIGHT:0} };
+  try{
+    const r = await fetchWithRetry(`${API_URL}/stats`, { cache:'no-store' });
+    if (!r.ok) return res;
+    const data = await r.json();
+    if (!data.ok) return res;
+    res.total  = data.total  || 0;
+    res.byType = data.byType || {};
+    res.byBase = data.byBase || { WAVE:0, NATURAL:0, STRAIGHT:0 };
+  }catch(e){
+    console.warn('[index] fetch stats error:', e);
+  }
+  return res;
+}
+
+function renderDonut(base, count, total){
+  const donut = document.querySelector(`.donut[data-key="${base}"]`);
+  const numEl = document.querySelector(`.donut-num[data-num="${base}"]`);
+  if (!donut || !numEl) return;
+
+  const pct = total ? Math.round((count/total)*100) : 0;
+  numEl.textContent = pct + '%';
+
+  const C = 2 * Math.PI * 48; // r=48
+  const dash = (pct/100) * C;
+  const prog = donut.querySelector('[data-prog]');
+  if (prog) prog.style.strokeDasharray = `${dash} ${C-dash}`;
+}
+
+function renderTypeGridTop(byType, total){
+  const host = document.getElementById('typeGridTop');
+  if (!host) return;
+
+  const max = Math.max(...ALL_CODES.map(c => byType[c] || 0), 1);
+  host.innerHTML = ALL_CODES.map(code=>{
+    const n   = byType[code] || 0;
+    const pct = total ? Math.round(n / total * 100) : 0;
+    const w   = Math.max(3, Math.round((n / max) * 100));
+    const {emoji, label} = CODE_META[code] || {emoji:'🧭', label:code};
+    return `
+      <div class="type-cell" data-code="${code}" title="${code}">
+        <div class="type-ico">${emoji}</div>
+        <div class="type-meta">
+          <div class="type-name">${label} <span class="muted">(${code})</span></div>
+          <div class="type-bar"><i style="width:${w}%"></i></div>
+          <div class="small muted" style="margin-top:4px">${pct}% ・ ${n}건</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function renderIndex(){
+  const stats = await fetchStats();
+  // 도넛 차트（3 베이스）
+  renderDonut('WAVE',     stats.byBase.WAVE||0,     stats.total||0);
+  renderDonut('NATURAL',  stats.byBase.NATURAL||0,  stats.total||0);
+  renderDonut('STRAIGHT', stats.byBase.STRAIGHT||0, stats.total||0);
+
+  // 16타입 표
+  renderTypeGridTop(stats.byType||{}, stats.total||0);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderIndex();
+  setInterval(renderIndex, 60000); // 60초 갱신
+});
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', function(){
+  const openBtn  = document.getElementById('navOpen');
+  const closeBtn = document.getElementById('navClose');
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+
+  if(!openBtn || !closeBtn || !drawer || !scrim){
+    console.warn('[drawer] 필요한 요소를 찾을 수 없습니다');
+    return;
+  }
+
+  function open(){
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    openBtn.setAttribute('aria-expanded','true');
+    scrim.hidden = false;
+    document.documentElement.style.overflow = 'hidden'; // 배경 고정
+  }
+  function close(){
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden','true');
+    openBtn.setAttribute('aria-expanded','false');
+    scrim.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', open,  { passive: true });
+  closeBtn.addEventListener('click', close, { passive: true });
+  scrim.addEventListener('click', close,    { passive: true });
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+});
+</script>
+<script>
+(function(){
+  const ribbon = document.getElementById('emojiRibbon');
+  const track  = document.getElementById('ribbonTrack');
+  if(!ribbon || !track) return;
+
+  // 속도(초) 커스텀 시 data-speed="26" 등을 emojiRibbon에 추가
+  const durSec = Number(ribbon.dataset.speed || 28);
+  track.style.setProperty('--dur', durSec + 's');
+
+  // 기본 루프 (1번째) 취득
+  const base = track.querySelector('.loop');
+  if(!base) return;
+
+  // 화면 폭에 따라 트랙 폭이 "컨테이너 폭의 2.2배 이상"이 될 때까지 복제
+  const needWidth = () => ribbon.clientWidth * 2.2;
+  while (track.scrollWidth < needWidth()) {
+    track.appendChild(base.cloneNode(true));
+  }
+  // 연결 부위 안전 마진을 위해 하나 더 추가
+  track.appendChild(base.cloneNode(true));
+
+  // 우측 끝에서 자연스럽게 시작하기 위한 "음수 딜레이" 산출
+  const half = track.scrollWidth / 2;
+  const gap  = Math.max(0, half - ribbon.clientWidth);          
+  const ratio = half ? (gap / half) : 0;                        
+  const delaySec = -(ratio * durSec);                           
+  track.style.setProperty('--delay', delaySec + 's');
+
+  // 준비 완료 → 애니메이션 시작
+  requestAnimationFrame(()=> track.classList.add('is-ready'));
+
+  // 리사이즈 시 재계산 (모바일 회전 대응)
+  let t;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(t);
+    t = setTimeout(()=>{
+      // 일단 초기화 후 재구축
+      track.innerHTML = '';
+      track.appendChild(base.cloneNode(true));
+      
+      (function rebuild(){
+        while (track.scrollWidth < needWidth()) track.appendChild(base.cloneNode(true));
+        track.appendChild(base.cloneNode(true));
+        const half = track.scrollWidth / 2;
+        const gap  = Math.max(0, half - ribbon.clientWidth);
+        const ratio = half ? (gap / half) : 0;
+        const delaySec = -(ratio * durSec);
+        track.style.setProperty('--delay', delaySec + 's');
+        track.classList.add('is-ready');
+      })();
+    }, 120);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>타입 갤러리 - 16BodyPersonalities</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .tabs { display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 20px; }
+    .tab { padding:10px 14px; border-radius:12px; border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+           background: var(--card); cursor:pointer; font-weight:700; }
+    .tab.active { background: var(--accent); color:#0b0e15; border-color: transparent; }
+
+    .type-grid { display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .type-card { position:relative; border-radius:16px; overflow:hidden;
+      background: var(--card);
+      border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+      box-shadow:0 8px 24px rgba(0,0,0,.12);
+      transition:transform .2s ease, box-shadow .2s ease; }
+    .type-card:hover { transform: translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.18); }
+
+    .media { position:relative; width:100%; aspect-ratio:4/3; background:#f3f4f6; }
+    .media img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .animal-badge { position:absolute; top:10px; left:10px; padding:8px 10px; border-radius:999px;
+      background: color-mix(in oklab, var(--accent) 25%, white);
+      border:1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+      font-size:13px; font-weight:700; }
+
+    .info { padding:14px 16px 16px; }
+    .code-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
+    .code-badge { font-weight:800; letter-spacing:.5px; padding:4px 8px; border-radius:8px;
+      background: color-mix(in oklab, var(--accent) 20%, transparent);
+      border:1px solid color-mix(in oklab, var(--accent) 30%, transparent); }
+    .name { margin:0; font-size:18px; font-weight:800; }
+    .concept { margin:6px 0 10px; font-size:13px; color:var(--muted); }
+
+    .chips { display:flex; gap:6px; flex-wrap:wrap; }
+    .chip { padding:6px 8px; border-radius:999px; font-size:12px;
+      background: color-mix(in oklab, var(--accent) 12%, transparent);
+      border:1px solid color-mix(in oklab, var(--accent) 22%, transparent);
+      color: color-mix(in oklab, var(--ink) 90%, black);
+    }
+
+    .card-actions { margin-top:12px; display:flex; gap:8px; }
+    .mini { padding:8px 10px; border-radius:10px; border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+      background: color-mix(in oklab, var(--accent) 15%, transparent); font-weight:700; }
+
+    /* 계열별 배경 분위기 */
+    .wave .media { background: linear-gradient(180deg,#ffeaf3,#fff); }
+    .natural .media { background: linear-gradient(180deg,#effaf1,#fff); }
+    .straight .media { background: linear-gradient(180deg,#eaf2ff,#fff); }
+  </style>
+</head>
+<body data-theme="WAVE">
+  <header class="site-header">
+  <a class="brand" href="index-ko.html">16Body<span>Personalities</span></a>
+
+  <nav class="nav-links">
+    <a href="index-ko.html" class="chip-btn">홈</a>
+    <a href="gallery-ko.html" class="chip-btn">타입 갤러리</a>
+    <a href="contact-ko.html" class="chip-btn">문의하기</a>
+  </nav>
+
+  <button class="hamburger" id="navOpen" aria-label="메뉴" aria-controls="drawer" aria-expanded="false">
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="drawer-brand">16BodyPersonalities</span>
+    <button class="drawer-close" id="navClose" aria-label="닫기">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="drawer-links">
+    <a href="index-ko.html" class="drawer-item">홈</a>
+    <a href="app-ko.html" class="drawer-item">진단 시작하기</a>
+    <a href="gallery-ko.html" class="drawer-item">타입 갤러리</a>
+    <a href="privacy-ko.html" class="drawer-item">개인정보처리방침</a>
+    <a href="terms-ko.html" class="drawer-item">이용약관</a>
+    <a href="contact-ko.html" class="drawer-item">문의하기</a>
+  </nav>
+</aside>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="topbar-spacer"></div>
+  
+    <div class="tabs">
+      <button class="tab active" data-filter="ALL">전체</button>
+      <button class="tab" data-filter="WAVE">WAVE</button>
+      <button class="tab" data-filter="NATURAL">NATURAL</button>
+      <button class="tab" data-filter="STRAIGHT">STRAIGHT</button>
+    </div>
+
+    <div id="grid" class="type-grid"></div>
+
+    <footer class="footer">
+      <span class="small">© 2025 16BodyPersonalities Project</span>
+      <span><a class="muted" href="terms-ko.html">Terms</a> ・ <a class="muted" href="privacy-ko.html">Privacy</a></span>
+    </footer>
+  </div>
+
+  <script>
+  // 타입 데이터 (이미지는 images/CODE.jpg)
+  const TYPES = {
+    /* WAVE */
+    BNLS:{base:'WAVE', emoji:'🐨', name:'골격 코알라🐨(Romantic Wave)', concept:'달콤하고 부드러운, 포용력 있는 로맨틱함.', brands:['SNIDEL','CELFORD','TOCCA'], image:'images/BNLS.jpg'},
+    MNLC:{base:'WAVE', emoji:'🐺', name:'골격 울프🐺(Urban Elegance)', concept:'조용하고 심지 굳은 부드러움, 지적인 세련미.', brands:['IÉNA','Mila Owen','Plage'], image:'images/MNLC.jpg'},
+    MWLC:{base:'WAVE', emoji:'🦋', name:'골격 버터플라이🦋(Light Wave)', concept:'바람에 흩날리는 투명감, 곧고 가벼운 균형.', brands:['N.O.R.C','IÉNA','LE PHIL'], image:'images/MWLC.jpg'},
+    MWLS:{base:'WAVE', emoji:'🐹', name:'골격 햄스터🐹(Natural Girly)', concept:'둥글고 따뜻함, 폭신한 사랑스러움.', brands:['SNIDEL','Kastane','LOWRYS FARM'], image:'images/MWLS.jpg'},
+    MNLS:{base:'WAVE', emoji:'🕊', name:'골격 비둘기🕊️(Classic Feminine)', concept:'부드럽고 우아한, 은은하게 풍기는 엘레강스.', brands:['TOCCA','EPOCA','ANAYI'], image:'images/MNLS.jpg'},
+    BNLC:{base:'WAVE', emoji:'🐻', name:'골격 테디🐻(Earth Wave)', concept:'따뜻하게 감싸는 안정감, 치유의 중심.', brands:['ROSSO','Plage','relume'], image:'images/BNLC.jpg'},
+
+    /* NATURAL */
+    BWUC:{base:'NATURAL', emoji:'🦄', name:'골격 유니콘🦄(Urban Natural)', concept:'곡선×여백, 환상과 구조의 조화.', brands:['JS','UA','AURALEE'], image:'images/BWUC.jpg'},
+    BWUS:{base:'NATURAL', emoji:'🦅', name:'골격 독수리🦅(Fairy Natural)', concept:'가볍고 투철한 지성.', brands:['ENFÖLD','Deuxieme','COS'], image:'images/BWUS.jpg'},
+    BWLC:{base:'NATURAL', emoji:'🦊', name:'골격 여우🦊(Classic Natural)', concept:'단정하고 기민함, 자연체의 품격.', brands:['IÉNA','Plage','TOMORROWLAND'], image:'images/BWLC.jpg'},
+    BWLS:{base:'NATURAL', emoji:'🦌', name:'골격 밤비🦌(Pure Natural)', concept:'부드럽고 조용한 조화, 숲 속의 안식.', brands:['nest Robe','Vermeerist','L’essage'], image:'images/BWLS.jpg'},
+
+    /* STRAIGHT */
+    BNUS:{base:'STRAIGHT', emoji:'🐆', name:'골격 표범🐆(Sporty Cool)', concept:'늠름하고 구축적, 도시적인 모드.', brands:['Theory','Max Mara','LE PHIL'], image:'images/BNUS.jpg'},
+    MWUC:{base:'STRAIGHT', emoji:'🦈', name:'골격 상어🦈(Elegant Straight)', concept:'날렵하고 스마트, 예리한 스피드감.', brands:['NIKE','adidas','UNIQLO U'], image:'images/MWUC.jpg'},
+    MNUC:{base:'STRAIGHT', emoji:'🐅', name:'골격 호랑이🐅(Glamorous Cool)', concept:'입체감과 색기, 강한 존재감.', brands:['Max Mara','THE ROW','N°21'], image:'images/MNUC.jpg'},
+    MNUS:{base:'STRAIGHT', emoji:'🦚', name:'골격 공작🦚(Romantic Mode)', concept:'힘과 우아함의 공존, 화려한 여운.', brands:['Self-Portrait','FOXEY','N°21'], image:'images/MNUS.jpg'},
+    BNUC:{base:'STRAIGHT', emoji:'🦉', name:'골격 올빼미🦉(Structural Mode)', concept:'정밀하고 구축적, 밤에 빛나는 지성.', brands:['COS','Theory','AURALEE'], image:'images/BNUC.jpg'},
+    MWUS:{base:'STRAIGHT', emoji:'🐬', name:'골격 돌고래🐬(Soft Active)', concept:'깔끔한 유선형, 유연한 역동감.', brands:['PLEATS PLEASE','UNIQLO U','Theory'], image:'images/MWUS.jpg'}
+  };
+
+  const grid = document.getElementById('grid');
+  const TAB_SELECTOR = '.tab';
+
+  function cardHTML(code, t){
+    const cls = t.base.toLowerCase();
+    const brands = (t.brands||[]).slice(0,3);
+    return `
+      <article class="type-card ${cls}" data-base="${t.base}">
+        <div class="media">
+          <img src="${t.image}" alt="${code} ${t.name}"
+               onerror="this.style.display='none'; this.insertAdjacentHTML('afterend','<div style=&quot;width:100%;height:100%;display:grid;place-items:center;font-weight:700;color:#999;&quot;>${code}</div>')">
+          <div class="animal-badge">${t.emoji} ${code}</div>
+        </div>
+        <div class="info">
+          <div class="code-row">
+            <span class="code-badge">${t.base}</span>
+            <h3 class="name">${t.name}</h3>
+          </div>
+          <p class="concept">${t.concept||''}</p>
+          <div class="chips">
+            ${brands.map(b=>`<span class="chip">${b}</span>`).join('')}
+          </div>
+          <div class="card-actions">
+            + <button class="mini" onclick="location.href='detail-ko.html?code=${code}'">상세 보기</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function render(filter='ALL'){
+    grid.innerHTML = Object.entries(TYPES)
+      .filter(([,t]) => filter==='ALL' ? true : t.base===filter)
+      .map(([code,t]) => cardHTML(code,t))
+      .join('');
+  }
+
+  // 초기 표시
+  render('ALL');
+
+  // 탭 전환
+  document.querySelectorAll(TAB_SELECTOR).forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll(TAB_SELECTOR).forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      render(btn.dataset.filter);
+      document.body.dataset.theme = (btn.dataset.filter==='ALL' ? 'WAVE' : btn.dataset.filter);
+    });
+  });
+  </script>
+  <script>
+window.addEventListener('DOMContentLoaded', function(){
+  const openBtn  = document.getElementById('navOpen');
+  const closeBtn = document.getElementById('navClose');
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+
+  if(!openBtn || !closeBtn || !drawer || !scrim){
+    console.warn('[drawer] 필요한 요소를 찾을 수 없습니다');
+    return;
+  }
+
+  function open(){
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    openBtn.setAttribute('aria-expanded','true');
+    scrim.hidden = false;
+    document.documentElement.style.overflow = 'hidden'; 
+  }
+  function close(){
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden','true');
+    openBtn.setAttribute('aria-expanded','false');
+    scrim.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', open,  { passive: true });
+  closeBtn.addEventListener('click', close, { passive: true });
+  scrim.addEventListener('click', close,    { passive: true });
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+});
+</script>
+</body>
+</html>

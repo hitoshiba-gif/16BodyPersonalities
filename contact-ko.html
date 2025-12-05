@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>문의하기 - 16BodyPersonalities</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* === 귀여운 버튼 & 카드 === */
+    .hero-card .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-card .controls a {
+      background: linear-gradient(135deg, #ffb6c1 0%, #ff77b7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 22px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(255, 119, 183, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+    }
+    .hero-card .controls a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(255, 119, 183, 0.4);
+    }
+
+    /* === 폼 스타일 === */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 500px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+    label {
+      font-weight: 600;
+      color: var(--text, #333);
+      font-size: 15px;
+    }
+    input, textarea {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+      transition: border 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, textarea:focus {
+      border: 1px solid #ff9ac7;
+      box-shadow: 0 0 0 3px rgba(255, 154, 199, 0.2);
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    button[type="submit"] {
+      background: linear-gradient(135deg, #ff9ac7 0%, #ff77b7 100%);
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      padding: 12px 24px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 119, 183, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      width: fit-content;
+      align-self: center;
+    }
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 119, 183, 0.4);
+    }
+
+    /* === 모바일 대응 === */
+    @media (max-width: 480px) {
+      form {
+        padding: 0 12px;
+      }
+      input, textarea {
+        font-size: 14px;
+        padding: 9px 10px;
+      }
+      button[type="submit"] {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+      }
+    }
+
+    /* === 드로어 / 헤더 통일 === */
+    .drawer-item { white-space: nowrap; font-size: 15px; }
+    @media (max-width: 420px) { .drawer-item { font-size: 14px; } }
+    .drawer-brand { white-space: nowrap; }
+    .wrap header h1 {
+      text-align: center;
+      font-size: 1.6em;
+      color: var(--accent, #ff77b7);
+    }
+  </style>
+</head>
+
+<body data-theme="WAVE">
+  <header class="site-header">
+    <a class="brand" href="index-ko.html">16Body<span>Personalities</span></a>
+
+    <nav class="nav-links">
+      <a href="index-ko.html" class="chip-btn">홈</a>
+      <a href="gallery-ko.html" class="chip-btn">타입 갤러리</a>
+      <a href="contact-ko.html" class="chip-btn">문의하기</a>
+    </nav>
+
+    <button class="hamburger" id="navOpen" aria-label="메뉴" aria-controls="drawer" aria-expanded="false">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="drawer-brand">16BodyPersonalities</span>
+      <button class="drawer-close" id="navClose" aria-label="닫기">
+        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="drawer-links">
+      <a href="index-ko.html" class="drawer-item">홈</a>
+      <a href="app-ko.html" class="drawer-item">진단 시작하기</a>
+      <a href="gallery-ko.html" class="drawer-item">타입 갤러리</a>
+      <a href="privacy-ko.html" class="drawer-item">개인정보처리방침</a>
+      <a href="terms-ko.html" class="drawer-item">이용약관</a>
+      <a href="contact-ko.html" class="drawer-item">문의하기</a>
+    </nav>
+  </aside>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="topbar-spacer"></div>
+
+  <div class="wrap">
+    <header>
+      <h1>문의하기</h1>
+      <span class="badge">의견이나 질문이 있으시면 언제든 말씀해 주세요</span>
+    </header>
+
+    <section class="card hero-card">
+      <p class="muted">
+        질문, 의견, 제휴 문의 등이 있으시면 아래 양식을 통해 보내주세요.<br>
+        담당자가 확인 후 순차적으로 답변해 드립니다.
+      </p>
+      <div class="controls">
+        <a href="index-ko.html">홈으로 돌아가기</a>
+        <a href="privacy-ko.html">개인정보처리방침</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <form id="contactForm">
+        <label for="name">이름 (또는 닉네임)</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">이메일 주소</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="message">문의 내용</label>
+        <textarea id="message" name="message" required></textarea>
+
+        <button type="submit">보내기 💌</button>
+      </form>
+
+      <p id="status" style="text-align:center;margin-top:10px;color:#777;"></p>
+    </section>
+
+    <footer class="footer">
+      <span class="small">© 2025 16BodyPersonalities Project</span>
+      <span>
+        <a class="muted" href="terms-ko.html">이용약관</a> ・
+        <a class="muted" href="privacy-ko.html">Privacy</a>
+      </span>
+    </footer>
+  </div>
+
+  <script>
+    // --- Drawer ---
+    window.addEventListener('DOMContentLoaded', function(){
+      const openBtn  = document.getElementById('navOpen');
+      const closeBtn = document.getElementById('navClose');
+      const drawer   = document.getElementById('drawer');
+      const scrim    = document.getElementById('scrim');
+      if(!openBtn || !closeBtn || !drawer || !scrim) return;
+
+      function open(){
+        drawer.classList.add('open');
+        drawer.setAttribute('aria-hidden','false');
+        scrim.hidden = false;
+        document.documentElement.style.overflow = 'hidden';
+      }
+      function close(){
+        drawer.classList.remove('open');
+        drawer.setAttribute('aria-hidden','true');
+        scrim.hidden = true;
+        document.documentElement.style.overflow = '';
+      }
+      openBtn.onclick = open;
+      closeBtn.onclick = close;
+      scrim.onclick = close;
+      window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+    });
+
+    // --- 재시도 포함 fetch ---
+    async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          const response = await fetch(url, options);
+          if (response.status >= 500 && i < retries - 1) {
+            console.log(`Retry ${i + 1}/${retries - 1} after ${delay}ms (status: ${response.status})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
+            continue;
+          }
+          return response;
+        } catch (error) {
+          if (i < retries - 1) {
+            console.log(`Retry ${i + 1}/${retries - 1} after ${delay}ms (error: ${error.message})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
+            continue;
+          }
+          throw error;
+        }
+      }
+    }
+
+    // --- 폼 전송 (Form Submit) ---
+    document.getElementById('contactForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const status = document.getElementById('status');
+      status.textContent = "전송 중…⏳";
+
+      const data = {
+        name: e.target.name.value,
+        email: e.target.email.value,
+        message: e.target.message.value,
+        t: Date.now()
+      };
+
+      try {
+        const API_URL = "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod";
+        const res = await fetchWithRetry(`${API_URL}/contact`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.ok) {
+          status.textContent = "감사합니다! 전송이 완료되었습니다 🎉";
+          e.target.reset();
+        } else {
+          throw new Error(result.error || '전송에 실패했습니다');
+        }
+      } catch(err) {
+        console.error(err);
+        status.textContent = "오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+      }
+    });
+  </script>
+</body>
+</html>

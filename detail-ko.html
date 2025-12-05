@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타입 상세 - 16BodyPersonalities</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .hero-image {
+      width: 100%;
+      min-height: 45vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8f8f8;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+    @media (max-width: 768px) {
+      .hero-image { min-height: 40vh; }
+      .hero-image img { max-width: 90%; max-height: 70%; }
+    }
+    @media (min-width: 1024px) {
+      .hero-image { min-height: 50vh; }
+      .hero-image img { max-width: 70%; max-height: 70%; }
+    }
+    .hero-image img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+      display: block;
+      border-radius: 12px;
+    }
+    .section {
+      background: var(--card);
+      border: 1px solid #222633;
+      border-radius: 16px;
+      padding: 18px 22px;
+      margin-top: 18px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    h2 { margin-top: 0; }
+    ul { padding-left: 20px; }
+    .celeb-list { margin: 0.4em 0; }
+    .chip {
+      display:inline-block;
+      margin:3px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:13px;
+      background:color-mix(in oklab, var(--accent) 10%, transparent);
+      border:1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-header">
+  <a class="brand" href="index-ko.html">16Body<span>Personalities</span></a>
+
+  <nav class="nav-links">
+    <a href="index-ko.html" class="chip-btn">홈</a>
+    <a href="gallery-ko.html" class="chip-btn">타입 갤러리</a>
+    <a href="contact-ko.html" class="chip-btn">문의하기</a>
+  </nav>
+
+  <button class="hamburger" id="navOpen" aria-label="메뉴" aria-controls="drawer" aria-expanded="false">
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="drawer-brand">16BodyPersonalities</span>
+    <button class="drawer-close" id="navClose" aria-label="닫기">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="drawer-links">
+    <a href="index-ko.html" class="drawer-item">홈</a>
+    <a href="app-ko.html" class="drawer-item">진단 시작하기</a>
+    <a href="gallery-ko.html" class="drawer-item">타입 갤러리</a>
+    <a href="privacy-ko.html" class="drawer-item">개인정보처리방침</a>
+    <a href="terms-ko.html" class="drawer-item">이용약관</a>
+    <a href="contact-ko.html" class="drawer-item">문의하기</a>
+  </nav>
+</aside>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="topbar-spacer"></div>
+    <header>
+      <h1 id="title">타입 상세</h1>
+      <p class="muted" id="subtitle"></p>
+    </header>
+
+    <div class="hero-image">
+      <img id="hero" alt="타입 이미지">
+    </div>
+
+    <section class="section">
+      <h2>💎 컨셉</h2>
+      <p id="concept"></p>
+    </section>
+
+    <section class="section">
+      <h2>🦴 골격 특징</h2>
+      <p id="bodyDetail"></p>
+    </section>
+
+    <section class="section">
+      <h2>👗 추천 스타일링</h2>
+      <ul id="outfitTips"></ul>
+
+      <h3>피해야 할 스타일</h3>
+      <ul id="avoid"></ul>
+    </section>
+
+<section class="section">
+  <h2>🛍 어울리는 브랜드</h2>
+  <div id="brandHints" class="chips"></div>
+  <div id="brandGroups" class="brand-groups"></div>
+</section>
+
+    <section class="section">
+      <h2>🌟 대표 연예인</h2>
+      <div id="celebrities"></div>
+    </section>
+
+    <footer class="footer">
+      <button onclick="history.back()" class="btn secondary">← 뒤로</button><br>
+      <span>© 2025 16BodyPersonalities Project</span>
+    </footer>
+  </div>
+
+  <script src="types-ko.js"></script>
+  
+  <script>
+  // 브랜드 리스트 (데이터는 영어/글로벌 명칭 유지)
+  window.BRAND_BY_TYPE = {
+  /* ============== WAVE ============== */
+  BNLS: { 
+    high:  ['Valentino','Miu Miu','Chloé','Giambattista Valli','Simone Rocha','Ermanno Scervino','Lanvin'],
+    middle:['SNIDEL','CELFORD','LILY BROWN','FRAY I.D','Mila Owen','TOCCA','IÉNA','Apuweiser-riche','Noela','NATURAL BEAUTY BASIC','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','MANGO','Stradivarius','DHOLIC','earth music&ecology']
+  },
+  MNLC: { 
+    high:  ['Chloé','Valentino','Max Mara','Celine','Loewe','Alaïa'],
+    middle:['IÉNA','Plage','N.O.R.C','URBAN RESEARCH','TOMORROWLAND','Mila Owen','ENFÖLD','Deuxieme Classe','Spick & Span','UNITED ARROWS','Theory'],
+    fast:  ['ZARA','MANGO','COS','& Other Stories','UNIQLO','GU','H&M']
+  },
+  MWLC: { 
+    high:  ['Chloé','Celine','Valentino','Jil Sander','Stella McCartney'],
+    middle:['N.O.R.C','IÉNA','BEAUTY&YOUTH','LE PHIL','TOMORROWLAND','Mila Owen','FRAY I.D','SNIDEL','LILY BROWN','PLST'],
+    fast:  ['ZARA','COS','UNIQLO','GU','H&M','MANGO','Stradivarius']
+  },
+  MWLS: { 
+    high:  ['Miu Miu','Valentino','REDValentino','Chloé','See By Chloé'],
+    middle:['SNIDEL','LILY BROWN','Noela','tocco closet','LOWRYS FARM','earth music&ecology','FRAY I.D','gelato pique','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','GRL','DHOLIC','WEGO']
+  },
+  MNLS: { 
+    high:  ['Dior','Valentino','Chanel','Chloé','Elie Saab'],
+    middle:['TOCCA','EPOCA','FOXEY','ANAYI','Apuweiser-riche','IÉNA','CELFORD','SNIDEL','PROPORTION','JILL STUART'],
+    fast:  ['ZARA','MANGO','& Other Stories','UNIQLO','GU','H&M']
+  },
+  BNLC: { 
+    high:  ['Loewe','The Row','Celine','Max Mara','Bottega Veneta'],
+    middle:['URBAN RESEARCH ROSSO','Plage','JOURNAL STANDARD relume','IÉNA','BEAMS','TOMORROWLAND','Mila Owen','ENFÖLD'],
+    fast:  ['COS','ZARA','UNIQLO','GU','H&M','MANGO']
+  },
+
+  /* ============== NATURAL ============== */
+  BWUC: { 
+    high:  ['The Row','Jil Sander','Loewe','Bottega Veneta','Celine'],
+    middle:['JOURNAL STANDARD','UNITED ARROWS','BEAUTY&YOUTH','AURALEE','YLEVE','TOMORROWLAND','ENFÖLD','Deuxieme Classe','Plage'],
+    fast:  ['COS','ZARA','ARKET','UNIQLO','H&M','MANGO']
+  },
+  BWUS: { 
+    high:  ['Loewe','Celine','Jil Sander','Isabel Marant','Acne Studios'],
+    middle:['ENFÖLD','Deuxieme Classe','TOMORROWLAND','athoos','COS','IÉNA','Plage','STUNNING LURE'],
+    fast:  ['COS','ZARA','& Other Stories','UNIQLO','H&M','MANGO']
+  },
+  BWLC: { 
+    high:  ['Hermès','The Row','Loro Piana','Jil Sander','Celine'],
+    middle:['IÉNA','Plage','TOMORROWLAND','BEAMS','URBAN RESEARCH','UNITED ARROWS','AURALEE','SCYE','MACKINTOSH'],
+    fast:  ['COS','ZARA','UNIQLO','H&M','MANGO','ARKET']
+  },
+  BWLS: { 
+    high:  ['Loewe','Gabriela Hearst','Chloé','JW Anderson'],
+    middle:['nest Robe','Vermeerist BEAMS','Plage','Journal Standard L’essage','ADAM ET ROPÉ','TODAYFUL','IÉNA','ANATOMICA'],
+    fast:  ['COS','UNIQLO','H&M','ZARA','MANGO']
+  },
+
+  /* ============== STRAIGHT ============== */
+  BNUS: { 
+    high:  ['Saint Laurent','Tom Ford','Givenchy','Alexander McQueen','Max Mara','The Row'],
+    middle:['Theory','LE PHIL','FOXEY','PLST','Akris punto','HYKE','Drawer'],
+    fast:  ['COS','ZARA','UNIQLO','PLST','MANGO','& Other Stories']
+  },
+  MWUC: { 
+    high:  ['Prada Linea Rossa','Moncler','Balenciaga','Stone Island'],
+    middle:['NIKE Sportswear','adidas Originals','P.E NATION','Lululemon','DESCENTE ALLTERRAIN','Nanamica','ARC’TERYX VEILANCE'],
+    fast:  ['Uniqlo U','UNIQLO','GU','ZARA','H&M']
+  },
+  MNUC: { 
+    high:  ['Dolce & Gabbana','Versace','Balmain','Alexander McQueen','Max Mara'],
+    middle:['THE ROW','LE CIEL BLEU','N°21','ZARA Premium','STUNNING LURE','ALLSAINTS','AMERI'],
+    fast:  ['ZARA','MANGO','Bershka','UNIQLO','GU','H&M']
+  },
+  MNUS: { 
+    high:  ['Valentino','Elie Saab','Oscar de la Renta','Alexander McQueen','Prada'],
+    middle:['Self-Portrait','SNIDEL','FOXEY','Apuweiser-riche','ANAYI','CELFORD','LE PHIL'],
+    fast:  ['ZARA（Evening）','& Other Stories','H&M','MANGO','UNIQLO']
+  },
+  MWUS: { 
+    high:  ['Issey Miyake','Pleats Please','Hermès','Prada'],
+    middle:['PLEATS PLEASE','ISSEY MIYAKE','Theory','Lululemon','COS','ATON','UNIQLO U'],
+    fast:  ['UNIQLO','GU','ZARA','H&M','COS']
+  },
+  BNUC: { 
+    high:  ['Saint Laurent','Jil Sander','Givenchy','Celine','Tom Ford'],
+    middle:['COS','Theory','AURALEE','HYKE','S’YTE','+J','AKRIS punto'],
+    fast:  ['COS','ZARA','UNIQLO','H&M','MANGO']
+  }
+};
+</script>
+  <script>
+    const TYPES = window.KM_TYPES || {}; 
+    const params = new URLSearchParams(location.search);
+    const code = (params.get('code') || '').toUpperCase();
+    const type = TYPES[code];
+
+    if(!type){
+      document.getElementById('title').textContent = '타입을 찾을 수 없습니다';
+    } else {
+      // 테마 반영
+      document.body.dataset.theme = type.base;
+
+      document.getElementById('title').textContent = `${code} – ${type.name}`;
+      document.getElementById('subtitle').textContent = type.base + " 타입";
+      document.getElementById('hero').src = type.image;
+      document.getElementById('concept').textContent = type.concept;
+      document.getElementById('bodyDetail').textContent = type.bodyDetail;
+
+      document.getElementById('outfitTips').innerHTML = type.outfitTips.map(t=>`<li>${t}</li>`).join('');
+      document.getElementById('avoid').innerHTML = type.avoid?.map(t=>`<li>${t}</li>`).join('') || '';
+
+      const celeb = type.celebrities;
+      if (celeb) {
+        let html = '';
+        if (celeb.jp) html += `<p class="celeb-list"><b>🇯🇵 일본:</b> ${celeb.jp.join('・')}</p>`;
+        if (celeb.kr) html += `<p class="celeb-list"><b>🇰🇷 한국:</b> ${celeb.kr.join('・')}</p>`;
+        if (celeb.global) html += `<p class="celeb-list"><b>🌍 글로벌:</b> ${celeb.global.join('・')}</p>`;
+        document.getElementById('celebrities').innerHTML = html;
+      }
+      
+    if (type.brandHints && type.brandHints.length) {
+      const hints = document.getElementById('brandHints');
+      if (hints) {
+        hints.innerHTML = type.brandHints
+          .map(b => `<span class="chip" title="${b}">${b}</span>`)
+          .join('');
+      }
+    }
+
+    const brandMap = (window.BRAND_BY_TYPE && window.BRAND_BY_TYPE[code]) || null;
+    if (brandMap) {
+      const host = document.getElementById('brandGroups');
+      if (host) {
+        const block = (title, arr) => `
+          <div class="brand-group">
+            <h3>${title}</h3>
+            <div class="chips">
+              ${arr.map(x => `<span class="chip">${x}</span>`).join('')}
+            </div>
+          </div>`;
+        host.innerHTML =
+          block("하이 브랜드",   brandMap.high || []) +
+          block("미들 브랜드", brandMap.middle || []) +
+          block("SPA/패스트",       brandMap.fast || []);
+      }
+    }
+    }
+  </script>
+  <script>
+window.addEventListener('DOMContentLoaded', function(){
+  const openBtn  = document.getElementById('navOpen');
+  const closeBtn = document.getElementById('navClose');
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+
+  if(!openBtn || !closeBtn || !drawer || !scrim){
+    console.warn('[drawer] 필요한 요소를 찾을 수 없습니다');
+    return;
+  }
+
+  function open(){
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    openBtn.setAttribute('aria-expanded','true');
+    scrim.hidden = false;
+    document.documentElement.style.overflow = 'hidden'; 
+  }
+  function close(){
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden','true');
+    openBtn.setAttribute('aria-expanded','false');
+    scrim.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', open,  { passive: true });
+  closeBtn.addEventListener('click', close, { passive: true });
+  scrim.addEventListener('click', close,    { passive: true });
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+});
+</script>
+</body>
+</html>

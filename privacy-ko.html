@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>개인정보처리방침 - 16BodyPersonalities</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* === 귀여운 카드 & 버튼 보조 === */
+    .hero-card .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-card .controls a {
+      background: linear-gradient(135deg, #ffb6c1 0%, #ff77b7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 22px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(255, 119, 183, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+    }
+    .hero-card .controls a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(255, 119, 183, 0.4);
+    }
+
+    /* 모바일에서 drawer 텍스트 줄바꿈 방지 */
+    .drawer-item {
+      white-space: nowrap;
+      font-size: 15px;
+    }
+    @media (max-width: 420px) {
+      .drawer-item { font-size: 14px; }
+    }
+
+    /* 모바일에서 brand 줄바꿈 방지 */
+    .drawer-brand {
+      font-size: 1.1em;
+      white-space: nowrap;
+    }
+
+    /* 헤더 타이틀 중앙 정렬 */
+    .wrap header h1 {
+      text-align: center;
+      font-size: 1.6em;
+      color: var(--accent, #ff77b7);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+  <a class="brand" href="index-ko.html">16Body<span>Personalities</span></a>
+
+  <nav class="nav-links">
+    <a href="index-ko.html" class="chip-btn">홈</a>
+    <a href="gallery-ko.html" class="chip-btn">타입 갤러리</a>
+    <a href="contact-ko.html" class="chip-btn">문의하기</a>
+  </nav>
+
+  <button class="hamburger" id="navOpen" aria-label="메뉴" aria-controls="drawer" aria-expanded="false">
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="drawer-brand">16BodyPersonalities</span>
+    <button class="drawer-close" id="navClose" aria-label="닫기">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="drawer-links">
+    <a href="index-ko.html" class="drawer-item">홈</a>
+    <a href="app-ko.html" class="drawer-item">진단 시작하기</a>
+    <a href="gallery-ko.html" class="drawer-item">타입 갤러리</a>
+    <a href="privacy-ko.html" class="drawer-item">개인정보처리방침</a>
+    <a href="terms-ko.html" class="drawer-item">이용약관</a>
+    <a href="contact-ko.html" class="drawer-item">문의하기</a>
+  </nav>
+</aside>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="topbar-spacer"></div>
+  <div class="wrap">
+   
+    <header>
+      <h1>개인정보처리방침</h1>
+      <span class="badge">최종 업데이트: 2025-10-28</span>
+    </header>
+
+    <section class="card hero-card">
+      <p class="muted">16BodyPersonalities (이하 '본 서비스')는 사용자의 개인정보 보호를 최우선으로 생각합니다.</p>
+      <div class="controls">
+        <a href="index-ko.html">홈으로 돌아가기</a>
+        <a href="contact-ko.html">문의하기</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>1. 수집하는 정보</h3>
+      <ul>
+        <li>익명화된 진단 답변 데이터</li>
+        <li>접속 통계 분석을 위한 브라우저 및 단말기 정보</li>
+        <li>문의 내용 (문의 폼 입력 시)</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h3>2. 이용 목적</h3>
+      <p>수집된 정보는 진단 정확도 향상, 서비스 개선 및 통계적 분석 목적으로만 사용됩니다.</p>
+    </section>
+
+    <section class="card">
+      <h3>3. 쿠키(Cookie)의 사용</h3>
+      <p>본 서비스는 사용자 편의 향상을 위해 쿠키를 사용할 수 있습니다. 브라우저 설정에서 쿠키 사용을 거부할 수 있으나, 일부 기능이 제한될 수 있습니다.</p>
+    </section>
+
+    <section class="card contact-callout">
+  <h3>4. 문의하기</h3>
+  <p>질문이나 요청 사항이 있으시면 언제든지 편하게 문의해 주세요.</p>
+  <a href="contact-ko.html" class="cute-contact-btn">
+    <span>💌 문의 폼으로 이동</span>
+  </a>
+</section>
+
+    <footer class="footer">
+      <span class="small">© 2025 16BodyPersonalities Project</span>
+      <span>
+        <a class="muted" href="terms-ko.html">이용약관</a> ・
+        <a class="muted" href="privacy-ko.html">Privacy</a>
+      </span>
+    </footer>
+  </div>
+
+  <script>
+window.addEventListener('DOMContentLoaded', function(){
+  const openBtn  = document.getElementById('navOpen');
+  const closeBtn = document.getElementById('navClose');
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+
+  if(!openBtn || !closeBtn || !drawer || !scrim){
+    console.warn('[drawer] 필요한 요소를 찾을 수 없습니다');
+    return;
+  }
+
+  function open(){
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    openBtn.setAttribute('aria-expanded','true');
+    scrim.hidden = false;
+    document.documentElement.style.overflow = 'hidden'; 
+  }
+  function close(){
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden','true');
+    openBtn.setAttribute('aria-expanded','false');
+    scrim.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', open,  { passive: true });
+  closeBtn.addEventListener('click', close, { passive: true });
+  scrim.addEventListener('click', close,    { passive: true });
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+});
+</script>
+</body>
+</html>
