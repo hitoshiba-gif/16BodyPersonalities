@@ -10,15 +10,6 @@
 <!--script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5269846776939991" crossorigin="anonymous"></script>-->
 <link rel="stylesheet" href="./styles.css?v=1">
 </head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2VHGDR5Z56"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2VHGDR5Z56');
-</script>
 <body data-theme="WAVE">
   <header class="site-header">
   <a class="brand" href="index.html">16Body<span>Personalities</span></a>
@@ -157,60 +148,60 @@ const AXES = [
 /* ───────── 質問（各12問・5段階） ───────── */
 const QUESTIONS = {
   frame:[
-    {t:'鎖骨や肋骨のラインがはっきりしている',pos:true},
-    {t:'手首や足首の骨が目立ず、その他の部位も肉感が目立つ',pos:false},
-    {t:'肩や太ももがカクカク（骨ぼね）している',pos:true},
-    {t:'手や足が他人よりも大きい',pos:true},
+    {t:'裸になった時、肋骨がうっすら見える',pos:true},
+    {t:'中指の長さが手のひらの長さよりも長い',pos:true},
+    {t:'膝の骨が目立つ',pos:true},
+    {t:'手が顔（顎から眉上）よりも大きい',pos:true},
     {t:'動いたとき、筋肉の動きがわかりずらい',pos:true},
-    {t:'喉仏が出ていない',pos:false},
-    {t:'全体的に脂肪がつきにくい',pos:true},
-    {t:'手首を掴むと人差し指と親がつかない',pos:false},
-    {t:'厚手の服でも骨の形が出やすい',pos:true},
-    {t:'運動をすると筋肉がつきやすい',pos:false},
-    {t:'座るとお尻の骨がごつごつ感じられる',pos:true},
-    {t:'鎖骨が細く短い',pos:false}
+    {t:'喉仏が目立たない',pos:false},
+    {t:'お腹や腕周りに脂肪がつきにくい',pos:true},
+    {t:'手首を掴んでも人差し指と親がつきづらい',pos:false},
+    {t:'tシャツを着ると肩の骨の形がわかりやすい',pos:true},
+    {t:'太ももの筋肉がつきやすい',pos:false},
+    {t:'硬い椅子に座るとお尻の骨がごつごつ感じる',pos:true},
+    {t:'鎖骨が指1.5本分の幅より細く、鎖骨の始点から肩までの長さが手よりも短い',pos:false}
   ],
   surface:[
-    {t:'周囲から実際の身長よりも大きく見えると言われる',pos:true},
+    {t:'周囲から実際の身長よりも高く見えると言われる',pos:true},
     {t:'肩幅の大きさが顔の横幅三つ分の大きさよりも大きい',pos:true},
     {t:'他の人と並ぶと、自分の「肩〜腕まわり」が横に広く見えることが多い', pos:true },
     {t:'上半身の「横幅」が、身長の割に華奢に感じられることがある', pos:false },
     {t:'腕の長さが膝とお尻の中間くらいまである',pos:true},
-    {t:'ゆったりサイズの服を着ると、迫力が大きくなる', pos:true },
+    {t:'オーバーサイズの服を着ると肩幅がとても広く見える', pos:true },
     {t:'体にメリハリがあり、くびれもある',pos:false},
-    {t:'写真で他人と並ぶと身体が小さく見える',pos:false},
+    {t:'写真で他人と並ぶと身長の割に身体が小さく見える',pos:false},
     {t:'首元がゆったりした服がよく似合う',pos:true},
-    {t:'横に広がるような体型をしている',pos:true},
-    {t:'ビッグシルエットの服が似合わない',pos:false},
+    {t:'縦長というよりも横に広がるような体型をしている',pos:true},
+    {t:'ビッグシルエットの服を着ると貧相に見える',pos:false},
     {t:'体重適正サイズの服を着ると肩幅が苦しく感じる',pos:true}
   ],
   balance:[
-    {t:'鏡を見ると上半身が目立つように感じる',pos:true},
-    {t:'腰・ヒップが目立つ',pos:true},
-    {t:'脚が長く見える',pos:true},
+    {t:'鏡を見ると上半身(胸)が目立つように感じる',pos:true},
+    {t:'横から見た時、厚みを感じる',pos:true},
+    {t:'膝の位置が高い（膝下のほうが膝上よりも長い）',pos:true},
     {t:'ウエストラインが低く見える',pos:false},
     {t:'座ると身長が低く見える',pos:true},
-    {t:'立つと胸や肩の位置が高く見える',pos:true},
+    {t:'首の長さが手の横幅(親指から小指まで)よりも短い',pos:true},
     {t:'ボディラインの出る服が似合う',pos:true},
     {t:'トップスにボリュームを出すと着膨れする',pos:false},
-    {t:'ワイドパンツよりもスキニーパンツが似合う',pos:true},
-    {t:'上半身にアクセサリーや柄を持ってくるとしっくりくる',pos:true},
-    {t:'首の長さが短め',pos:true},
+    {t:'ワイドパンツよりもスキニーパンツが足が長く見える',pos:true},
+    {t:'長いネックレスよりも短いネックレスの方が似合う',pos:true},
+    {t:'腕の長さが短い。',pos:true},
     {t:'着丈の短いトップスが似合う',pos:true}
   ],
   line:[
     {t:'手足や体の輪郭がまっすぐに見える',pos:true},
     {t:'肩や腰に丸みがない',pos:true},
-    {t:'「シャープ」と言われる',pos:true},
-    {t:'首元が空いている服は貧相に見える',pos:true},
-    {t:'直線的な服が似合う',pos:true},
-    {t:'スーツやシャツがあまり似合わない',pos:false},
-    {t:'胸やお尻の丸みが強い',pos:false},
-    {t:'ダウンなどの厚い服を切ると着ぶくれする',pos:false},
-    {t:'横顔や横姿が直線的に見える',pos:true},
+    {t:'お尻が厚く、ボリューミー',pos:false},
+    {t:'面長というよりは丸顔である',pos:false},
+    {t:'厚手のふわふわ素材よりもシャツなおどの薄い素材の方がしっくりくる',pos:true},
+    {t:'スーツを着るとなんとなくだらしなく見える',pos:false},
+    {t:'正面から見た時、胸の丸みが目立つ',pos:false},
+    {t:'ダウンなどを着ると太って見える',pos:false},
+    {t:'横顔や横姿が直線的',pos:true},
     {t:'顔の骨が目立たない',pos:false},
-    {t:'コンパクトな髪型は顔が大きく見える',pos:false},
-    {t:'全体の印象が「すっきり」している',pos:true}
+    {t:'コンパクトな髪型(ストレート)は顔が大きく見える',pos:false},
+    {t:'フェイスラインがはっきりしている',pos:true}
   ]
 };
 
@@ -235,7 +226,7 @@ const TYPE_META = {
       'レースブラウス＋マーメイドスカート＋2～4cmパンプス',
       'ショートカーデ＋プリーツスカート＋小ぶりバッグ'
     ],
-    celebrities:{ jp:['梅田みゆ','音沙','岩本照','阿部亮平','大橋和也','表すみれ','倉八音羽'], kr: ['ロゼ（BLACKPINK）','ジミン（RIIZE）','ボムギュ（TXT）'], global:['Lily Collins','Emma Watson'] }
+    celebrities:{ jp:['梅田みゆ','音沙','岩本照','阿部亮平','大橋和也','表すみれ','倉八音羽'], kr: ['ロゼ（BLACKPINK）','ジミン（BTS）','ボムギュ（TXT）'], global:['Lily Collins','Emma Watson'] }
   },
 
   MNLC:{ // Urban Elegance (Wave)
@@ -255,7 +246,7 @@ const TYPE_META = {
       'クロップドシャツ＋タックワイド＋ローファー',
       'リブニット＋ミディタイト＋ショートブーツ'
     ],
-    celebrities:{ jp:['佐野愛花','大谷英美里','永瀬廉','高橋恭平','錦戸亮','多田莉音','秋山みづき'],kr: ['ウォニョン（IVE）','ウォンビン（RIIZE）','シニュ（TWS）'], global:['Keira Knightley','Natalie Portman'] }
+    celebrities:{ jp:['佐野愛花','大谷映美里','永瀬廉','高橋恭平','錦戸亮','多田莉音','秋山みづき'],kr: ['ウォニョン（IVE）','ウォンビン（RIIZE）','シニュ（TWS）'], global:['Keira Knightley','Natalie Portman'] }
   },
 
   MWLC:{ // Light Wave
@@ -416,7 +407,7 @@ const TYPE_META = {
       'ゆるブラウス＋バイアススカート＋フラット',
       'コットンワンピ＋レザー小物（小さめ）'
     ],
-    celebrities:{ jp: ['仲川夏','板倉可奈','藤井風','米津玄師','なごみ','せいら','高橋海斗','松村北斗','高地優吾','玉森裕太','相葉雅紀','清水あす香'], kr: ['チェヨン（TWICE）','リサ（BLACKPINK）','ミンニ（I-DLE）','テテ（BTS）','ジョンハン（SEVENTEEN）','テヨン（NCT）'], global:['Keira Knightley','Kristen Stewart'] }
+    celebrities:{ jp: ['板倉可奈','藤井風','米津玄師','なごみ','高橋海斗','松村北斗','高地優吾','玉森裕太','相葉雅紀','清水あす香'], kr: ['チェヨン（TWICE）','リサ（BLACKPINK）','ミンニ（I-DLE）','テテ（BTS）','ジョンハン（SEVENTEEN）','テヨン（NCT）'], global:['Keira Knightley','Kristen Stewart'] }
   },
 
   /* ============== STRAIGHT（厚・立体・上重心・直線） ============== */
