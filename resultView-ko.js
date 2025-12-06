@@ -747,10 +747,10 @@ function labelOf(code){
   return `${emoji ? (emoji + ' ') : ''}${baseLabel}（${code}）`;
 }
 
-const DETAIL_PAGE = 'detail.html'; 
+const DETAIL_PAGE = 'detail-ko.html'; 
 function goDetails(code){
   const url = DETAIL_PAGE ? `${DETAIL_PAGE}?code=${encodeURIComponent(code)}` 
-                          : `gallery.html?code=${encodeURIComponent(code)}`;
+                          : `gallery-ko.html?code=${encodeURIComponent(code)}`;
   location.href = url;
 }
 
@@ -1185,7 +1185,7 @@ function _renderResultCore(){
         <div class="card" style="margin-top:20px; text-align:center;">
           <h3>다른 골격 타입도 보기</h3>
           <p>당신의 타입 이외의 15가지 타입을 비교해 보세요.</p>
-          <a href="gallery.html" class="btn" style="display:inline-block;background:#333;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;transition:all .3s;">타입 갤러리 보기 →</a>
+          <a href="gallery-ko.html" class="btn" style="display:inline-block;background:#333;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;transition:all .3s;">타입 갤러리 보기 →</a>
         </div>
 
         <div class="share-box">

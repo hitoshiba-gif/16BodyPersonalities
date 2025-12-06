@@ -904,9 +904,9 @@ function labelOf(code){
   return `${meta.emoji ? meta.emoji + ' ' : ''}${meta.name || code} (${code})`;
 }
 
-const DETAIL_PAGE = 'detail.html'; 
+const DETAIL_PAGE = 'detail-ko.html'; 
 function goDetails(code){
-  const url = DETAIL_PAGE ? `${DETAIL_PAGE}?code=${encodeURIComponent(code)}` : `gallery.html?code=${encodeURIComponent(code)}`;
+  const url = DETAIL_PAGE ? `${DETAIL_PAGE}?code=${encodeURIComponent(code)}` : `gallery-ko.html?code=${encodeURIComponent(code)}`;
   location.href = url;
 }
 
