@@ -3746,3 +3746,39 @@ button.hamburger {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* 言語切り替えスイッチ */
+.lang-switch {
+  display: flex;
+  gap: 12px;           /* 国旗同士の間隔 */
+  margin-left: auto;   /* ロゴの右側に寄せる */
+  margin-right: 16px;  /* ナビメニューとの間隔 */
+  align-items: center;
+}
+
+.lang-btn {
+  font-size: 22px;     /* 国旗の大きさ */
+  text-decoration: none;
+  opacity: 0.4;        /* 普段は少し薄く */
+  filter: grayscale(100%); /* モノクロにしておしゃれに */
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+/* ホバーした時＆現在地（activeクラスがついている時） */
+.lang-btn:hover,
+.lang-btn.active {
+  opacity: 1;
+  filter: grayscale(0%); /* カラーに戻す */
+  transform: scale(1.1); /* 少し大きく */
+}
+
+/* モバイル表示の微調整 */
+@media (max-width: 768px) {
+  .lang-switch {
+    gap: 8px;
+    margin-right: 10px;
+  }
+  .lang-btn {
+    font-size: 20px;
+  }
+}
