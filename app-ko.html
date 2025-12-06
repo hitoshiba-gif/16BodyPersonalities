@@ -995,16 +995,33 @@ function _renderResultCore(){
   const buyBtn = document.querySelector('#buy-premium');
   if (buyBtn){
     buyBtn.addEventListener('click', () => {
-      const { code, scores } = buildCode();
-      const answers = state?.answers || {};
+      // 1. 再計算せず、画面描画時の正しい変数(code, scores)を使用する
+      // （※ renderResultCoreの冒頭で計算されたものがクロージャで利用可能です）
+      
+      // state.answers の現在のスナップショットを取得
+      const currentAnswers = state?.answers || {};
+
       if (!code) { alert('진단 결과를 찾을 수 없습니다.'); return; }
+
+      // 2. ローカルストレージへの保存（日本語版と同じキー構成にする）
       localStorage.setItem('bp_code', code);
       localStorage.setItem('bp_scores', JSON.stringify(scores || {}));
-      localStorage.setItem('bp_answers', JSON.stringify(answers || {}));
-      // (결제 링크는 그대로 유지)
+      localStorage.setItem('bp_answers', JSON.stringify(currentAnswers || {}));
+
+      // 【重要】日本語版にあって韓国語版になかった処理を追加
+      // これがないと連携システム側でデータが見つからず、デフォルト値(3)になる可能性があります
+      localStorage.setItem('km_pending_payload', JSON.stringify({
+        code,
+        scores: scores || {},
+        answers: currentAnswers || {},
+        sessionId: (crypto?.randomUUID?.() ?? String(Math.random()))
+      }));
+
+      // Stripeへ遷移
       location.href = "https://buy.stripe.com/test_6oU5kCaCDg3Vcide6A6g801";
     });
   }
+ 
 
   document.getElementById('retry')?.addEventListener('click', () => {
     if(confirm('처음부터 다시 진단하시겠습니까?')){
