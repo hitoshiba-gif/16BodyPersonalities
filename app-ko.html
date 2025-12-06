@@ -35,19 +35,25 @@
   padding: 20px;
 }
 .lock-icon {
-  font-size: 40px;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  font-size: 64px; /* 40pxから大きく */
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+  animation: floatLock 3s ease-in-out infinite; /* ふわふわ動かす */
 }
+
+/* メッセージボックスを強調 */
 .lock-msg {
   font-weight: bold;
-  color: #d8559b;
-  background: rgba(255,255,255,0.95);
-  padding: 8px 16px;
-  border-radius: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  font-size: 14px;
+  color: #333; /* 文字は読みやすい濃い色 */
+  background: #ffffff;
+  padding: 24px 20px; /* 余白を広げる */
+  border-radius: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 25px rgba(255, 134, 200, 0.25); /* 影を強く */
+  font-size: 16px; /* 文字サイズUP */
+  line-height: 1.6;
+  border: 3px solid #ffb6da; /* ピンクの太い枠線を追加 */
+  max-width: 90%; /* スマホではみ出さないように */
 }
 /* ロック解除ボタン（小さめ） */
 .unlock-btn {
@@ -61,6 +67,10 @@
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(255,134,200,0.4);
   transition: transform 0.2s;
+}
+@keyframes floatLock {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 .unlock-btn:active { transform: scale(0.95); }
 </style>
@@ -1131,7 +1141,11 @@ function _renderResultCore(){
 
             <div class="lock-overlay">
               <div class="lock-icon">🔒</div>
-              <div class="lock-msg">프리미엄 리포트 한정!</div>
+              <div class="lock-msg">
+                당신의 점수로 분석한<br>
+                <span style="font-size:1.3em; color:#d8559b;">전용 스타일링 가이드</span>와<br>
+                <span style="font-size:1.3em; color:#d8559b;">Body Tips</span>를 제공합니다!
+              </div>
               <button class="unlock-btn" onclick="document.getElementById('buy-premium').click()">
                 ✨ 지금 잠금 해제하기 (₩3,000)
               </button>
