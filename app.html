@@ -9,6 +9,10 @@
 <title> 16BodyPersonalities</title>
 <!--script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5269846776939991" crossorigin="anonymous"></script>-->
 <link rel="stylesheet" href="./styles.css?v=1">
+<!-- 多言語対応 -->
+<script src="locales/ja.js"></script>
+<script src="locales/ko.js"></script>
+<script src="js/i18n.js"></script>
 </head>
 <body data-theme="WAVE">
   <header class="site-header">
@@ -16,13 +20,24 @@
 
   <!-- PC表示：右上に並ぶ -->
   <nav class="nav-links">
-    <a href="index.html" class="chip-btn">トップ</a>
-    <a href="gallery.html" class="chip-btn">タイプギャラリー</a>
-    <a href="contact.html" class="chip-btn">お問い合わせ</a>
+    <a href="index.html" class="chip-btn" data-i18n="nav.top">トップ</a>
+    <a href="gallery.html" class="chip-btn" data-i18n="nav.gallery">タイプギャラリー</a>
+    <a href="contact.html" class="chip-btn" data-i18n="nav.contact">お問い合わせ</a>
+    <!-- 言語切り替え -->
+    <span style="margin-left: 12px;">
+      <a href="?lang=ja" class="lang-switch chip-btn" data-lang="ja" style="font-size: 0.9em;">🇯🇵 日本語</a>
+      <span style="color: #999;"> | </span>
+      <a href="?lang=ko" class="lang-switch chip-btn" data-lang="ko" style="font-size: 0.9em;">🇰🇷 한국어</a>
+    </span>
+    <!-- 言語切り替え -->
+    <div class="drawer-item" style="border-top: 1px solid #ddd; padding-top: 12px; margin-top: 12px;">
+      <a href="?lang=ja" class="lang-switch" data-lang="ja" style="margin-right: 12px;">🇯🇵 日本語</a>
+      <a href="?lang=ko" class="lang-switch" data-lang="ko">🇰🇷 한국어</a>
+    </div>
   </nav>
 
   <!-- モバイル表示：ハンバーガー -->
-  <button class="hamburger" id="navOpen" aria-label="メニュー" aria-controls="drawer" aria-expanded="false">
+  <button class="hamburger" id="navOpen" aria-label="メニュー" data-i18n-aria-label="nav.menuOpen" aria-controls="drawer" aria-expanded="false">
     <!-- 3本線アイコン（SVG） -->
     <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -33,21 +48,32 @@
 <!-- ドロワー本体 -->
 <aside class="drawer cute-luxe" id="drawer" aria-hidden="true">
   <div class="drawer-head">
-    <a class="drawer-brand" href="index.html" aria-label="トップへ">
+    <a class="drawer-brand" href="index.html" aria-label="トップへ" data-i18n-aria-label="nav.goToTop">
       16Body<span class="brand-accent">Personalities</span>
     </a>
-    <button class="drawer-close" id="navClose" aria-label="閉じる">
+    <button class="drawer-close" id="navClose" aria-label="閉じる" data-i18n-aria-label="nav.menuClose">
       ✕
     </button>
   </div>
 
   <nav class="drawer-links">
-    <a href="index.html" class="drawer-item">トップ</a>
-    <a href="app.html" class="drawer-item">診断をはじめる</a>
-    <a href="gallery.html" class="drawer-item">タイプギャラリー</a>
-    <a href="privacy.html" class="drawer-item">プライバシー</a>
-    <a href="terms.html" class="drawer-item">利用規約</a>
-    <a href="contact.html" class="drawer-item">お問い合わせ</a>
+    <a href="index.html" class="drawer-item" data-i18n="nav.top">トップ</a>
+    <a href="app.html" class="drawer-item" data-i18n="nav.diagnose">診断をはじめる</a>
+    <a href="gallery.html" class="drawer-item" data-i18n="nav.gallery">タイプギャラリー</a>
+    <a href="privacy.html" class="drawer-item" data-i18n="nav.privacy">プライバシー</a>
+    <a href="terms.html" class="drawer-item" data-i18n="nav.terms">利用規約</a>
+    <a href="contact.html" class="drawer-item" data-i18n="nav.contact">お問い合わせ</a>
+    <!-- 言語切り替え -->
+    <span style="margin-left: 12px;">
+      <a href="?lang=ja" class="lang-switch chip-btn" data-lang="ja" style="font-size: 0.9em;">🇯🇵 日本語</a>
+      <span style="color: #999;"> | </span>
+      <a href="?lang=ko" class="lang-switch chip-btn" data-lang="ko" style="font-size: 0.9em;">🇰🇷 한국어</a>
+    </span>
+    <!-- 言語切り替え -->
+    <div class="drawer-item" style="border-top: 1px solid #ddd; padding-top: 12px; margin-top: 12px;">
+      <a href="?lang=ja" class="lang-switch" data-lang="ja" style="margin-right: 12px;">🇯🇵 日本語</a>
+      <a href="?lang=ko" class="lang-switch" data-lang="ko">🇰🇷 한국어</a>
+    </div>
   </nav>
 </aside>
 
@@ -132,78 +158,95 @@ function makeInitialState(){
 
 /* ───────── 4軸定義 ───────── */
 /* ───────── 4軸定義（置き換え） ───────── */
-const AXES = [
-  { key:'frame',   codePos:'B', codeNeg:'M', label:'構造軸（Frame）',
-    posLabel:'骨格主導（B）', negLabel:'肉付き主導（M）', threshold:3.5 },
-
-  { key:'surface', codePos:'W', codeNeg:'N', label:'面積軸（Surface）',
-    posLabel:'身体フレーム広（W）', negLabel:'身体フレーム狭（N）', threshold:3.5 },
-
-  { key:'balance', codePos:'U', codeNeg:'L', label:'重心軸（Balance）',
-    posLabel:'上重心（U）', negLabel:'下重心（L）', threshold:3.5 },
-
-  { key:'line',    codePos:'S', codeNeg:'C', label:'ライン軸（Line）',
-    posLabel:'直線（S）', negLabel:'曲線（C）', threshold:3.5 },
-];
+// 翻訳データを使用して軸定義を取得
+function getAxes() {
+  const i18n = window.I18N || window.i18n;
+  if (!i18n || !i18n.translations || !i18n.translations.app) {
+    // フォールバック
+    return [
+      { key:'frame',   codePos:'B', codeNeg:'M', label:'構造軸（Frame）', posLabel:'骨格主導（B）', negLabel:'肉付き主導（M）', pillLabel:'Frame（骨感↔︎肉感）', threshold:3.5 },
+      { key:'surface', codePos:'W', codeNeg:'N', label:'面積軸（Surface）', posLabel:'身体フレーム広（W）', negLabel:'身体フレーム狭（N）', pillLabel:'Surface（広い↔︎狭い）', threshold:3.5 },
+      { key:'balance', codePos:'U', codeNeg:'L', label:'重心軸（Balance）', posLabel:'上重心（U）', negLabel:'下重心（L）', pillLabel:'Balance（上↔︎下）', threshold:3.5 },
+      { key:'line',    codePos:'S', codeNeg:'C', label:'ライン軸（Line）', posLabel:'直線（S）', negLabel:'曲線（C）', pillLabel:'Line（直線↔︎曲線）', threshold:3.5 },
+    ];
+  }
+  const axes = i18n.translations.app.axes;
+  return [
+    { key:'frame',   codePos:'B', codeNeg:'M', label:axes.frame.label, posLabel:axes.frame.posLabel, negLabel:axes.frame.negLabel, pillLabel:axes.frame.pillLabel, threshold:3.5 },
+    { key:'surface', codePos:'W', codeNeg:'N', label:axes.surface.label, posLabel:axes.surface.posLabel, negLabel:axes.surface.negLabel, pillLabel:axes.surface.pillLabel, threshold:3.5 },
+    { key:'balance', codePos:'U', codeNeg:'L', label:axes.balance.label, posLabel:axes.balance.posLabel, negLabel:axes.balance.negLabel, pillLabel:axes.balance.pillLabel, threshold:3.5 },
+    { key:'line',    codePos:'S', codeNeg:'C', label:axes.line.label, posLabel:axes.line.posLabel, negLabel:axes.line.negLabel, pillLabel:axes.line.pillLabel, threshold:3.5 },
+  ];
+}
+let AXES = getAxes();
 /* ───────── 質問（各12問・5段階） ───────── */
-const QUESTIONS = {
-  frame:[
-    {t:'裸になった時、肋骨がうっすら見える',pos:true},
-    {t:'中指の長さが手のひらの長さよりも長い',pos:true},
-    {t:'膝の骨が目立つ',pos:true},
-    {t:'手が顔（顎から眉上）よりも大きい',pos:true},
-    {t:'動いたとき、筋肉の動きがわかりずらい',pos:true},
-    {t:'喉仏が目立たない',pos:false},
-    {t:'お腹や腕周りに脂肪がつきにくい',pos:true},
-    {t:'手首を掴んでも人差し指と親がつきづらい',pos:false},
-    {t:'tシャツを着ると肩の骨の形がわかりやすい',pos:true},
-    {t:'太ももの筋肉がつきやすい',pos:false},
-    {t:'硬い椅子に座るとお尻の骨がごつごつ感じる',pos:true},
-    {t:'鎖骨が指1.5本分の幅より細く、鎖骨の始点から肩までの長さが手よりも短い',pos:false}
-  ],
-  surface:[
-    {t:'周囲から実際の身長よりも高く見えると言われる',pos:true},
-    {t:'肩幅の大きさが顔の横幅三つ分の大きさよりも大きい',pos:true},
-    {t:'他の人と並ぶと、自分の「肩〜腕まわり」が横に広く見えることが多い', pos:true },
-    {t:'上半身の「横幅」が、身長の割に華奢に感じられることがある', pos:false },
-    {t:'腕の長さが膝とお尻の中間くらいまである',pos:true},
-    {t:'オーバーサイズの服を着ると肩幅がとても広く見える', pos:true },
-    {t:'体にメリハリがあり、くびれもある',pos:false},
-    {t:'写真で他人と並ぶと身長の割に身体が小さく見える',pos:false},
-    {t:'首元がゆったりした服がよく似合う',pos:true},
-    {t:'縦長というよりも横に広がるような体型をしている',pos:true},
-    {t:'ビッグシルエットの服を着ると貧相に見える',pos:false},
-    {t:'体重適正サイズの服を着ると肩幅が苦しく感じる',pos:true}
-  ],
-  balance:[
-    {t:'鏡を見ると上半身(胸)が目立つように感じる',pos:true},
-    {t:'横から見た時、厚みを感じる',pos:true},
-    {t:'膝の位置が高い（膝下のほうが膝上よりも長い）',pos:true},
-    {t:'ウエストラインが低く見える',pos:false},
-    {t:'座ると身長が低く見える',pos:true},
-    {t:'首の長さが手の横幅(親指から小指まで)よりも短い',pos:true},
-    {t:'ボディラインの出る服が似合う',pos:true},
-    {t:'トップスにボリュームを出すと着膨れする',pos:false},
-    {t:'ワイドパンツよりもスキニーパンツが足が長く見える',pos:true},
-    {t:'長いネックレスよりも短いネックレスの方が似合う',pos:true},
-    {t:'腕の長さが短い。',pos:true},
-    {t:'着丈の短いトップスが似合う',pos:true}
-  ],
-  line:[
-    {t:'手足や体の輪郭がまっすぐに見える',pos:true},
-    {t:'肩や腰に丸みがない',pos:true},
-    {t:'お尻が厚く、ボリューミー',pos:false},
-    {t:'面長というよりは丸顔である',pos:false},
-    {t:'厚手のふわふわ素材よりもシャツなおどの薄い素材の方がしっくりくる',pos:true},
-    {t:'スーツを着るとなんとなくだらしなく見える',pos:false},
-    {t:'正面から見た時、胸の丸みが目立つ',pos:false},
-    {t:'ダウンなどを着ると太って見える',pos:false},
-    {t:'横顔や横姿が直線的',pos:true},
-    {t:'顔の骨が目立たない',pos:false},
-    {t:'コンパクトな髪型(ストレート)は顔が大きく見える',pos:false},
-    {t:'フェイスラインがはっきりしている',pos:true}
-  ]
-};
+// 翻訳データを使用して質問を取得
+function getQuestions() {
+  const i18n = window.I18N || window.i18n;
+  const posFlags = {
+    frame:   [true, true, true, true, true, false, true, false, true, false, true, false],
+    surface: [true, true, true, false, true, true, false, false, true, true, false, true],
+    balance: [true, true, true, false, true, true, true, false, true, true, true, true],
+    line:    [true, true, false, false, true, false, false, false, true, false, false, true]
+  };
+
+  if (!i18n || !i18n.translations || !i18n.translations.app || !i18n.translations.app.questions) {
+    // フォールバック（日本語）
+    return {
+      frame:[
+        {t:'裸になった時、肋骨がうっすら見える',pos:true},{t:'中指の長さが手のひらの長さよりも長い',pos:true},
+        {t:'膝の骨が目立つ',pos:true},{t:'手が顔（顎から眉上）よりも大きい',pos:true},
+        {t:'動いたとき、筋肉の動きがわかりずらい',pos:true},{t:'喉仏が目立たない',pos:false},
+        {t:'お腹や腕周りに脂肪がつきにくい',pos:true},{t:'手首を掴んでも人差し指と親がつきづらい',pos:false},
+        {t:'tシャツを着ると肩の骨の形がわかりやすい',pos:true},{t:'太ももの筋肉がつきやすい',pos:false},
+        {t:'硬い椅子に座るとお尻の骨がごつごつ感じる',pos:true},{t:'鎖骨が指1.5本分の幅より細く、鎖骨の始点から肩までの長さが手よりも短い',pos:false}
+      ],
+      surface:[
+        {t:'周囲から実際の身長よりも高く見えると言われる',pos:true},{t:'肩幅の大きさが顔の横幅三つ分の大きさよりも大きい',pos:true},
+        {t:'他の人と並ぶと、自分の「肩〜腕まわり」が横に広く見えることが多い', pos:true },{t:'上半身の「横幅」が、身長の割に華奢に感じられることがある', pos:false },
+        {t:'腕の長さが膝とお尻の中間くらいまである',pos:true},{t:'オーバーサイズの服を着ると肩幅がとても広く見える', pos:true },
+        {t:'体にメリハリがあり、くびれもある',pos:false},{t:'写真で他人と並ぶと身長の割に身体が小さく見える',pos:false},
+        {t:'首元がゆったりした服がよく似合う',pos:true},{t:'縦長というよりも横に広がるような体型をしている',pos:true},
+        {t:'ビッグシルエットの服を着ると貧相に見える',pos:false},{t:'体重適正サイズの服を着ると肩幅が苦しく感じる',pos:true}
+      ],
+      balance:[
+        {t:'鏡を見ると上半身(胸)が目立つように感じる',pos:true},{t:'横から見た時、厚みを感じる',pos:true},
+        {t:'膝の位置が高い（膝下のほうが膝上よりも長い）',pos:true},{t:'ウエストラインが低く見える',pos:false},
+        {t:'座ると身長が低く見える',pos:true},{t:'首の長さが手の横幅(親指から小指まで)よりも短い',pos:true},
+        {t:'ボディラインの出る服が似合う',pos:true},{t:'トップスにボリュームを出すと着膨れする',pos:false},
+        {t:'ワイドパンツよりもスキニーパンツが足が長く見える',pos:true},{t:'長いネックレスよりも短いネックレスの方が似合う',pos:true},
+        {t:'腕の長さが短い。',pos:true},{t:'着丈の短いトップスが似合う',pos:true}
+      ],
+      line:[
+        {t:'手足や体の輪郭がまっすぐに見える',pos:true},{t:'肩や腰に丸みがない',pos:true},
+        {t:'お尻が厚く、ボリューミー',pos:false},{t:'面長というよりは丸顔である',pos:false},
+        {t:'厚手のふわふわ素材よりもシャツなおどの薄い素材の方がしっくりくる',pos:true},{t:'スーツを着るとなんとなくだらしなく見える',pos:false},
+        {t:'正面から見た時、胸の丸みが目立つ',pos:false},{t:'ダウンなどを着ると太って見える',pos:false},
+        {t:'横顔や横姿が直線的',pos:true},{t:'顔の骨が目立たない',pos:false},
+        {t:'コンパクトな髪型(ストレート)は顔が大きく見える',pos:false},{t:'フェイスラインがはっきりしている',pos:true}
+      ]
+    };
+  }
+
+  const q = i18n.translations.app.questions;
+  const result = {};
+  ['frame', 'surface', 'balance', 'line'].forEach(key => {
+    result[key] = q[key].map((text, idx) => ({ t: text, pos: posFlags[key][idx] }));
+  });
+  return result;
+}
+let QUESTIONS = getQuestions();
+
+// i18n初期化完了後に再読み込み
+window.addEventListener('i18nReady', function() {
+  AXES = getAxes();
+  QUESTIONS = getQuestions();
+  console.log('[App] Translations reloaded:', AXES[0].label, QUESTIONS.frame[0].t);
+  // 画面を再描画
+  if (state.step === 0) {
+    render();
+  }
+});
 
 /* ───────── Final TYPE 定義（16タイプ：動物・ブランド・ノート） ───────── */
 /* 画像は任意（images/CODE.jpg）。brandHints/styleNotes は結果画面に表示 */
@@ -826,6 +869,20 @@ function whyOf(code){  return TYPE_NICK[code]?.why ?? ''; }
 /* ───────── 汎用説明/提案ロジック（タイプ固有が無ければ自動補完） ───────── */
 function describeBodyByCode(code){
   const [a,b,c,d]=code.split('');
+  const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+  const translations = window.translations && window.translations[lang];
+  const bd = translations?.app?.bodyDescription;
+
+  if (bd) {
+    const p1 = bd[`frame_${a}`] || (a==='B'?'骨格や関節の存在感がベース':'肉感・筋肉の厚みがベース');
+    const p2 = bd[`surface_${b}`] || (b==='W'?'全体は軽やかで繊細':'全体は重厚で安定感あり');
+    const p3 = bd[`balance_${c}`] || (c==='U'?'上重心で上半身に視線が集まりやすい':'下重心で下半身に安定が出やすい');
+    const p4 = bd[`line_${d}`] || (d==='S'?'輪郭は直線寄りでシャープ':'輪郭は曲線寄りでソフト');
+    const prefix = bd.prefix || '【骨格印象まとめ】';
+    return `${prefix}${p1}。${p2}。${p3}。${p4}。`;
+  }
+
+  // Fallback
   const p1=(a==='B')?'骨格や関節の存在感がベース':'肉感・筋肉の厚みがベース';
   const p2=(b==='W')?'全体は軽やかで繊細':'全体は重厚で安定感あり';
   const p3=(c==='U')?'上重心で上半身に視線が集まりやすい':'下重心で下半身に安定が出やすい';
@@ -844,6 +901,19 @@ function autoBrands(code, base){
 }
 function autoStyle(code){
   const [a,b,c,d]=code.split('');
+  const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+  const translations = window.translations && window.translations[lang];
+  const sg = translations?.app?.styleGuide;
+
+  if (sg) {
+    const fabric = sg[`fabric_${b}`] || ((b==='N')?['薄手ウール','シフォン/ジョーゼット','スムースニット']:['ミッド〜厚手ウール','ハリのあるツイル','サテン/ジャカード']);
+    const neck = sg[`neck_${d}`] || ((d==='S')?['クルー/ボート','スタンドカラー','浅Vシャツ']:['ラウンド/スカーフタイ','ハートネック','Vネック＋ドレープ']);
+    const silhouette = sg[`silhouette_${c}`] || ((c==='U')?['短めトップス×ハイウエスト','Iラインワンピ','コンパクトJK']:['ロングトップス×落ち感ボトム','Aライン/フレア','ドロップショルダー']);
+    const lines = sg[`lines_${d}`] || ((d==='S')?['センタープレス','ストレートスカート','テーラード']:['バイアス/ドレープ','マーメイド/フレア','ギャザー控えめ']);
+    return {fabric,neck,silhouette,lines};
+  }
+
+  // Fallback
   const fabric=(b==='N')?['薄手ウール','シフォン/ジョーゼット','スムースニット']:['ミッド〜厚手ウール','ハリのあるツイル','サテン/ジャカード'];
   const neck=(d==='S')?['クルー/ボート','スタンドカラー','浅Vシャツ']:['ラウンド/スカーフタイ','ハートネック','Vネック＋ドレープ'];
   const silhouette=(c==='U')?['短めトップス×ハイウエスト','Iラインワンピ','コンパクトJK']:['ロングトップス×落ち感ボトム','Aライン/フレア','ドロップショルダー'];
@@ -865,32 +935,39 @@ function render(){
 }
 function renderIntro(){
   const el = document.createElement('div');
+  // 翻訳データを直接取得
+  const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+  const translations = window.translations && window.translations[lang];
+  const introTitle = translations?.app?.ui?.introTitle || '4印象軸で判定する、16タイプ';
+  const desc = translations?.app?.ui?.description || '48の質問で、あなたの「骨格 × 印象」を <b>Frame / Surface / Balance / Line</b> の4軸でスコア化！組み合わせから4文字コードを生成して、タイプ別にコンセプト・似合うブランド・スタイリングを可愛く提案します♡';
+  const startBtn = translations?.app?.ui?.startBtn || '診断をはじめる';
+  const aboutBtn = translations?.app?.ui?.aboutBtn || '使い方';
+  const allTypes = translations?.app?.ui?.allTypes || '全16タイプは';
+  const gallery = translations?.app?.ui?.gallery || 'ギャラリー';
+  const viewGallery = translations?.app?.ui?.viewGallery || 'から一括で確認できます。結果はスクショ保存がおすすめ！';
 
   // 1) イントロカード（説明を可愛いUIで）
   el.innerHTML = `
     <section class="card hero-card intro-card">
-      <h2>4印象軸で判定する、16タイプ</h2>
+      <h2>${introTitle}</h2>
       <p class="kawaii-lede">
-      48の質問で、あなたの「骨格 × 印象」を <b>Frame / Surface / Balance / Line</b> の4軸でスコア化！組み合わせから4文字コードを生成して、タイプ別にコンセプト・似合うブランド・スタイリングを可愛く提案します♡
+      ${desc}
       </p>
 
       <div class="pill-list">
-        <span class="pill"><span class="key">F</span> Frame（骨感↔︎肉感）</span>
-        <span class="pill"><span class="key">S</span> Surface（広い↔︎狭い）</span>
-        <span class="pill"><span class="key">B</span> Balance（上↔︎下）</span>
-        <span class="pill"><span class="key">L</span> Line（直線↔︎曲線）</span>
+        ${AXES.map(ax => `<span class="pill"><span class="key">${ax.key.charAt(0).toUpperCase()}</span> ${ax.pillLabel}</span>`).join('\n        ')}
       </div>
 
       <div class="controls" style="margin-top:14px;">
-        <button id="start">診断をはじめる</button>
+        <button id="start">${startBtn}</button>
       </div>
 
       <div class="controls" style="margin-top:14px;">
-        <button id="about" class="secondary">使い方</button>
+        <button id="about" class="secondary">${aboutBtn}</button>
       </div>
 
       <div class="note-bubble">
-        全16タイプは <b>ギャラリー</b> から一括で確認できます。結果はスクショ保存がおすすめ！
+        ${allTypes} <b>${gallery}</b> ${viewGallery}
       </div>
     </section>
   `;
@@ -935,12 +1012,10 @@ function renderIntro(){
   });
 
   el.querySelector('#about')?.addEventListener('click', () => {
-    alert(
-`【使い方】
-・各軸4問×5段階で回答すると、4つの軸スコアから4文字コードを生成。
-・結果画面では「タイプ名／動物モチーフ／似合うブランド／スタイリング指針／相性シェア」を表示。
-・スクショ保存やリンク共有もOK！`
-    );
+    const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+    const translations = window.translations && window.translations[lang];
+    const aboutContent = translations?.app?.ui?.aboutContent || '【使い方】\n・各軸4問×5段階で回答すると、4つの軸スコアから4文字コードを生成。\n・結果画面では「タイプ名／動物モチーフ／似合うブランド／スタイリング指針／相性シェア」を表示。\n・スクショ保存やリンク共有もOK！';
+    alert(aboutContent);
   });
 }
 
@@ -948,6 +1023,13 @@ function renderAxis(axis){
   const {key,label,posLabel,negLabel} = axis;
   const qs = QUESTIONS[key];
   const progress = (state.step/5)*100;
+
+  // 翻訳データを取得
+  const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+  const translations = window.translations && window.translations[lang];
+  const scaleLabel = translations?.app?.ui?.scaleLabel || '当てはまらない↔︎当てはまる';
+  const nextBtn = translations?.app?.ui?.nextBtn || '次へ';
+  const backBtn = translations?.app?.ui?.backBtn || '戻る';
 
   // 1. 画面をまるっと描画
   app.innerHTML = '';
@@ -976,7 +1058,7 @@ function renderAxis(axis){
           </div>
 
           <div class="muted">
-            当てはまらない↔︎当てはまる：<span id="v-${key}-${i}">${state.answers[key][i]}</span> / 5
+            ${scaleLabel}：<span id="v-${key}-${i}">${state.answers[key][i]}</span> / 5
           </div>
         </div>
       `).join('')}
@@ -985,8 +1067,8 @@ function renderAxis(axis){
     <div class="footer">
       
       <div class="controls">
-        <button class="secondary" id="back">戻る</button>
-        <button id="next">次へ</button>
+        <button class="secondary" id="back">${backBtn}</button>
+        <button id="next">${nextBtn}</button>
       </div>
     </div>
   `;
@@ -1257,14 +1339,21 @@ function meter(pct){
 
 function shareRow({kind, lead, best, next}){
   if (!best) return '';
+
+  const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+  const translations = window.translations && window.translations[lang];
+  const t = translations?.app?.ui || {};
+
   const titleIco = kind === 'tops' ? '👕' : '👖';
-  const titleTxt = kind === 'tops' ? 'TOPS 相性' : 'BOTTOMS 相性';
+  const titleTxt = kind === 'tops' ? (t.topsCompatTitle || '👕 TOPS 相性') : (t.bottomsCompatTitle || '👖 BOTTOMS 相性');
+  const viewTypeBtn = t.viewTypeStyle || 'このタイプの着こなしを見る →';
+  const otherTypesLabel = t.otherGoodTypes || 'ほかにも相性が良いタイプ：';
 
   const bestLabel = labelOf(best.code);
 
   return `
     <div class="match-row">
-      <div class="match-title">${titleIco} ${titleTxt}</div>
+      <div class="match-title">${titleTxt}</div>
       <p class="match-lead">${lead}</p>
 
       <div class="best-box">
@@ -1274,13 +1363,13 @@ function shareRow({kind, lead, best, next}){
         </div>
         ${meter(best.score)}
         <div class="best-cta">
-          <button class="btn primary small" onclick="goDetails('${best.code}')">このタイプの着こなしを見る →</button>
+          <button class="btn primary small" onclick="goDetails('${best.code}')">${viewTypeBtn}</button>
         </div>
       </div>
 
       ${next?.length ? `
         <div class="match-more muted small">
-          ほかにも相性が良いタイプ：
+          ${otherTypesLabel}
           ${next.map(x=>pill(x.code)).join('')}
         </div>
       ` : ``}
@@ -1291,14 +1380,22 @@ function shareRow({kind, lead, best, next}){
 function renderShareCardHTML(code){
   const compat = getShareCompatibility(code);
 
+  // 翻訳データを取得
+  const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+  const translations = window.translations && window.translations[lang];
+  const t = translations?.app?.ui || {};
+
   // 説明文をわかりやすく
-  const topsLead = `この骨格の有名人の <b>トップス/アウター</b> も参考になるよ！シルエットや肩まわり・襟の作りが近いタイプです。`;
-  const bottomsLead = `この骨格の有名人の <b>ボトムス</b> も参考になるよ！ウエスト位置や落ち感・ライン設計が近いタイプです。`;
+  const topsLead = t.topsLead || `この骨格の有名人の <b>トップス/アウター</b> も参考になるよ！シルエットや肩まわり・襟の作りが近いタイプです。`;
+  const bottomsLead = t.bottomsLead || `この骨格の有名人の <b>ボトムス</b> も参考になるよ！ウエスト位置や落ち感・ライン設計が近いタイプです。`;
+
+  const shareCompatTitle = t.shareCompatTitle || '🫶 服シェア相性';
+  const shareCompatDesc = t.shareCompatDesc || '上2文字一致＝トップス/アウター相性、下2文字一致＝ボトムス相性';
 
   return `
     <div class="card share-card cute" style="margin-top:16px">
-      <h3>🫶 服シェア相性</h3>
-      <p class="muted small">上2文字一致＝トップス/アウター相性、下2文字一致＝ボトムス相性</p>
+      <h3>${shareCompatTitle}</h3>
+      <p class="muted small">${shareCompatDesc}</p>
 
       ${shareRow({
         kind:'tops',
@@ -1341,6 +1438,21 @@ function renderBodyTipsHTML(code) {
   const t = BODY_TIPS[code];
   if (!t) return "";
 
+  // 翻訳データを取得
+  const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+  const translations = window.translations && window.translations[lang];
+  const ui = translations?.app?.ui || {};
+
+  const bodyTipsTitle = ui.bodyTipsTitle || '💖 Body Balance Tips';
+  const dietTitle = ui.dietTitle || '🍎 食事';
+  const dietDo = ui.dietDo || '食べるべき！';
+  const dietAvoid = ui.dietAvoid || '避けるべき！';
+  const exerciseTitle = ui.exerciseTitle || '🏃‍♀️ 運動';
+  const trainStrength = ui.trainStrength || '筋トレ';
+  const trainCardio = ui.trainCardio || '有酸素';
+  const careTitle = ui.careTitle || '🧘‍♀️ ケア・姿勢';
+  const quickWin = ui.quickWin || '✨Quick Win：';
+
   const li = arr => (arr || []).map(x => `<li>• ${x}</li>`).join('');
   const pastel = {
     BN: "#ffd6e8", BW: "#ffe8d6", MN: "#e8ffd6", MW: "#d6f3ff", //系統別色味
@@ -1349,31 +1461,31 @@ function renderBodyTipsHTML(code) {
 
   return `
   <div class="card cute-tips" style="--tone:${pastel}">
-    <h3>💖 Body Balance Tips</h3>
+    <h3>${bodyTipsTitle}</h3>
     <p class="goal">🎯 ${t.goal}</p>
 
     <div class="tips-row">
       <div class="tips-col">
-        <h4>🍎 食事</h4>
-        <p class="label">食べるべき！</p>
+        <h4>${dietTitle}</h4>
+        <p class="label">${dietDo}</p>
         <ul>${li(t.diet_do)}</ul>
-        <p class="label">避けるべき！</p>
+        <p class="label">${dietAvoid}</p>
         <ul>${li(t.diet_avoid)}</ul>
       </div>
 
       <div class="tips-col">
-        <h4>🏃‍♀️ 運動</h4>
-        <p class="label">筋トレ</p>
+        <h4>${exerciseTitle}</h4>
+        <p class="label">${trainStrength}</p>
         <ul>${li(t.train_strength)}</ul>
-        <p class="label">有酸素</p>
+        <p class="label">${trainCardio}</p>
         <ul>${li(t.train_cardio)}</ul>
       </div>
     </div>
 
     <div class="tips-extra">
-      <h4>🧘‍♀️ ケア・姿勢</h4>
+      <h4>${careTitle}</h4>
       <ul>${li(t.mobility)}${li(t.care)}</ul>
-      <p class="quick"><b>✨Quick Win：</b>${t.quick}</p>
+      <p class="quick"><b>${quickWin}</b>${t.quick}</p>
     </div>
   </div>`;
 }
@@ -1384,6 +1496,21 @@ function _renderResultCore(){
   const {code,scores}=buildCode();
   const meta=TYPE_META[code]||{name:'未定義タイプ',base:'-',emoji:'',animal:'',image:'',concept:'',brandHints:[],styleNotes:[]};
      document.body.dataset.theme = meta.base;
+
+  // 翻訳データを取得
+  const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+  const translations = window.translations && window.translations[lang];
+  const t = translations?.app?.ui || {};
+
+  // TYPE_METAの翻訳を適用
+  const typeMeta = translations?.typeMeta?.[code];
+  let translatedWhy = null;
+  if (typeMeta) {
+    if (typeMeta.name) meta.name = typeMeta.name;
+    if (typeMeta.animal) meta.animal = typeMeta.animal;
+    if (typeMeta.concept) meta.concept = typeMeta.concept;
+    if (typeMeta.why) translatedWhy = typeMeta.why;
+  }
     // --- Google Sheetsに自動送信（最初の1回だけ） ---
   if (!state._sentOnce) {
     state._sentOnce = true;
@@ -1410,22 +1537,22 @@ function _renderResultCore(){
 const groupHTML = brandPack ? `
   <div class="brand-groups">
     <div class="brand-group">
-      <h4>ハイブランド</h4>
+      <h4>${t.highBrand || 'ハイブランド'}</h4>
       <div class="chips">${brandPack.high.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
     </div>
     <div class="brand-group">
-      <h4>ミドルブランド</h4>
+      <h4>${t.middleBrand || 'ミドルブランド'}</h4>
       <div class="chips">${brandPack.middle.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
     </div>
     <div class="brand-group">
-      <h4>ファスト</h4>
+      <h4>${t.fastBrand || 'ファスト'}</h4>
       <div class="chips">${brandPack.fast.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
     </div>
   </div>
 ` : '';
   const notes=(meta.styleNotes?.length?meta.styleNotes:[]);
   const nick = nickOf(code);
-  const why  = whyOf(code);
+  const why  = translatedWhy || whyOf(code);
 
   // ％算出
   const pf = axisPercent('frame');
@@ -1438,18 +1565,18 @@ const groupHTML = brandPack ? `
   if (meta.celebrities) {
     const { jp = [], kr = [], global = [] } = meta.celebrities;
     const group = [
-      { label: '🇯🇵 日本', list: jp },
-      { label: '🇰🇷 韓国', list: kr },
-      { label: '🌍 海外', list: global },
+      { label: t.celebJapan || '🇯🇵 日本', list: jp },
+      { label: t.celebKorea || '🇰🇷 韓国', list: kr },
+      { label: t.celebGlobal || '🌍 海外', list: global },
     ];
     celebHTML = `
       <div class="card guide" style="margin-top:12px">
-        <h3>代表的な芸能人</h3>
+        <h3>${t.celebrities || '代表的な芸能人'}</h3>
         ${group.map(g=> g.list.length
           ? `<h4>${g.label}</h4><div class="chips">${g.list.map(x=>`<span class="chip">${x}</span>`).join('')}</div>`
           : ''
         ).join('')}
-        <p class="small">※ 各タイプにおける芸能人分類は公的なものではなく、スタイリング傾向に基づく参考例です。</p>
+        <p class="small">${t.celebDisclaimer || '※ 各タイプにおける芸能人分類は公的なものではなく、スタイリング傾向に基づく参考例です。'}</p>
       </div>
     `;
   }
@@ -1506,11 +1633,11 @@ const barsHTML = `
  el.innerHTML=`
     <div class="cols">
       <div class="card result">
-        <h2>診断結果：<span class="ok">${code}</span> — <span class="em">${meta.emoji||''}</span> ${meta.name}</h2>
+        <h2>${t.diagnosisResult || '診断結果'}：<span class="ok">${code}</span> — <span class="em">${meta.emoji||''}</span> ${meta.name}</h2>
         <div class="tags">
-          <span class="tag">基盤体型：${baseLabel(meta.base)}</span>
-          ${meta.animal?`<span class="tag">motif Animal: ${meta.animal}</span>`:''}
-          <span class="tag kind">${nick}</span> 
+          <span class="tag">${t.baseBody || '基盤体型'}：${baseLabel(meta.base)}</span>
+          ${meta.animal?`<span class="tag">${t.motifAnimal || 'motif Animal'}: ${meta.animal}</span>`:''}
+          <span class="tag kind">${nick}</span>
         </div>
         <div class="hero-image" data-base="${meta.base}">
   <img
@@ -1523,65 +1650,63 @@ const barsHTML = `
 </div>
         <p class="concept">${meta.concept||''}</p>
 
-        <p class="muted">4軸の平均スコア</p>
+        <p class="muted">${t.avgScores || '4軸の平均スコア'}</p>
         ${barsHTML}
-        
+
 
 
 
         <div class="card guide" style="margin-top:12px">
-          <h3>どんな骨格？</h3>
+          <h3>${t.whatBody || 'どんな骨格？'}</h3>
           <p>${bodyDesc}</p>
 
-          <h3>似合いやすいブランド</h3>
+          <h3>${t.suitableBrands || '似合いやすいブランド'}</h3>
          
         　　<div class="chips brand-chips">
   ${brands.map(b=>`<span class="chip" title="${b}">${b}</span>`).join('')}
 </div>
 ${groupHTML}
 <div class="card guide" style="margin-top:12px">
-  <h3>モチーフに込めた意味</h3>
+  <h3>${t.motifMeaning || 'モチーフに込めた意味'}</h3>
   <p>${why}</p>
 </div>
 
-          <h3>スタイリング指針</h3>
+          <h3>${t.stylingGuidance || 'スタイリング指針'}</h3>
           <div class="cols" style="grid-template-columns:1fr 1fr">
             <div>
-              <h4>素材・質感</h4>
+              <h4>${t.fabricTexture || '素材・質感'}</h4>
               <ul>${auto.fabric.map(x=>`<li>${x}</li>`).join('')}</ul>
-              <h4>ネックライン</h4>
+              <h4>${t.neckline || 'ネックライン'}</h4>
               <ul>${auto.neck.map(x=>`<li>${x}</li>`).join('')}</ul>
             </div>
             <div>
-              <h4>シルエット</h4>
+              <h4>${t.silhouette || 'シルエット'}</h4>
               <ul>${auto.silhouette.map(x=>`<li>${x}</li>`).join('')}</ul>
-              <h4>ライン設計</h4>
+              <h4>${t.lineDesign || 'ライン設計'}</h4>
               <ul>${auto.lines.map(x=>`<li>${x}</li>`).join('')}</ul>
             </div>
           </div>
-          ${notes.length?`<h4>タイプ固有メモ</h4><ul>${notes.map(n=>`<li>${n}</li>`).join('')}</ul>`:''}
+          ${notes.length?`<h4>${t.typeMemo || 'タイプ固有メモ'}</h4><ul>${notes.map(n=>`<li>${n}</li>`).join('')}</ul>`:''}
          
         ${renderBodyTipsHTML(code)}
         ${celebHTML}
-        ${renderShareCardHTML(code)} 
-          <p class="small">※ 提案は各軸（骨格/密度/重心/ライン）のスコアとタイプ固有情報から生成しています。</p>
+        ${renderShareCardHTML(code)}
+          <p class="small">${t.resultDisclaimer || '※ 提案は各軸（骨格/密度/重心/ライン）のスコアとタイプ固有情報から生成しています。'}</p>
         </div>
          <div class="card" style="margin-top:20px; text-align:center;">
         <div class="premium-cta">
   <div class="premium-ribbon">PREMIUM</div>
-  <h3>💫 完全版レポート 💫</h3>
+  <h3>${t.premiumTitle || '💫 完全版レポート 💫'}</h3>
 
   <p class="premium-desc">
-    “あなた専用”の <b>超詳しいフィット分析</b> 👗  
-    <b>最適コーデ相性</b>・<b>アイテム診断</b>・<b>カラー提案</b> 🎨  
-    今後のアップデートも <b>ずーっと見放題</b>！  
+    ${t.premiumDesc || '"あなた専用"の <b>超詳しいフィット分析</b> 👗  \n    <b>最適コーデ相性</b>・<b>アイテム診断</b>・<b>カラー提案</b> 🎨  \n    今後のアップデートも <b>ずーっと見放題</b>！'}
   </p>
 
   <button class="premium-btn" id="buy-premium">
-    ✨ ¥300で完全版を見る ✨
+    ${t.premiumBtn || '✨ ¥300で完全版を見る ✨'}
   </button>
 
-  <p class="premium-note">※ 一度購入すればずっと閲覧できます</p>
+  <p class="premium-note">${t.premiumNote || '※ 一度購入すればずっと閲覧できます'}</p>
 </div>
 
       <div class="card" style="margin-top:12px; text-align:center;">     
@@ -1655,20 +1780,31 @@ if (!state._sentOnce) {
 
   const bx = document.getElementById('btn-x');
   if (bx) bx.onclick = () => {
-    const t = encodeURIComponent(`骨格MBTI診断の結果は「${shareTitle}」でした！`);
+    const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+    const translations = window.translations && window.translations[lang];
+    const shareTemplate = translations?.app?.ui?.shareText || '骨格MBTI診断の結果は「{title}」でした！';
+    const shareMsg = shareTemplate.replace('{title}', shareTitle);
+    const t = encodeURIComponent(shareMsg);
     const u = encodeURIComponent(shareUrl);
     window.open(`https://twitter.com/intent/tweet?text=${t}&url=${u}`, '_blank');
   };
 
   const bl = document.getElementById('btn-line');
   if (bl) bl.onclick = () => {
-    const t = encodeURIComponent(`骨格MBTI診断の結果は「${shareTitle}」でした！\n${shareUrl}`);
+    const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+    const translations = window.translations && window.translations[lang];
+    const shareTemplate = translations?.app?.ui?.shareText || '骨格MBTI診断の結果は「{title}」でした！';
+    const shareMsg = shareTemplate.replace('{title}', shareTitle);
+    const t = encodeURIComponent(`${shareMsg}\n${shareUrl}`);
     window.open(`https://line.me/R/msg/text/?${t}`, '_blank');
   };
 
   const bc = document.getElementById('btn-copy');
   if (bc) bc.onclick = () => {
-    navigator.clipboard.writeText(shareUrl).then(()=>alert('リンクをコピーしました'));
+    const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+    const translations = window.translations && window.translations[lang];
+    const msg = translations?.app?.ui?.linkCopied || 'リンクをコピーしました';
+    navigator.clipboard.writeText(shareUrl).then(()=>alert(msg));
   };
 })();
 
@@ -1680,7 +1816,10 @@ if (buyBtn){
     const answers = state?.answers || {};
 
     if (!code) {
-      alert('診断結果が見つかりません。診断を完了してください。');
+      const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+      const translations = window.translations && window.translations[lang];
+      const msg = translations?.app?.ui?.diagnosisNotFound || '診断結果が見つかりません。診断を完了してください。';
+      alert(msg);
       return;
     }
 
@@ -1720,6 +1859,11 @@ function renderResult(){
 // テーブルの前に入れたい場合は↓の行の直前に ${barsHTML} を挿入
 
 function baseLabel(b){
+  const lang = (window.I18N || window.i18n)?.currentLang || 'ja';
+  const translations = window.translations && window.translations[lang];
+  if (translations?.app?.baseTypes && translations.app.baseTypes[b]) {
+    return translations.app.baseTypes[b];
+  }
   return b==='WAVE'?'WAVE（柔・軽・下重心）'
        : b==='STRAIGHT'?'STRAIGHT（厚・立体・上重心）'
        : b==='NATURAL'?'NATURAL（骨感・直線・ラフ）' : b;

@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>タイプギャラリー - 骨格MBTI診断</title>
   <link rel="stylesheet" href="styles.css" />
+  <!-- 多言語対応 -->
+  <script src="locales/ja.js"></script>
+  <script src="locales/ko.js"></script>
+  <script src="js/i18n.js"></script>
   <style>
     .tabs { display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 20px; }
     .tab { padding:10px 14px; border-radius:12px; border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
@@ -66,13 +70,19 @@
 
   <!-- PC表示：右上に並ぶ -->
   <nav class="nav-links">
-    <a href="index.html" class="chip-btn">トップ</a>
-    <a href="gallery.html" class="chip-btn">タイプギャラリー</a>
-    <a href="contact.html" class="chip-btn">お問い合わせ</a>
+    <a href="index.html" class="chip-btn" data-i18n="nav.top">トップ</a>
+    <a href="gallery.html" class="chip-btn" data-i18n="nav.gallery">タイプギャラリー</a>
+    <a href="contact.html" class="chip-btn" data-i18n="nav.contact">お問い合わせ</a>
+    <!-- 言語切り替え -->
+    <span style="margin-left: 12px;">
+      <a href="?lang=ja" class="lang-switch chip-btn" data-lang="ja" style="font-size: 0.9em;">🇯🇵 日本語</a>
+      <span style="color: #999;"> | </span>
+      <a href="?lang=ko" class="lang-switch chip-btn" data-lang="ko" style="font-size: 0.9em;">🇰🇷 한국어</a>
+    </span>
   </nav>
 
   <!-- モバイル表示：ハンバーガー -->
-  <button class="hamburger" id="navOpen" aria-label="メニュー" aria-controls="drawer" aria-expanded="false">
+  <button class="hamburger" id="navOpen" aria-label="メニュー" data-i18n-aria-label="nav.menuOpen" aria-controls="drawer" aria-expanded="false">
     <!-- 3本線アイコン（SVG） -->
     <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -84,7 +94,7 @@
 <aside class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-head">
     <span class="drawer-brand">16BodyPersonalities</span>
-    <button class="drawer-close" id="navClose" aria-label="閉じる">
+    <button class="drawer-close" id="navClose" aria-label="閉じる" data-i18n-aria-label="nav.menuClose">
       <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
@@ -92,12 +102,17 @@
   </div>
 
   <nav class="drawer-links">
-    <a href="index.html" class="drawer-item">トップ</a>
-    <a href="app.html" class="drawer-item">診断をはじめる</a>
-    <a href="gallery.html" class="drawer-item">タイプギャラリー</a>
-    <a href="privacy.html" class="drawer-item">プライバシー</a>
-    <a href="terms.html" class="drawer-item">利用規約</a>
-    <a href="contact.html" class="drawer-item">お問い合わせ</a>
+    <a href="index.html" class="drawer-item" data-i18n="nav.top">トップ</a>
+    <a href="app.html" class="drawer-item" data-i18n="nav.diagnose">診断をはじめる</a>
+    <a href="gallery.html" class="drawer-item" data-i18n="nav.gallery">タイプギャラリー</a>
+    <a href="privacy.html" class="drawer-item" data-i18n="nav.privacy">プライバシー</a>
+    <a href="terms.html" class="drawer-item" data-i18n="nav.terms">利用規約</a>
+    <a href="contact.html" class="drawer-item" data-i18n="nav.contact">お問い合わせ</a>
+    <!-- 言語切り替え -->
+    <div class="drawer-item" style="border-top: 1px solid #ddd; padding-top: 12px; margin-top: 12px;">
+      <a href="?lang=ja" class="lang-switch" data-lang="ja" style="margin-right: 12px;">🇯🇵 日本語</a>
+      <a href="?lang=ko" class="lang-switch" data-lang="ko">🇰🇷 한국어</a>
+    </div>
   </nav>
 </aside>
 
@@ -108,7 +123,7 @@
 
     <!-- フィルタタブ -->
     <div class="tabs">
-      <button class="tab active" data-filter="ALL">すべて</button>
+      <button class="tab active" data-filter="ALL" data-i18n="gallery.all">すべて</button>
       <button class="tab" data-filter="WAVE">WAVE</button>
       <button class="tab" data-filter="NATURAL">NATURAL</button>
       <button class="tab" data-filter="STRAIGHT">STRAIGHT</button>
@@ -118,8 +133,8 @@
     <div id="grid" class="type-grid"></div>
 
     <footer class="footer">
-      <span class="small">© 2025 16BodyPersonalities Project</span>
-      <span><a class="muted" href="terms.html">Terms</a> ・ <a class="muted" href="privacy.html">Privacy</a></span>
+      <span class="small" data-i18n="footer.copyright">© 2025 16BodyPersonalities Project</span>
+      <span><a class="muted" href="terms.html" data-i18n="footer.terms">Terms</a> ・ <a class="muted" href="privacy.html" data-i18n="footer.privacy">Privacy</a></span>
     </footer>
   </div>
 

@@ -4,8 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>16BodyPersonalities</title>
-  
+
   <link rel="stylesheet" href="styles.css">
+  <!-- 多言語対応 -->
+  <script src="locales/ja.js"></script>
+  <script src="locales/ko.js"></script>
+  <script src="js/i18n.js"></script>
 </head>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-2VHGDR5Z56"></script>
@@ -22,13 +26,19 @@
 
   <!-- PC表示：右上に並ぶ -->
   <nav class="nav-links">
-    <a href="index.html" class="chip-btn">トップ</a>
-    <a href="gallery.html" class="chip-btn">タイプギャラリー</a>
-    <a href="contact.html" class="chip-btn">お問い合わせ</a>
+    <a href="index.html" class="chip-btn" data-i18n="nav.top">トップ</a>
+    <a href="gallery.html" class="chip-btn" data-i18n="nav.gallery">タイプギャラリー</a>
+    <a href="contact.html" class="chip-btn" data-i18n="nav.contact">お問い合わせ</a>
+    <!-- 言語切り替え -->
+    <span style="margin-left: 12px;">
+      <a href="?lang=ja" class="lang-switch chip-btn" data-lang="ja" style="font-size: 0.9em;">🇯🇵 日本語</a>
+      <span style="color: #999;"> | </span>
+      <a href="?lang=ko" class="lang-switch chip-btn" data-lang="ko" style="font-size: 0.9em;">🇰🇷 한국어</a>
+    </span>
   </nav>
 
   <!-- モバイル表示：ハンバーガー -->
-  <button class="hamburger" id="navOpen" aria-label="メニュー" aria-controls="drawer" aria-expanded="false">
+  <button class="hamburger" id="navOpen" aria-label="メニュー" data-i18n-aria-label="nav.menuOpen" aria-controls="drawer" aria-expanded="false">
     <!-- 3本線アイコン（SVG） -->
     <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -40,7 +50,7 @@
 <aside class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-head">
     <a class="drawer-brand">16Body<span>Personalities</span></a>
-    <button class="drawer-close" id="navClose" aria-label="閉じる">
+    <button class="drawer-close" id="navClose" aria-label="閉じる" data-i18n-aria-label="nav.menuClose">
       <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
@@ -48,19 +58,24 @@
   </div>
 
   <nav class="drawer-links">
-    <a href="index.html" class="drawer-item">トップ</a>
-    <a href="app.html" class="drawer-item">診断をはじめる</a>
-    <a href="gallery.html" class="drawer-item">タイプギャラリー</a>
-    <a href="privacy.html" class="drawer-item">プライバシー</a>
-    <a href="terms.html" class="drawer-item">利用規約</a>
-    <a href="contact.html" class="drawer-item">お問い合わせ</a>
+    <a href="index.html" class="drawer-item" data-i18n="nav.top">トップ</a>
+    <a href="app.html" class="drawer-item" data-i18n="nav.diagnose">診断をはじめる</a>
+    <a href="gallery.html" class="drawer-item" data-i18n="nav.gallery">タイプギャラリー</a>
+    <a href="privacy.html" class="drawer-item" data-i18n="nav.privacy">プライバシー</a>
+    <a href="terms.html" class="drawer-item" data-i18n="nav.terms">利用規約</a>
+    <a href="contact.html" class="drawer-item" data-i18n="nav.contact">お問い合わせ</a>
+    <!-- 言語切り替え -->
+    <div class="drawer-item" style="border-top: 1px solid #ddd; padding-top: 12px; margin-top: 12px;">
+      <a href="?lang=ja" class="lang-switch" data-lang="ja" style="margin-right: 12px;">🇯🇵 日本語</a>
+      <a href="?lang=ko" class="lang-switch" data-lang="ko">🇰🇷 한국어</a>
+    </div>
   </nav>
 </aside>
 
 <!-- 半透明オーバーレイ -->
 <div class="scrim" id="scrim" hidden></div>
 <div class="topbar-spacer"></div> <!-- ナビの高さぶん余白（重なり防止） -->
-    
+
 
     <!-- ===== カード1：イントロ ===== -->
     <section class="card hero-card hero-cute">
@@ -72,14 +87,14 @@
 
   <div class="hero-inner">
 
-    <h2 class="hero-title">
+    <h2 class="hero-title" data-i18n="hero.title">
       あなたの<span class="sparkle">Body</span> Personalities を診断
     </h2>
-    <p class="muted">16タイプの骨格診断で、自分の構造を知ろう。</p>
+    <p class="muted" data-i18n="hero.subtitle">16タイプの骨格診断で、自分の構造を知ろう。</p>
 
     <div class="controls cute-cta">
-      <button class="btn-cta" onclick="location.href='app.html'">診断をはじめる</button>
-      <button class="btn-ghost" onclick="location.href='gallery.html'">タイプを見る</button>
+      <button class="btn-cta" onclick="location.href='app.html'" data-i18n="hero.startBtn">診断をはじめる</button>
+      <button class="btn-ghost" onclick="location.href='gallery.html'" data-i18n="hero.viewTypesBtn">タイプを見る</button>
     </div>
 
     <!-- 細い絵文字リボン（横スクロール）-->
@@ -99,27 +114,27 @@
 
     <!-- 見出し行 -->
     <div class="about-head">
-      <span class="about-badge">Our Philosophy</span>
-      <h3 class="about-title">
+      <span class="about-badge" data-i18n="about.badge">Our Philosophy</span>
+      <h3 class="about-title" data-i18n="about.title">
         骨格を「型」ではなく「個性」として扱う、16BodyPersonalities
       </h3>
-      <p class="about-sub">
+      <p class="about-sub" data-i18n="about.subtitle">
         私たちは、あなたの身体に宿る“構造のニュアンス”を丁寧に言語化します。
       </p>
     </div>
 
     <!-- 本文 -->
     <div class="about-body">
-      <p>
+      <p data-i18n="about.paragraph1">
         世の中には <b>3タイプ</b> や <b>8タイプ</b> の骨格診断が広く知られています。けれど、実際の身体はもっと繊細で、もっと豊か。
         同じ肩幅でも丸みの出方、骨の存在感、重心、筋の通り方のわずかな差で、纏う印象は大きく変わります。
       </p>
-      <p>
+      <p data-i18n="about.paragraph2">
         既存の“箱”に分類するほど、あなたらしさの質感はこぼれ落ちてしまう——私たちはその課題に向き合い、
         骨格を <b>4つの軸（Frame / Surface / Balance / Line）</b> に分解。軸ごとの強弱の組み合わせから、単なる拡張ではない
         <b>16のパーソナリティ</b> を描き出しました。
       </p>
-      <p>
+      <p data-i18n="about.paragraph3">
         16BodyPersonalities は、あなたを型にはめる診断ではありません。<br/>
         あなたの“本来の構造美”を、<em>やさしく、精密に、そして上質に</em> 引き出すための新しい言語です。
       </p>
@@ -127,8 +142,8 @@
 
     <!-- 下部アクション -->
     <div class="about-actions">
-      <a class="btn luxe" href="app.html">診断をはじめる</a>
-      <a class="btn ghost" href="gallery.html" aria-label="タイプを見る">
+      <a class="btn luxe" href="app.html" data-i18n="hero.startBtn">診断をはじめる</a>
+      <a class="btn ghost" href="gallery.html" aria-label="タイプを見る" data-i18n="hero.viewTypesBtn">
         タイプを見る
       </a>
     </div>
@@ -142,17 +157,17 @@
 <!-- ===== 広告：診断CTAとタイプ割合の“間” ===== -->
 
 
-   
+
     <footer class="footer">
-      <span class="small">© 2025 16BodyPersonalities Project</span>
+      <span class="small" data-i18n="footer.copyright">© 2025 16BodyPersonalities Project</span>
       <span>
-    <a class="muted" href="terms.html">Terms</a> ・
-    <a class="muted" href="privacy.html">Privacy</a>
+    <a class="muted" href="terms.html" data-i18n="footer.terms">Terms</a> ・
+    <a class="muted" href="privacy.html" data-i18n="footer.privacy">Privacy</a>
   </span>
 </footer>
     </footer>
   </div>
-  
+
   <script>
 /* ==== AWS APIエンドポイント ==== */
 const API_URL = "https://uk952hkt2e.execute-api.ap-northeast-1.amazonaws.com/prod";
