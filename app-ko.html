@@ -434,10 +434,92 @@ const TYPE_META = {
 };
 
 /* ==== 3카테고리 브랜드 리스트 (그대로 사용) ==== */
-const BRAND_BY_TYPE = { /* 기존 데이터 유지 */
-  BNLS: { high:['Valentino','Miu Miu'], middle:['SNIDEL','IÉNA'], fast:['ZARA','UNIQLO'] },
-  // ... (브랜드명은 영어 그대로가 좋으므로 생략없이 기존 로직 사용) ...
-  // ※ 원본 코드의 BRAND_BY_TYPE 전체를 여기에 붙여넣어주세요 (분량상 생략되었으나 위 코드에서 그대로 가져오면 됩니다)
+const BRAND_BY_TYPE = {
+  /* ============== WAVE ============== */
+  BNLS: { 
+    high:  ['Valentino','Miu Miu','Chloé','Giambattista Valli','Simone Rocha','Ermanno Scervino','Lanvin'],
+    middle:['SNIDEL','CELFORD','LILY BROWN','FRAY I.D','Mila Owen','TOCCA','IÉNA','Apuweiser-riche','Noela','NATURAL BEAUTY BASIC','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','MANGO','Stradivarius','DHOLIC','earth music&ecology']
+  },
+  MNLC: { 
+    high:  ['Chloé','Valentino','Max Mara','Celine','Loewe','Alaïa'],
+    middle:['IÉNA','Plage','N.O.R.C','URBAN RESEARCH','TOMORROWLAND','Mila Owen','ENFÖLD','Deuxieme Classe','Spick & Span','UNITED ARROWS','Theory'],
+    fast:  ['ZARA','MANGO','COS','& Other Stories','UNIQLO','GU','H&M']
+  },
+  MWLC: { 
+    high:  ['Chloé','Celine','Valentino','Jil Sander','Stella McCartney'],
+    middle:['N.O.R.C','IÉNA','BEAUTY&YOUTH','LE PHIL','TOMORROWLAND','Mila Owen','FRAY I.D','SNIDEL','LILY BROWN','PLST'],
+    fast:  ['ZARA','COS','UNIQLO','GU','H&M','MANGO','Stradivarius']
+  },
+  MWLS: { 
+    high:  ['Miu Miu','Valentino','REDValentino','Chloé','See By Chloé'],
+    middle:['SNIDEL','LILY BROWN','Noela','tocco closet','LOWRYS FARM','earth music&ecology','FRAY I.D','gelato pique','JILL STUART'],
+    fast:  ['ZARA','H&M','UNIQLO','GU','GRL','DHOLIC','WEGO']
+  },
+  MNLS: { 
+    high:  ['Dior','Valentino','Chanel','Chloé','Elie Saab'],
+    middle:['TOCCA','EPOCA','FOXEY','ANAYI','Apuweiser-riche','IÉNA','CELFORD','SNIDEL','PROPORTION','JILL STUART'],
+    fast:  ['ZARA','MANGO','& Other Stories','UNIQLO','GU','H&M']
+  },
+  BNLC: { 
+    high:  ['Loewe','The Row','Celine','Max Mara','Bottega Veneta'],
+    middle:['URBAN RESEARCH ROSSO','Plage','JOURNAL STANDARD relume','IÉNA','BEAMS','TOMORROWLAND','Mila Owen','ENFÖLD'],
+    fast:  ['COS','ZARA','UNIQLO','GU','H&M','MANGO']
+  },
+
+  /* ============== NATURAL ============== */
+  BWUC: { 
+    high:  ['The Row','Jil Sander','Loewe','Bottega Veneta','Celine'],
+    middle:['JOURNAL STANDARD','UNITED ARROWS','BEAUTY&YOUTH','AURALEE','YLEVE','TOMORROWLAND','ENFÖLD','Deuxieme Classe','Plage'],
+    fast:  ['COS','ZARA','ARKET','UNIQLO','H&M','MANGO']
+  },
+  BWUS: { 
+    high:  ['Loewe','Celine','Jil Sander','Isabel Marant','Acne Studios'],
+    middle:['ENFÖLD','Deuxieme Classe','TOMORROWLAND','athoos','COS','IÉNA','Plage','STUNNING LURE'],
+    fast:  ['COS','ZARA','& Other Stories','UNIQLO','H&M','MANGO']
+  },
+  BWLC: { 
+    high:  ['Hermès','The Row','Loro Piana','Jil Sander','Celine'],
+    middle:['IÉNA','Plage','TOMORROWLAND','BEAMS','URBAN RESEARCH','UNITED ARROWS','AURALEE','SCYE','MACKINTOSH'],
+    fast:  ['COS','ZARA','UNIQLO','H&M','MANGO','ARKET']
+  },
+  BWLS: { 
+    high:  ['Loewe','Gabriela Hearst','Chloé','JW Anderson'],
+    middle:['nest Robe','Vermeerist BEAMS','Plage','Journal Standard L’essage','ADAM ET ROPÉ','TODAYFUL','IÉNA','ANATOMICA'],
+    fast:  ['COS','UNIQLO','H&M','ZARA','MANGO']
+  },
+
+  /* ============== STRAIGHT ============== */
+  BNUS: { 
+    high:  ['Saint Laurent','Tom Ford','Givenchy','Alexander McQueen','Max Mara'],
+    middle:['Theory','LE PHIL','FOXEY','PLST','Akris punto','HYKE','THE ROW','Drawer'],
+    fast:  ['COS','ZARA（Premium）','UNIQLO','PLST','MANGO','& Other Stories']
+  },
+  MWUC: { 
+    high:  ['Prada Linea Rossa','Moncler','Balenciaga','Stone Island'],
+    middle:['NIKE Sportswear','adidas Originals','P.E NATION','Lululemon','DESCENTE ALLTERRAIN','Nanamica','ARC’TERYX VEILANCE'],
+    fast:  ['Uniqlo U','UNIQLO','GU','ZARA','H&M']
+  },
+  MNUC: { 
+    high:  ['Dolce & Gabbana','Versace','Balmain','Alexander McQueen','Max Mara'],
+    middle:['THE ROW','LE CIEL BLEU','N°21','ZARA Premium','STUNNING LURE','ALLSAINTS','AMERI'],
+    fast:  ['ZARA','MANGO','Bershka','UNIQLO','GU','H&M']
+  },
+  MNUS: { 
+    high:  ['Valentino','Elie Saab','Oscar de la Renta','Alexander McQueen','Prada'],
+    middle:['Self-Portrait','SNIDEL','FOXEY','Apuweiser-riche','ANAYI','CELFORD','LE PHIL'],
+    fast:  ['ZARA（Evening）','& Other Stories','H&M','MANGO','UNIQLO']
+  },
+  MWUS: { 
+    high:  ['Issey Miyake','Pleats Please','Hermès','Prada'],
+    middle:['PLEATS PLEASE','ISSEY MIYAKE','Theory','Lululemon','COS','ATON','UNIQLO U'],
+    fast:  ['UNIQLO','GU','ZARA','H&M','COS']
+  },
+  BNUC: { 
+    high:  ['Saint Laurent','Jil Sander','Givenchy','Celine','Tom Ford'],
+    middle:['COS','Theory','AURALEE','HYKE','S’YTE','+J','AKRIS punto'],
+    fast:  ['COS','ZARA（Premium）','UNIQLO','H&M','MANGO']
+  }
 };
 
 const TYPE_NICK = {
@@ -706,7 +788,66 @@ const ALL_CODES_ORDERED = [
   'BWUC','BWUS','BWLC','BWLS','BNUS','MWUC',
   'MNUC','MNUS','MWUS','BNUC'
 ];
-// (※ 기존 로직 그대로 사용: decompose, patternBoost, compatCore, getShareCompatibility 등은 언어 의존성 없음)
+
+const PREFIX_GROUPS = {};
+const SUFFIX_GROUPS = {};
+for (const c of ALL_CODES_ORDERED) {
+  const pre = c.slice(0,2);
+  const suf = c.slice(2,4);
+  (PREFIX_GROUPS[pre] ||= []).push(c);
+  (SUFFIX_GROUPS[suf] ||= []).push(c);
+}
+
+const _SAFE = {
+  ALL: (typeof ALL_CODES_ORDERED !== 'undefined' && Array.isArray(ALL_CODES_ORDERED)) ? ALL_CODES_ORDERED.slice() : [],
+  TYPE_META: (typeof TYPE_META !== 'undefined') ? TYPE_META : {},
+  axisPercent: (typeof axisPercent === 'function') ? axisPercent : (key) => ({ pct: 50 }),
+  log: (...args) => { try { console.warn('[compat]', ...args); } catch(_){} },
+};
+
+const WEIGHTS = { tops: { frame:0.40, surface:0.10, balance:0.30, line:0.20 }, bottoms: { frame:0.10, surface:0.30, balance:0.40, line:0.20 } };
+const MISMATCH_KEEP = { tops: { frame:0.50, surface:0.55, balance:0.35, line:0.60 }, bottoms: { frame:0.60, surface:0.45, balance:0.20, line:0.55 } };
+const BASE_AFFINITY = { WAVE: { WAVE:1.00, NATURAL:0.92, STRAIGHT:0.85 }, NATURAL: { WAVE:0.92, NATURAL:1.00, STRAIGHT:0.90 }, STRAIGHT: { WAVE:0.85, NATURAL:0.90, STRAIGHT:1.00 } };
+
+function sameLetter(a,b){ return a===b ? 1 : 0; }
+function userFlex(axisKey){ const { pct } = _SAFE.axisPercent(axisKey); const dist = Math.abs((typeof pct === 'number' ? pct : 50) - 50) / 50; return 1 - dist; }
+function decompose(code){ const [a,b,c,d] = (code || 'NNNN').split(''); const base = _SAFE.TYPE_META?.[code]?.base || 'NATURAL'; return { frame:a, surface:b, balance:c, line:d, base }; }
+function patternBoost(codeA, codeB, mode){
+  if(!codeA || !codeB) return 0;
+  let match = 0; for (let i=0;i<4;i++) if(codeA[i]===codeB[i]) match++;
+  const first2 = (codeA.slice(0,2) === codeB.slice(0,2));
+  const last2  = (codeA.slice(2,4) === codeB.slice(2,4));
+  const twoBoost = mode==='tops' ? (first2 ? 0.08 : (last2 ? 0.04 : 0)) : mode==='bottoms' ? (last2  ? 0.08 : (first2 ? 0.04 : 0)) : 0;
+  return twoBoost + ((match>=3) ? 0.06 : 0);
+}
+function compatCore(codeA, codeB, mode){
+  try {
+    const wa = WEIGHTS[mode], keep = MISMATCH_KEEP[mode];
+    const A = decompose(codeA), B = decompose(codeB);
+    const sF = sameLetter(A.frame, B.frame) ? 1 : keep.frame;
+    const sS = sameLetter(A.surface, B.surface) ? 1 : keep.surface;
+    const sB = sameLetter(A.balance, B.balance) ? 1 : keep.balance;
+    const sL = sameLetter(A.line, B.line) ? 1 : keep.line;
+    const flexF = 0.7 + 0.3 * userFlex('frame');
+    const flexS = 0.7 + 0.3 * userFlex('surface');
+    const flexB = 0.7 + 0.3 * userFlex('balance');
+    const flexL = 0.7 + 0.3 * userFlex('line');
+    const num = wa.frame * sF * flexF + wa.surface * sS * flexS + wa.balance * sB * flexB + wa.line * sL * flexL;
+    const den = wa.frame + wa.surface + wa.balance + wa.line || 1;
+    return Math.max(0, Math.min(1, (num / den) * (BASE_AFFINITY[A.base]?.[B.base] ?? 0.92) + patternBoost(codeA, codeB, mode)));
+  } catch (e) { return 0.55; }
+}
+function toPercent(x){ return Math.round(Math.max(0, Math.min(100, 55 + 43 * (isFinite(x) ? x : 0)))); }
+function getShareCompatibility(code){
+  try {
+    const ALL = _SAFE.ALL.length ? _SAFE.ALL : [];
+    const candidates = ALL.filter(c => c && c !== code);
+    const tops = candidates.map(c => ({ code: c, score: toPercent( compatCore(code, c, 'tops') ) })).sort((a,b)=> b.score - a.score);
+    const bottoms = candidates.map(c => ({ code: c, score: toPercent( compatCore(code, c, 'bottoms') ) })).sort((a,b)=> b.score - a.score);
+    return { topsBest: tops[0] || null, topsNext: tops.slice(1, 6), bottomsBest: bottoms[0] || null, bottomsNext: bottoms.slice(1, 6), topsAll: tops.map(t=>t.code), bottomsAll: bottoms.map(b=>b.code) };
+  } catch (e) { return { topsBest: null, topsNext: [], bottomsBest: null, bottomsNext: [], topsAll: [], bottomsAll: [] }; }
+}
+try { window.getShareCompatibility = getShareCompatibility; } catch(_){}
 
 /* ============================
    결과 화면 렌더링
@@ -815,7 +956,6 @@ function _renderResultCore(){
   const brands=meta.brandHints?.length?meta.brandHints:autoBrands(code,meta.base);
   const auto=autoStyle(code); 
   const brandPack = BRAND_BY_TYPE[code]; 
-  // 브랜드 그룹 (일본어/영어 유지) - 필요시 제목만 한국어로
   const groupHTML = brandPack ? `
   <div class="brand-groups">
     <div class="brand-group"><h4>하이 브랜드</h4><div class="chips">${brandPack.high.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
@@ -835,7 +975,6 @@ function _renderResultCore(){
   let celebHTML = '';
   if (meta.celebrities) {
     const { jp = [], kr = [], global = [] } = meta.celebrities;
-    // 한국어판이므로 한국 연예인을 맨 위로
     const group = [
       { label: '🇰🇷 한국', list: kr },
       { label: '🇯🇵 일본', list: jp },
@@ -862,7 +1001,7 @@ function _renderResultCore(){
         const offset  = pctRaw - 50;
         const absPct  = Math.abs(offset);
         const mainPct = pctRaw >= 50 ? pctRaw : 100 - pctRaw;
-        const sideLabel = data.sideLabel.replace(/\(.*?\)/g, ''); // 괄호 제거
+        const sideLabel = data.sideLabel.replace(/\(.*?\)/g, ''); 
         const isRight   = offset >= 0;
         const fillLeft  = isRight ? '50%' : `calc(50% - ${absPct}%)`;
         const fillWidth = `${absPct}%`;
@@ -941,7 +1080,7 @@ function _renderResultCore(){
           <div class="card" style="margin-top:12px; text-align:center;">     
             <h3>다른 골격 타입도 보기</h3>
             <p>당신의 타입 이외의 15가지 타입을 비교해 보세요.</p>
-            <a href="gallery.html" class="btn" style="display:inline-block; background:#333; color:white; padding:10px 20px; border-radius:8px; text-decoration:none;">타입 갤러리 보기 →</a>
+            <a href="gallery-ko.html" class="btn" style="display:inline-block; background:#333; color:white; padding:10px 20px; border-radius:8px; text-decoration:none;">타입 갤러리 보기 →</a>
           </div>
           <div class="share-box">
             <h3 style="margin-top:0;">결과 공유하기</h3>
@@ -973,7 +1112,7 @@ function _renderResultCore(){
     const { code } = buildCode();
     const meta = TYPE_META[code] || { name:'', emoji:'' };
     const shareTitle = `${meta.emoji ?? ''} ${meta.name || code} (${code})`;
-    const shareUrl   = new URL('index.html', location.href).href;
+    const shareUrl   = new URL('index-ko.html', location.href).href;
 
     const bx = document.getElementById('btn-x');
     if (bx) bx.onclick = () => {
@@ -995,33 +1134,33 @@ function _renderResultCore(){
   const buyBtn = document.querySelector('#buy-premium');
   if (buyBtn){
     buyBtn.addEventListener('click', () => {
-      // 1. 再計算せず、画面描画時の正しい変数(code, scores)を使用する
-      // （※ renderResultCoreの冒頭で計算されたものがクロージャで利用可能です）
-      
-      // state.answers の現在のスナップショットを取得
+      // 1. 再取得
+      const { code: currentCode, scores: currentScores } = buildCode();
       const currentAnswers = state?.answers || {};
 
-      if (!code) { alert('진단 결과를 찾을 수 없습니다.'); return; }
+      if (!currentCode) { 
+        alert('진단 결과를 찾을 수 없습니다.'); 
+        return; 
+      }
 
-      // 2. ローカルストレージへの保存（日本語版と同じキー構成にする）
-      localStorage.setItem('bp_code', code);
-      localStorage.setItem('bp_scores', JSON.stringify(scores || {}));
+      // 2. ローカルストレージへ保存
+      localStorage.setItem('bp_code', currentCode);
+      localStorage.setItem('bp_scores', JSON.stringify(currentScores || {}));
       localStorage.setItem('bp_answers', JSON.stringify(currentAnswers || {}));
 
-      // 【重要】日本語版にあって韓国語版になかった処理を追加
-      // これがないと連携システム側でデータが見つからず、デフォルト値(3)になる可能性があります
+      // 【重要】日本語版にある「km_pending_payload」を必ず保存する
       localStorage.setItem('km_pending_payload', JSON.stringify({
-        code,
-        scores: scores || {},
+        code: currentCode,
+        scores: currentScores || {},
         answers: currentAnswers || {},
         sessionId: (crypto?.randomUUID?.() ?? String(Math.random()))
       }));
 
-      // Stripeへ遷移
+      // 3. Stripeへ遷移
+      // ※日本語版と同じ本番リンクです。テスト用を使う場合は書き換えてください。
       location.href = "https://buy.stripe.com/test_6oU5kCaCDg3Vcide6A6g801";
     });
   }
- 
 
   document.getElementById('retry')?.addEventListener('click', () => {
     if(confirm('처음부터 다시 진단하시겠습니까?')){
@@ -1055,55 +1194,6 @@ function axisPercent(axisKey){
   const sideLabel = (pct>50) ? ax.posLabel : ax.negLabel;
   return { pct, sideLabel, posSide: pct>50 };
 }
-</script>
-
-<script>
-const _SAFE = {
-  ALL: (typeof ALL_CODES_ORDERED !== 'undefined' && Array.isArray(ALL_CODES_ORDERED)) ? ALL_CODES_ORDERED.slice() : [],
-  TYPE_META: (typeof TYPE_META !== 'undefined') ? TYPE_META : {},
-  axisPercent: (typeof axisPercent === 'function') ? axisPercent : (key) => ({ pct: 50 }),
-  log: (...args) => { try { console.warn('[compat]', ...args); } catch(_){} },
-};
-
-const WEIGHTS = { tops: { frame:0.40, surface:0.10, balance:0.30, line:0.20 }, bottoms: { frame:0.10, surface:0.30, balance:0.40, line:0.20 } };
-const MISMATCH_KEEP = { tops: { frame:0.50, surface:0.55, balance:0.35, line:0.60 }, bottoms: { frame:0.60, surface:0.45, balance:0.20, line:0.55 } };
-const BASE_AFFINITY = { WAVE: { WAVE:1.00, NATURAL:0.92, STRAIGHT:0.85 }, NATURAL: { WAVE:0.92, NATURAL:1.00, STRAIGHT:0.90 }, STRAIGHT: { WAVE:0.85, NATURAL:0.90, STRAIGHT:1.00 } };
-
-function sameLetter(a,b){ return a===b ? 1 : 0; }
-function userFlex(axisKey){ const { pct } = _SAFE.axisPercent(axisKey); const dist = Math.abs((typeof pct === 'number' ? pct : 50) - 50) / 50; return 1 - dist; }
-function decompose(code){ const [a,b,c,d] = (code || 'NNNN').split(''); const base = _SAFE.TYPE_META?.[code]?.base || 'NATURAL'; return { frame:a, surface:b, balance:c, line:d, base }; }
-function patternBoost(codeA, codeB, mode){
-  if(!codeA || !codeB) return 0;
-  let match = 0; for (let i=0;i<4;i++) if(codeA[i]===codeB[i]) match++;
-  const first2 = (codeA.slice(0,2) === codeB.slice(0,2));
-  const last2  = (codeA.slice(2,4) === codeB.slice(2,4));
-  const twoBoost = mode==='tops' ? (first2 ? 0.08 : (last2 ? 0.04 : 0)) : mode==='bottoms' ? (last2  ? 0.08 : (first2 ? 0.04 : 0)) : 0;
-  return twoBoost + ((match>=3) ? 0.06 : 0);
-}
-function compatCore(codeA, codeB, mode){
-  try {
-    const wa = WEIGHTS[mode], keep = MISMATCH_KEEP[mode];
-    const A = decompose(codeA), B = decompose(codeB);
-    const sF = sameLetter(A.frame, B.frame) ? 1 : keep.frame;
-    const sS = sameLetter(A.surface, B.surface) ? 1 : keep.surface;
-    const sB = sameLetter(A.balance, B.balance) ? 1 : keep.balance;
-    const sL = sameLetter(A.line, B.line) ? 1 : keep.line;
-    const num = wa.frame * sF * (0.7+0.3*userFlex('frame')) + wa.surface * sS * (0.7+0.3*userFlex('surface')) + wa.balance * sB * (0.7+0.3*userFlex('balance')) + wa.line * sL * (0.7+0.3*userFlex('line'));
-    const den = wa.frame + wa.surface + wa.balance + wa.line || 1;
-    return Math.max(0, Math.min(1, (num / den) * (BASE_AFFINITY[A.base]?.[B.base] ?? 0.92) + patternBoost(codeA, codeB, mode)));
-  } catch (e) { return 0.55; }
-}
-function toPercent(x){ return Math.round(Math.max(0, Math.min(100, 55 + 43 * (isFinite(x) ? x : 0)))); }
-function getShareCompatibility(code){
-  try {
-    const ALL = _SAFE.ALL.length ? _SAFE.ALL : [];
-    const candidates = ALL.filter(c => c && c !== code);
-    const tops = candidates.map(c => ({ code: c, score: toPercent( compatCore(code, c, 'tops') ) })).sort((a,b)=> b.score - a.score);
-    const bottoms = candidates.map(c => ({ code: c, score: toPercent( compatCore(code, c, 'bottoms') ) })).sort((a,b)=> b.score - a.score);
-    return { topsBest: tops[0] || null, topsNext: tops.slice(1, 6), bottomsBest: bottoms[0] || null, bottomsNext: bottoms.slice(1, 6) };
-  } catch (e) { return { topsBest: null, topsNext: [], bottomsBest: null, bottomsNext: [] }; }
-}
-try { window.getShareCompatibility = getShareCompatibility; } catch(_){}
 </script>
 
 <script>
